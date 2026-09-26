@@ -13,6 +13,8 @@ public static class GVDefOf
 
     public static MapMeshFlagDef GV_GasMesh;
 
+    public static ThingDef GV_CanisterEmpty;
+
     static GVDefOf()
     {
         DefOfHelper.EnsureInitializedInCtor(typeof(GVDefOf));
