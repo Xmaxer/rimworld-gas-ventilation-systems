@@ -18,6 +18,7 @@ public sealed class VentGasGrid : MapComponent, IGasFieldListener
     private GasSimulator simulator;
     private MapGasEnvironment environment;
     private bool eventsHooked;
+    private PathFinderMapData registeredPathData;
 
     // Scribe buffers for the simulator cursors.
     private int savedDissipationCursor;
@@ -30,6 +31,9 @@ public sealed class VentGasGrid : MapComponent, IGasFieldListener
     }
 
     public GasDeviceRegistry Devices { get; }
+
+    /// <summary>The pathfinder cost source registered for this map (owned and disposed by PathFinderMapData).</summary>
+    public GasPathSource PathSource { get; private set; }
 
     /// <summary>Fast lookup with a one-entry cache (almost all calls are for the current map).</summary>
     public static VentGasGrid For(Map map)
@@ -79,7 +83,7 @@ public sealed class VentGasGrid : MapComponent, IGasFieldListener
             map.events.RoofChanged += Devices.OnRoofChanged;
             eventsHooked = true;
         }
-        // [M6] path source registration
+        EnsurePathSource();
     }
 
     public override void MapRemoved()
@@ -90,7 +94,10 @@ public sealed class VentGasGrid : MapComponent, IGasFieldListener
             map.events.RoofChanged -= Devices.OnRoofChanged;
             eventsHooked = false;
         }
-        // [M6] path source disposal
+        // PathFinderMapData disposes the source (after completing path jobs) when the map is disposed.
+        // Disposing its NativeArrays here could free them under still-scheduled grid jobs.
+        PathSource = null;
+        registeredPathData = null;
         if (cachedMap == map)
         {
             cachedMap = null;
@@ -100,6 +107,10 @@ public sealed class VentGasGrid : MapComponent, IGasFieldListener
 
     public override void MapComponentTick()
     {
+        if (Find.TickManager.TicksGame % 2500 == 0)
+        {
+            EnsurePathSource();
+        }
         Devices.Tick(Find.TickManager.TicksGame);
         if (field == null)
         {
@@ -131,6 +142,18 @@ public sealed class VentGasGrid : MapComponent, IGasFieldListener
             simulator.DiffusionCursor = savedDiffusionCursor;
             simulator.DissipationSweep = savedDissipationSweep;
         }
+    }
+
+    private void EnsurePathSource()
+    {
+        PathFinderMapData data = map.pathFinder?.MapData;
+        if (data == null || (data == registeredPathData && PathSource != null && !PathSource.Disposed))
+        {
+            return;
+        }
+        PathSource = new GasPathSource(map, this);
+        data.RegisterSource(PathSource);
+        registeredPathData = data;
     }
 
     // ---------------------------------------------------------------- queries
@@ -302,6 +325,6 @@ public sealed class VentGasGrid : MapComponent, IGasFieldListener
     void IGasFieldListener.OnBandsChanged(int cellIndex, byte oldBands, byte newBands)
     {
         map.mapDrawer.MapMeshDirty(map.cellIndices.IndexToCell(cellIndex), GVDefOf.GV_GasMesh);
-        // [M6] path source notification
+        PathSource?.MarkDirty(cellIndex);
     }
 }
