@@ -6,6 +6,8 @@ param(
     [string]$RimWorldDir = 'C:\Program Files (x86)\Steam\steamapps\common\RimWorld'
 )
 $ErrorActionPreference = 'Stop'
+# `powershell -File ... -Scenarios a,b` passes one literal string "a,b"; split it so both call styles work.
+$Scenarios = @($Scenarios | ForEach-Object { $_ -split ',' } | ForEach-Object { $_.Trim() } | Where-Object { $_ })
 $root = Split-Path -Parent $PSScriptRoot
 
 if (Get-Process RimWorldWin64 -ErrorAction SilentlyContinue) { Write-Output 'BLOCKED: RimWorld is already running.'; exit 2 }

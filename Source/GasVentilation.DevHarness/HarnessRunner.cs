@@ -13,6 +13,7 @@ public sealed class HarnessRunner : GameComponent
         new Dictionary<string, Func<HarnessScenario>>(StringComparer.OrdinalIgnoreCase)
         {
             ["boot"] = () => new Scenarios.BootScenario(),
+            ["grid"] = () => new Scenarios.GridSpreadScenario(),
         };
 
     private readonly List<HarnessScenario> queue = new List<HarnessScenario>();

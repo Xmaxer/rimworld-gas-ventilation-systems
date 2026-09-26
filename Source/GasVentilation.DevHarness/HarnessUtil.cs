@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using LudeonTK;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -31,7 +32,8 @@ public static class HarnessUtil
             List<Thing> things = c.GetThingList(map);
             for (int i = 0; i < things.Count; i++)
             {
-                if (!(things[i] is Pawn p) || p.Faction != Faction.OfPlayer)
+                // Non-destroyable things (steam geysers, map-feature buildings) log an error when destroyed.
+                if (things[i].def.destroyable && (!(things[i] is Pawn p) || p.Faction != Faction.OfPlayer))
                 {
                     doomed.Add(things[i]);
                 }
@@ -93,6 +95,12 @@ public static class HarnessUtil
     public static void Screenshot(string name)
     {
         Directory.CreateDirectory(HarnessDir);
+        // The dev log auto-opens on any logged error and would cover the map; the log file keeps the messages.
+        EditWindow_Log log = Find.WindowStack.WindowOfType<EditWindow_Log>();
+        if (log != null)
+        {
+            Find.WindowStack.TryRemove(log, doCloseSound: false);
+        }
         ScreenCapture.CaptureScreenshot(Path.Combine(HarnessDir, name + ".png"));
     }
 

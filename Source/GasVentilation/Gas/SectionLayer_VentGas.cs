@@ -10,10 +10,8 @@ namespace GasVentilation;
 /// </summary>
 public sealed class SectionLayer_VentGas : SectionLayer
 {
-    // Vertex colour selects the shader's first ("smoke") channel; the tint comes from the material colour.
-    private static readonly Color32 VertexColor = new Color32(255, 0, 0, 0);
-
-    private readonly MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+    // TransparentPostLight multiplies by vertex colour; keep it white so the tint and alpha come from the material.
+    private static readonly Color32 VertexColor = new Color32(255, 255, 255, 255);
 
     public SectionLayer_VentGas(Section section) : base(section)
     {
@@ -67,13 +65,12 @@ public sealed class SectionLayer_VentGas : SectionLayer
         {
             return;
         }
-        propertyBlock.SetFloat(ShaderPropertyIDs.AgeSecsPausable, RealTime.UnpausedRealTime);
         for (int i = 0; i < subMeshes.Count; i++)
         {
             LayerSubMesh subMesh = subMeshes[i];
             if (subMesh.finalized && !subMesh.disabled)
             {
-                Graphics.DrawMesh(subMesh.mesh, Vector3.zero, Quaternion.identity, subMesh.material, 0, null, 0, propertyBlock);
+                Graphics.DrawMesh(subMesh.mesh, Vector3.zero, Quaternion.identity, subMesh.material, 0);
             }
         }
     }
