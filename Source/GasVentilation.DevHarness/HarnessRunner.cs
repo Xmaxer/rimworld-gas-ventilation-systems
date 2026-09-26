@@ -152,6 +152,16 @@ public sealed class HarnessRunner : GameComponent
             }
             sb.Append('"').Append(HarnessUtil.JsonEscape(failures[i])).Append('"');
         }
+        sb.Append("],\"metrics\":[");
+        List<string> metrics = current?.Metrics ?? new List<string>();
+        for (int i = 0; i < metrics.Count; i++)
+        {
+            if (i > 0)
+            {
+                sb.Append(',');
+            }
+            sb.Append('"').Append(HarnessUtil.JsonEscape(metrics[i])).Append('"');
+        }
         sb.Append("]}");
         WriteLine(sb.ToString());
         Log.Message($"[GasVentHarness] {current?.Name}: {status} after {ticks} ticks");

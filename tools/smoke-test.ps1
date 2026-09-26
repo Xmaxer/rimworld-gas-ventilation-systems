@@ -81,6 +81,7 @@ if (Test-Path $resultsFile) {
             if ($r.unexpectedErrors.Count -gt 0) { $ok = $false; Write-Output "FAILED: $($r.unexpectedErrors.Count) unexpected logged error(s):"; $r.unexpectedErrors | ForEach-Object { Write-Output "  $_" } }
         } else {
             Write-Output ("{0}: {1} ({2} ticks)" -f $r.scenario, $r.status, $r.ticks)
+            if ($r.metrics) { $r.metrics | ForEach-Object { Write-Output "  metric: $_" } }
             if ($r.status -ne 'Passed') { $ok = $false; $r.failures | ForEach-Object { Write-Output "  - $_" } }
         }
     }

@@ -16,6 +16,9 @@ public abstract class HarnessScenario
 
     public virtual int TimeoutTicks => 5000;
 
+    /// <summary>Name/value measurements written to results.jsonl (not failures).</summary>
+    public readonly List<string> Metrics = new List<string>();
+
     /// <summary>Called once. <paramref name="area"/> is a cleared, unroofed, unfogged 24x24 rectangle.</summary>
     public abstract void Setup(Map map, CellRect area);
 
