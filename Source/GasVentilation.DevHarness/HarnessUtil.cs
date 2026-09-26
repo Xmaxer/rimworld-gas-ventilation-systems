@@ -16,6 +16,8 @@ public static class HarnessUtil
         "Could not load Texture2D",
         "Failed to find any textures at",
         "Could not load UnityEngine.Texture2D",
+        // Follows each missing Graphic_Single texture (vanilla builds a material from the null texture).
+        "MatFrom with null sourceTex",
         // Environment noise: the dev machine subscribes to two Workshop copies of some unrelated mods. Logged by
         // ModLister while enumerating all installed mods, even inactive ones.
         "Tried loading mod with the same packageId multiple times"

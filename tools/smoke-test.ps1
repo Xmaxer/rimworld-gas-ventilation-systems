@@ -87,7 +87,7 @@ if (Test-Path $resultsFile) {
 } else { Write-Output 'FAILED: no results.jsonl'; $ok = $false }
 
 # "same packageId multiple times": duplicate Workshop subscriptions of unrelated mods on the dev machine.
-$allow = 'Could not load Texture2D|Failed to find any textures at|Could not load UnityEngine.Texture2D|Tried loading mod with the same packageId multiple times'
+$allow = 'Could not load Texture2D|Failed to find any textures at|Could not load UnityEngine.Texture2D|MatFrom with null sourceTex|Tried loading mod with the same packageId multiple times'
 $patterns = 'Exception|Config error in|XML error|Could not resolve cross-reference|Patch operation .* failed|Could not find type named'
 if (Test-Path $log) {
     $hits = Select-String -Path $log -Pattern $patterns | Where-Object { $_.Line -notmatch $allow }
