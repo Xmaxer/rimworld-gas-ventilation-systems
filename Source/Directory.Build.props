@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>12</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+    <DebugType>embedded</DebugType>
+    <PathMap>$(MSBuildThisFileDirectory)=/_/GasVentilation/</PathMap>
+    <ModVersion>0.1.0</ModVersion>
+    <Version>$(ModVersion)</Version>
+    <SteamWorkshopDir Condition="'$(SteamWorkshopDir)'==''">$(RIMWORLD_WORKSHOP_DIR)</SteamWorkshopDir>
+    <SteamWorkshopDir Condition="'$(SteamWorkshopDir)'==''">C:\Program Files (x86)\Steam\steamapps\workshop\content\294100</SteamWorkshopDir>
+    <VefDir Condition="'$(VefDir)'==''">$(SteamWorkshopDir)\2023507013</VefDir>
+  </PropertyGroup>
+</Project>
