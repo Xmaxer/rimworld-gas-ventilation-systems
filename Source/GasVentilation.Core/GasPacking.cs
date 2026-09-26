@@ -24,4 +24,22 @@ public static class GasPacking
         int shift = channel << 3;
         return (packed & ~(0xFFu << shift)) | ((uint)density << shift);
     }
+
+    /// <summary>Highest density among the channels whose bit is set in <paramref name="channelMask"/>.</summary>
+    public static int MaxMaskedDensity(uint packed, int channelMask)
+    {
+        int max = 0;
+        for (int channel = 0; channel < Channels; channel++)
+        {
+            if ((channelMask & (1 << channel)) != 0)
+            {
+                int density = Get(packed, channel);
+                if (density > max)
+                {
+                    max = density;
+                }
+            }
+        }
+        return max;
+    }
 }

@@ -41,4 +41,17 @@ public static class GasBands
     {
         return (packedBands >> (channel << 1)) & 3;
     }
+
+    /// <summary>True if any channel in <paramref name="channelMask"/> is at <paramref name="band"/> or higher.</summary>
+    public static bool AnyBandAtLeast(uint packed, int channelMask, int band)
+    {
+        for (int channel = 0; channel < GasPacking.Channels; channel++)
+        {
+            if ((channelMask & (1 << channel)) != 0 && Band(GasPacking.Get(packed, channel)) >= band)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
