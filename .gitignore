@@ -1,0 +1,10 @@
+# Local reference material: third-party clones and decompiled game code.
+# Decompiled Ludeon code must never be committed or redistributed.
+refs/
+
+# Build output
+bin/
+obj/
+.vs/
+*.user
+*.suo
