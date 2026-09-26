@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <GV_GasReadout>{0}: {1}</GV_GasReadout>
+  <GV_DebugCategory>Gas Ventilation</GV_DebugCategory>
+</LanguageData>

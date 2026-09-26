@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <packageId>Xmaxer.GasVentilation</packageId>
+  <name>Gas Ventilation Systems</name>
+  <author>Xmaxer</author>
+  <modVersion>0.1.0</modVersion>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>https://steamcommunity.com/workshop/filedetails/?id=2009463077</steamWorkshopUrl>
+      <downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+    </li>
+    <li>
+      <packageId>OskarPotocki.VanillaFactionsExpanded.Core</packageId>
+      <displayName>Vanilla Expanded Framework</displayName>
+      <steamWorkshopUrl>https://steamcommunity.com/workshop/filedetails/?id=2023507013</steamWorkshopUrl>
+      <downloadUrl>https://github.com/Vanilla-Expanded/VanillaExpandedFramework</downloadUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>OskarPotocki.VanillaFactionsExpanded.Core</li>
+    <li>rwmt.Multiplayer</li>
+  </loadAfter>
+  <forceLoadAfter>
+    <li>OskarPotocki.VanillaFactionsExpanded.Core</li>
+  </forceLoadAfter>
+  <description>Pipe four weaponised gases around your base with Vanilla Expanded Framework pipes.
+
+Craft gas canisters, rack them in canister manifolds, and release the gas through wall, wall-mounted, ceiling or floor vents. Vents can be switched by hand or armed with an intruder sensor.
+
+- Toxin gas: burns the lungs of organic, breathing creatures.
+- Sedative gas: knocks organic creatures unconscious.
+- Haywire gas: damages and scrambles mechanoids, drones, robots and androids.
+- Insecticide gas: slowly kills insectoids.
+
+Gas spreads cell by cell like vanilla gas, is blocked by walls and closed doors, and creatures try to escape it.
+
+Requires Harmony and Vanilla Expanded Framework. No DLC required.</description>
+</ModMetaData>
