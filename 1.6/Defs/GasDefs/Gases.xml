@@ -6,6 +6,7 @@
     <label>toxin gas</label>
     <description>A caustic gas that burns the lungs of organic, breathing creatures.</description>
     <channel>0</channel>
+    <hiddenPipe>GV_HiddenPipe_Toxin</hiddenPipe>
     <color>(0.55, 0.78, 0.18)</color>
     <dissipationPerVisit>8</dissipationPerVisit>
     <roofedFactor>0.75</roofedFactor>
@@ -19,6 +20,7 @@
     <label>sedative gas</label>
     <description>A fast-acting anaesthetic gas that knocks organic, breathing creatures unconscious.</description>
     <channel>1</channel>
+    <hiddenPipe>GV_HiddenPipe_Sedative</hiddenPipe>
     <color>(0.66, 0.55, 0.95)</color>
     <dissipationPerVisit>8</dissipationPerVisit>
     <roofedFactor>0.75</roofedFactor>
@@ -33,6 +35,7 @@
     <label>haywire gas</label>
     <description>A cloud of conductive nanite particulate that shorts out and scrambles mechanical bodies.</description>
     <channel>2</channel>
+    <hiddenPipe>GV_HiddenPipe_Haywire</hiddenPipe>
     <color>(0.25, 0.70, 1.0)</color>
     <dissipationPerVisit>8</dissipationPerVisit>
     <roofedFactor>0.75</roofedFactor>
@@ -46,6 +49,7 @@
     <label>insecticide gas</label>
     <description>A persistent insecticide that slowly poisons insectoids.</description>
     <channel>3</channel>
+    <hiddenPipe>GV_HiddenPipe_Insecticide</hiddenPipe>
     <color>(1.0, 0.62, 0.15)</color>
     <dissipationPerVisit>6</dissipationPerVisit>
     <roofedFactor>0.75</roofedFactor>

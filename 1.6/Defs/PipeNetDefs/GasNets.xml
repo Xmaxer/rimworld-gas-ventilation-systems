@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <PipeSystem.PipeNetDef>
+    <defName>GV_Net_Toxin</defName>
+    <resource>
+      <name>Toxin gas</name>
+      <unit>canisters</unit>
+      <color>(0.55, 0.78, 0.18)</color>
+      <onlyShowStored>true</onlyShowStored>
+    </resource>
+    <pipeDefs>
+      <li>GV_Pipe_Toxin</li>
+      <li>GV_HiddenPipe_Toxin</li>
+    </pipeDefs>
+    <overlayOptions>
+      <overlayColor>(0.55, 0.78, 0.18)</overlayColor>
+    </overlayOptions>
+    <enableOverflow>false</enableOverflow>
+  </PipeSystem.PipeNetDef>
+
+  <PipeSystem.PipeNetDef>
+    <defName>GV_Net_Sedative</defName>
+    <resource>
+      <name>Sedative gas</name>
+      <unit>canisters</unit>
+      <color>(0.66, 0.55, 0.95)</color>
+      <onlyShowStored>true</onlyShowStored>
+    </resource>
+    <pipeDefs>
+      <li>GV_Pipe_Sedative</li>
+      <li>GV_HiddenPipe_Sedative</li>
+    </pipeDefs>
+    <overlayOptions>
+      <overlayColor>(0.66, 0.55, 0.95)</overlayColor>
+    </overlayOptions>
+    <enableOverflow>false</enableOverflow>
+  </PipeSystem.PipeNetDef>
+
+  <PipeSystem.PipeNetDef>
+    <defName>GV_Net_Haywire</defName>
+    <resource>
+      <name>Haywire gas</name>
+      <unit>canisters</unit>
+      <color>(0.25, 0.70, 1.0)</color>
+      <onlyShowStored>true</onlyShowStored>
+    </resource>
+    <pipeDefs>
+      <li>GV_Pipe_Haywire</li>
+      <li>GV_HiddenPipe_Haywire</li>
+    </pipeDefs>
+    <overlayOptions>
+      <overlayColor>(0.25, 0.70, 1.0)</overlayColor>
+    </overlayOptions>
+    <enableOverflow>false</enableOverflow>
+  </PipeSystem.PipeNetDef>
+
+  <PipeSystem.PipeNetDef>
+    <defName>GV_Net_Insecticide</defName>
+    <resource>
+      <name>Insecticide gas</name>
+      <unit>canisters</unit>
+      <color>(1.0, 0.62, 0.15)</color>
+      <onlyShowStored>true</onlyShowStored>
+    </resource>
+    <pipeDefs>
+      <li>GV_Pipe_Insecticide</li>
+      <li>GV_HiddenPipe_Insecticide</li>
+    </pipeDefs>
+    <overlayOptions>
+      <overlayColor>(1.0, 0.62, 0.15)</overlayColor>
+    </overlayOptions>
+    <enableOverflow>false</enableOverflow>
+  </PipeSystem.PipeNetDef>
+
+</Defs>

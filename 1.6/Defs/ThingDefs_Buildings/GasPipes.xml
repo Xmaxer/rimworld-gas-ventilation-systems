@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- ===== Shared pipe base (visible) ===== -->
+  <ThingDef ParentName="BuildingBase" Name="GV_GasPipeBase" Abstract="True">
+    <thingClass>PipeSystem.Building_Pipe</thingClass>
+    <category>Building</category>
+    <tickerType>Never</tickerType>
+    <graphicData>
+      <graphicClass>Graphic_Single</graphicClass>
+      <linkType>Basic</linkType>
+      <linkFlags>
+        <li>Custom7</li>
+      </linkFlags>
+      <damageData>
+        <rect>(0,0.35,1,0.3)</rect>
+      </damageData>
+    </graphicData>
+    <uiIconScale>0.7</uiIconScale>
+    <building>
+      <ai_chillDestination>false</ai_chillDestination>
+      <isInert>true</isInert>
+      <isEdifice>false</isEdifice>
+      <blueprintGraphicData>
+        <texPath>Things/Building/Linked/GV_Pipe_Blueprint_Atlas</texPath>
+      </blueprintGraphicData>
+      <canConstructInCorner>true</canConstructInCorner>
+    </building>
+    <drawerType>MapMeshOnly</drawerType>
+    <altitudeLayer>Conduits</altitudeLayer>
+    <passability>Standable</passability>
+    <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+    <statBases>
+      <MaxHitPoints>40</MaxHitPoints>
+      <WorkToBuild>35</WorkToBuild>
+      <Flammability>0.5</Flammability>
+    </statBases>
+    <drawStyleCategory>Conduits</drawStyleCategory>
+    <costList>
+      <Steel>2</Steel>
+    </costList>
+    <placeWorkers>
+      <li>PipeSystem.PlaceWorker_Pipe</li>
+    </placeWorkers>
+    <rotatable>false</rotatable>
+    <selectable>true</selectable>
+    <neverMultiSelect>true</neverMultiSelect>
+    <soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+    <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+    <designationCategory>Security</designationCategory>
+    <designatorDropdown>GV_Dropdown_GasPipes</designatorDropdown>
+    <constructEffect>ConstructMetal</constructEffect>
+    <clearBuildingArea>false</clearBuildingArea>
+    <researchPrerequisites>
+      <li>GV_GasVentilation</li>
+    </researchPrerequisites>
+    <modExtensions>
+      <li Class="GasVentilation.GasPipeExtension" />
+    </modExtensions>
+  </ThingDef>
+
+  <!-- ===== Hidden pipe base: VE convention (Building_Pipe + fully transparent atlas + HiddenConduit flags) ===== -->
+  <ThingDef ParentName="GV_GasPipeBase" Name="GV_HiddenGasPipeBase" Abstract="True">
+    <graphicData>
+      <texPath>Things/Building/Linked/GV_HiddenPipe_Atlas</texPath>
+    </graphicData>
+    <building>
+      <ai_neverTrashThis>true</ai_neverTrashThis>
+      <isTargetable>false</isTargetable>
+      <expandHomeArea>false</expandHomeArea>
+      <canBeDamagedByAttacks>false</canBeDamagedByAttacks>
+    </building>
+    <statBases>
+      <MaxHitPoints>48</MaxHitPoints>
+      <WorkToBuild>280</WorkToBuild>
+      <Flammability>0</Flammability>
+    </statBases>
+    <costList>
+      <Steel>4</Steel>
+    </costList>
+  </ThingDef>
+
+  <!-- ===== Toxin ===== -->
+  <ThingDef ParentName="GV_GasPipeBase">
+    <defName>GV_Pipe_Toxin</defName>
+    <label>toxin gas pipe</label>
+    <description>Sealed steel piping that carries toxin gas from canister manifolds to vents. Pipes of different gases can run side by side without mixing.</description>
+    <graphicData>
+      <texPath>Things/Building/Linked/GV_Pipe_Toxin_Atlas</texPath>
+    </graphicData>
+    <uiIconPath>UI/Icons/GasVentilation/GV_Pipe_Toxin</uiIconPath>
+    <comps>
+      <li Class="PipeSystem.CompProperties_Resource">
+        <pipeNet>GV_Net_Toxin</pipeNet>
+      </li>
+    </comps>
+  </ThingDef>
+  <ThingDef ParentName="GV_HiddenGasPipeBase">
+    <defName>GV_HiddenPipe_Toxin</defName>
+    <label>hidden toxin gas pipe</label>
+    <description>Toxin gas piping buried under floors and walls. Invisible, cannot be shot, but slower and costlier to lay. Cannot be placed under raw rock; smooth it first.</description>
+    <uiIconPath>UI/Icons/GasVentilation/GV_HiddenPipe_Toxin</uiIconPath>
+    <comps>
+      <li Class="PipeSystem.CompProperties_Resource">
+        <pipeNet>GV_Net_Toxin</pipeNet>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!-- ===== Sedative ===== -->
+  <ThingDef ParentName="GV_GasPipeBase">
+    <defName>GV_Pipe_Sedative</defName>
+    <label>sedative gas pipe</label>
+    <description>Sealed steel piping that carries sedative gas from canister manifolds to vents. Pipes of different gases can run side by side without mixing.</description>
+    <graphicData>
+      <texPath>Things/Building/Linked/GV_Pipe_Sedative_Atlas</texPath>
+    </graphicData>
+    <uiIconPath>UI/Icons/GasVentilation/GV_Pipe_Sedative</uiIconPath>
+    <comps>
+      <li Class="PipeSystem.CompProperties_Resource">
+        <pipeNet>GV_Net_Sedative</pipeNet>
+      </li>
+    </comps>
+  </ThingDef>
+  <ThingDef ParentName="GV_HiddenGasPipeBase">
+    <defName>GV_HiddenPipe_Sedative</defName>
+    <label>hidden sedative gas pipe</label>
+    <description>Sedative gas piping buried under floors and walls. Invisible, cannot be shot, but slower and costlier to lay. Cannot be placed under raw rock; smooth it first.</description>
+    <uiIconPath>UI/Icons/GasVentilation/GV_HiddenPipe_Sedative</uiIconPath>
+    <comps>
+      <li Class="PipeSystem.CompProperties_Resource">
+        <pipeNet>GV_Net_Sedative</pipeNet>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!-- ===== Haywire ===== -->
+  <ThingDef ParentName="GV_GasPipeBase">
+    <defName>GV_Pipe_Haywire</defName>
+    <label>haywire gas pipe</label>
+    <description>Sealed steel piping that carries haywire gas from canister manifolds to vents. Pipes of different gases can run side by side without mixing.</description>
+    <graphicData>
+      <texPath>Things/Building/Linked/GV_Pipe_Haywire_Atlas</texPath>
+    </graphicData>
+    <uiIconPath>UI/Icons/GasVentilation/GV_Pipe_Haywire</uiIconPath>
+    <comps>
+      <li Class="PipeSystem.CompProperties_Resource">
+        <pipeNet>GV_Net_Haywire</pipeNet>
+      </li>
+    </comps>
+  </ThingDef>
+  <ThingDef ParentName="GV_HiddenGasPipeBase">
+    <defName>GV_HiddenPipe_Haywire</defName>
+    <label>hidden haywire gas pipe</label>
+    <description>Haywire gas piping buried under floors and walls. Invisible, cannot be shot, but slower and costlier to lay. Cannot be placed under raw rock; smooth it first.</description>
+    <uiIconPath>UI/Icons/GasVentilation/GV_HiddenPipe_Haywire</uiIconPath>
+    <comps>
+      <li Class="PipeSystem.CompProperties_Resource">
+        <pipeNet>GV_Net_Haywire</pipeNet>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!-- ===== Insecticide ===== -->
+  <ThingDef ParentName="GV_GasPipeBase">
+    <defName>GV_Pipe_Insecticide</defName>
+    <label>insecticide gas pipe</label>
+    <description>Sealed steel piping that carries insecticide gas from canister manifolds to vents. Pipes of different gases can run side by side without mixing.</description>
+    <graphicData>
+      <texPath>Things/Building/Linked/GV_Pipe_Insecticide_Atlas</texPath>
+    </graphicData>
+    <uiIconPath>UI/Icons/GasVentilation/GV_Pipe_Insecticide</uiIconPath>
+    <comps>
+      <li Class="PipeSystem.CompProperties_Resource">
+        <pipeNet>GV_Net_Insecticide</pipeNet>
+      </li>
+    </comps>
+  </ThingDef>
+  <ThingDef ParentName="GV_HiddenGasPipeBase">
+    <defName>GV_HiddenPipe_Insecticide</defName>
+    <label>hidden insecticide gas pipe</label>
+    <description>Insecticide gas piping buried under floors and walls. Invisible, cannot be shot, but slower and costlier to lay. Cannot be placed under raw rock; smooth it first.</description>
+    <uiIconPath>UI/Icons/GasVentilation/GV_HiddenPipe_Insecticide</uiIconPath>
+    <comps>
+      <li Class="PipeSystem.CompProperties_Resource">
+        <pipeNet>GV_Net_Insecticide</pipeNet>
+      </li>
+    </comps>
+  </ThingDef>
+
+</Defs>
