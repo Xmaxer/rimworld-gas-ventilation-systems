@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <ThingDef ParentName="ResourceBase" Name="GV_CanisterBase" Abstract="True">
+    <thingClass>ThingWithComps</thingClass>
+    <graphicData>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <stackLimit>25</stackLimit>
+    <soundInteract>Metal_Drop</soundInteract>
+    <soundDrop>Metal_Drop</soundDrop>
+    <useHitPoints>true</useHitPoints>
+    <healthAffectsPrice>false</healthAffectsPrice>
+    <techLevel>Industrial</techLevel>
+    <statBases>
+      <MaxHitPoints>60</MaxHitPoints>
+      <Mass>1.5</Mass>
+      <Flammability>0.2</Flammability>
+      <DeteriorationRate>1</DeteriorationRate>
+    </statBases>
+    <thingCategories>
+      <li>Manufactured</li>
+    </thingCategories>
+  </ThingDef>
+
+  <ThingDef ParentName="GV_CanisterBase">
+    <defName>GV_CanisterEmpty</defName>
+    <label>empty gas canister</label>
+    <description>A reinforced steel pressure canister. Fill it with a gas agent at a gas compounder. Drained canisters come back out of canister manifolds as empty shells, ready to refill.</description>
+    <graphicData>
+      <texPath>Things/Item/GasVentilation/GV_CanisterEmpty</texPath>
+    </graphicData>
+    <statBases>
+      <MarketValue>18</MarketValue>
+      <WorkToMake>600</WorkToMake>
+    </statBases>
+    <costList>
+      <Steel>15</Steel>
+    </costList>
+    <recipeMaker>
+      <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Machining</soundWorking>
+      <recipeUsers>
+        <li>TableMachining</li>
+      </recipeUsers>
+      <researchPrerequisite>GV_GasVentilation</researchPrerequisite>
+      <skillRequirements>
+        <Crafting>3</Crafting>
+      </skillRequirements>
+    </recipeMaker>
+  </ThingDef>
+
+  <ThingDef ParentName="GV_CanisterBase">
+    <defName>GV_Canister_Toxin</defName>
+    <label>toxin canister</label>
+    <description>A pressure canister filled with toxin gas agent. Load it into a toxin canister manifold. Releases its gas if destroyed.</description>
+    <graphicData>
+      <texPath>Things/Item/GasVentilation/GV_Canister_Toxin</texPath>
+    </graphicData>
+    <statBases>
+      <MarketValue>45</MarketValue>
+    </statBases>
+    <comps>
+      <li Class="GasVentilation.CompProperties_GasReleaseOnDestroy">
+        <gas>GV_Gas_Toxin</gas>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <ThingDef ParentName="GV_CanisterBase">
+    <defName>GV_Canister_Sedative</defName>
+    <label>sedative canister</label>
+    <description>A pressure canister filled with sedative gas agent. Load it into a sedative canister manifold. Releases its gas if destroyed.</description>
+    <graphicData>
+      <texPath>Things/Item/GasVentilation/GV_Canister_Sedative</texPath>
+    </graphicData>
+    <statBases>
+      <MarketValue>70</MarketValue>
+    </statBases>
+    <comps>
+      <li Class="GasVentilation.CompProperties_GasReleaseOnDestroy">
+        <gas>GV_Gas_Sedative</gas>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <ThingDef ParentName="GV_CanisterBase">
+    <defName>GV_Canister_Haywire</defName>
+    <label>haywire canister</label>
+    <description>A pressure canister filled with conductive nanite particulate. Load it into a haywire canister manifold. Releases its gas if destroyed.</description>
+    <graphicData>
+      <texPath>Things/Item/GasVentilation/GV_Canister_Haywire</texPath>
+    </graphicData>
+    <statBases>
+      <MarketValue>60</MarketValue>
+    </statBases>
+    <comps>
+      <li Class="GasVentilation.CompProperties_GasReleaseOnDestroy">
+        <gas>GV_Gas_Haywire</gas>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <ThingDef ParentName="GV_CanisterBase">
+    <defName>GV_Canister_Insecticide</defName>
+    <label>insecticide canister</label>
+    <description>A pressure canister filled with insecticide agent. Load it into an insecticide canister manifold. Releases its gas if destroyed.</description>
+    <graphicData>
+      <texPath>Things/Item/GasVentilation/GV_Canister_Insecticide</texPath>
+    </graphicData>
+    <statBases>
+      <MarketValue>45</MarketValue>
+    </statBases>
+    <comps>
+      <li Class="GasVentilation.CompProperties_GasReleaseOnDestroy">
+        <gas>GV_Gas_Insecticide</gas>
+      </li>
+    </comps>
+  </ThingDef>
+
+</Defs>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <RecipeDef Name="GV_FillCanisterBase" Abstract="True">
+    <jobString>Filling gas canister.</jobString>
+    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+    <workSkill>Crafting</workSkill>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <workAmount>800</workAmount>
+    <recipeUsers>
+      <li>GV_GasCompounder</li>
+    </recipeUsers>
+    <researchPrerequisite>GV_GasVentilation</researchPrerequisite>
+    <skillRequirements>
+      <Crafting>4</Crafting>
+    </skillRequirements>
+  </RecipeDef>
+
+  <RecipeDef ParentName="GV_FillCanisterBase">
+    <defName>GV_FillCanister_Toxin</defName>
+    <label>fill toxin canister</label>
+    <description>Synthesise toxin agent and pressurise it into an empty gas canister.</description>
+    <ingredients>
+      <li>
+        <filter><thingDefs><li>GV_CanisterEmpty</li></thingDefs></filter>
+        <count>1</count>
+      </li>
+      <li>
+        <filter><thingDefs><li>Chemfuel</li></thingDefs></filter>
+        <count>10</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>GV_CanisterEmpty</li>
+        <li>Chemfuel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <GV_Canister_Toxin>1</GV_Canister_Toxin>
+    </products>
+  </RecipeDef>
+
+  <RecipeDef ParentName="GV_FillCanisterBase">
+    <defName>GV_FillCanister_Sedative</defName>
+    <label>fill sedative canister</label>
+    <description>Synthesise sedative agent and pressurise it into an empty gas canister.</description>
+    <ingredients>
+      <li>
+        <filter><thingDefs><li>GV_CanisterEmpty</li></thingDefs></filter>
+        <count>1</count>
+      </li>
+      <li>
+        <filter><thingDefs><li>Neutroamine</li></thingDefs></filter>
+        <count>2</count>
+      </li>
+      <li>
+        <filter><thingDefs><li>Chemfuel</li></thingDefs></filter>
+        <count>5</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>GV_CanisterEmpty</li>
+        <li>Neutroamine</li>
+        <li>Chemfuel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <GV_Canister_Sedative>1</GV_Canister_Sedative>
+    </products>
+  </RecipeDef>
+
+  <RecipeDef ParentName="GV_FillCanisterBase">
+    <defName>GV_FillCanister_Haywire</defName>
+    <label>fill haywire canister</label>
+    <description>Grind components into conductive nanite particulate and pressurise it into an empty gas canister.</description>
+    <ingredients>
+      <li>
+        <filter><thingDefs><li>GV_CanisterEmpty</li></thingDefs></filter>
+        <count>1</count>
+      </li>
+      <li>
+        <filter><thingDefs><li>ComponentIndustrial</li></thingDefs></filter>
+        <count>1</count>
+      </li>
+      <li>
+        <filter><thingDefs><li>Chemfuel</li></thingDefs></filter>
+        <count>5</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>GV_CanisterEmpty</li>
+        <li>ComponentIndustrial</li>
+        <li>Chemfuel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <GV_Canister_Haywire>1</GV_Canister_Haywire>
+    </products>
+  </RecipeDef>
+
+  <RecipeDef ParentName="GV_FillCanisterBase">
+    <defName>GV_FillCanister_Insecticide</defName>
+    <label>fill insecticide canister</label>
+    <description>Synthesise insecticide agent and pressurise it into an empty gas canister.</description>
+    <ingredients>
+      <li>
+        <filter><thingDefs><li>GV_CanisterEmpty</li></thingDefs></filter>
+        <count>1</count>
+      </li>
+      <li>
+        <filter><thingDefs><li>Chemfuel</li></thingDefs></filter>
+        <count>10</count>
+      </li>
+      <li>
+        <filter><thingDefs><li>MedicineHerbal</li></thingDefs></filter>
+        <count>2</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>GV_CanisterEmpty</li>
+        <li>Chemfuel</li>
+        <li>MedicineHerbal</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <GV_Canister_Insecticide>1</GV_Canister_Insecticide>
+    </products>
+  </RecipeDef>
+
+</Defs>
