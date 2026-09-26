@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThingDef ParentName="BuildingBase">
+    <defName>GV_IntruderSensor</defName>
+    <label>intruder sensor</label>
+    <description>A wall-mounted motion and thermal sensor. While armed and powered, it opens every sensor-controlled gas vent in its room when chosen targets enter, and closes them again after they leave. It does not work in rooms open to the map edge.</description>
+    <thingClass>Building</thingClass>
+    <category>Building</category>
+    <tickerType>Never</tickerType>
+    <rotatable>true</rotatable>
+    <graphicData>
+      <texPath>Things/Building/GasVentilation/GV_IntruderSensor</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawOffsetNorth>(0,0,0.9)</drawOffsetNorth>
+      <drawOffsetSouth>(0,0,-0.9)</drawOffsetSouth>
+      <drawOffsetWest>(-0.9,0,0)</drawOffsetWest>
+      <drawOffsetEast>(0.9,0,0)</drawOffsetEast>
+      <damageData>
+        <enabled>false</enabled>
+      </damageData>
+    </graphicData>
+    <altitudeLayer>BuildingOnTop</altitudeLayer>
+    <passability>Standable</passability>
+    <terrainAffordanceNeeded IsNull="True" />
+    <pathCost>0</pathCost>
+    <costList>
+      <Steel>20</Steel>
+      <ComponentIndustrial>2</ComponentIndustrial>
+    </costList>
+    <statBases>
+      <WorkToBuild>600</WorkToBuild>
+      <MaxHitPoints>50</MaxHitPoints>
+      <Mass>2</Mass>
+    </statBases>
+    <building>
+      <isEdifice>false</isEdifice>
+      <isAttachment>true</isAttachment>
+    </building>
+    <placeWorkers>
+      <li>Placeworker_AttachedToWall</li>
+    </placeWorkers>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>30</basePowerConsumption>
+      </li>
+      <li Class="GasVentilation.CompProperties_IntruderSensor" />
+    </comps>
+    <designationCategory>Security</designationCategory>
+    <researchPrerequisites>
+      <li>GV_GasVentilation</li>
+    </researchPrerequisites>
+    <constructionSkillPrerequisite>4</constructionSkillPrerequisite>
+  </ThingDef>
+</Defs>

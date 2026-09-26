@@ -17,4 +17,30 @@
   <GV_DeconstructGasPipesDesc>Designate gas pipes of any gas for deconstruction, including hidden pipes under walls, floors and vents.</GV_DeconstructGasPipesDesc>
   <GV_HaywireBerserkReason>Haywire gas scrambled its control systems.</GV_HaywireBerserkReason>
   <GV_RemovedAllContent>Gas Ventilation: removed {0} things and {1} hediffs. Save, then disable the mod.</GV_RemovedAllContent>
+  <GV_SensorArmed>Armed</GV_SensorArmed>
+  <GV_SensorArmedDesc>While armed and powered, the sensor opens sensor-controlled vents in its room when targets are present.</GV_SensorArmedDesc>
+  <GV_SensorTargets>Targets</GV_SensorTargets>
+  <GV_SensorTargetsDesc>Choose which kinds of intruders trigger the sensor.</GV_SensorTargetsDesc>
+  <GV_SensorTarget_Humanlikes>Humanlikes</GV_SensorTarget_Humanlikes>
+  <GV_SensorTarget_Mechanoids>Mechanoids and drones</GV_SensorTarget_Mechanoids>
+  <GV_SensorTarget_Insectoids>Insectoids</GV_SensorTarget_Insectoids>
+  <GV_SensorTarget_Animals>Animals</GV_SensorTarget_Animals>
+  <GV_SensorTarget_IncludeNonHostile>Include non-hostile outsiders</GV_SensorTarget_IncludeNonHostile>
+  <GV_SensorTarget_None>none</GV_SensorTarget_None>
+  <GV_SensorLinger>Linger: {0}</GV_SensorLinger>
+  <GV_SensorLingerDesc>How long vents stay open after the last target leaves the room.</GV_SensorLingerDesc>
+  <GV_SensorLingerNone>none</GV_SensorLingerNone>
+  <GV_SensorStopWhenDowned>Stop when all downed</GV_SensorStopWhenDowned>
+  <GV_SensorStopWhenDownedDesc>Close the vents as soon as every target in the room is downed (useful with sedative gas for taking prisoners).</GV_SensorStopWhenDownedDesc>
+  <GV_SensorCopy>Copy settings</GV_SensorCopy>
+  <GV_SensorCopyDesc>Copy this sensor's settings.</GV_SensorCopyDesc>
+  <GV_SensorPaste>Paste settings</GV_SensorPaste>
+  <GV_SensorPasteDesc>Apply the copied sensor settings to this sensor.</GV_SensorPasteDesc>
+  <GV_SensorInspectArmed>Armed</GV_SensorInspectArmed>
+  <GV_SensorInspectDisarmed>Disarmed</GV_SensorInspectDisarmed>
+  <GV_SensorInspectTriggered>triggered</GV_SensorInspectTriggered>
+  <GV_SensorInspectIdle>watching</GV_SensorInspectIdle>
+  <GV_SensorInspectTargets>Targets: {0}</GV_SensorInspectTargets>
+  <GV_SensorInspectOpenRoom>This room is open to the map edge; the sensor will not trigger.</GV_SensorInspectOpenRoom>
+  <GV_SensorInspectUnpowered>No power.</GV_SensorInspectUnpowered>
 </LanguageData>
