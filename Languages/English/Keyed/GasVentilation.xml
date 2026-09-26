@@ -16,4 +16,5 @@
   <GV_DeconstructGasPipes>Deconstruct gas pipes</GV_DeconstructGasPipes>
   <GV_DeconstructGasPipesDesc>Designate gas pipes of any gas for deconstruction, including hidden pipes under walls, floors and vents.</GV_DeconstructGasPipesDesc>
   <GV_HaywireBerserkReason>Haywire gas scrambled its control systems.</GV_HaywireBerserkReason>
+  <GV_RemovedAllContent>Gas Ventilation: removed {0} things and {1} hediffs. Save, then disable the mod.</GV_RemovedAllContent>
 </LanguageData>

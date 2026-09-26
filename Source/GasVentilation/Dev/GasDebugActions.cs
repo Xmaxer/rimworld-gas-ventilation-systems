@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using GasVentilation.Core;
 using LudeonTK;
+using RimWorld;
 using Verse;
 
 namespace GasVentilation;
@@ -54,5 +55,55 @@ public static class GasDebugActions
         }
         uint packed = grid.PackedAt(cell);
         Log.Message($"[GasVentilation] {cell}: packed=0x{packed:X8} live={grid.LiveCells} canHold={grid.CanHoldGas(cell)}");
+    }
+
+    [DebugAction(Category, "Remove all Gas Ventilation content (before uninstalling)", allowedGameStates = AllowedGameStates.PlayingOnMap)]
+    private static void RemoveAllContent()
+    {
+        ModContentPack pack = GasVentilationMod.ContentPack;
+        int things = 0;
+        int hediffs = 0;
+        List<Thing> doomed = new List<Thing>();
+        foreach (Map map in Find.Maps)
+        {
+            doomed.Clear();
+            List<Thing> all = map.listerThings.AllThings;
+            for (int i = 0; i < all.Count; i++)
+            {
+                Thing thing = all[i];
+                ThingDef def = thing is MinifiedThing minified ? minified.InnerThing?.def : thing.def;
+                BuildableDef built = def?.entityDefToBuild;
+                if (def?.modContentPack == pack || built?.modContentPack == pack)
+                {
+                    doomed.Add(thing);
+                }
+            }
+            for (int i = 0; i < doomed.Count; i++)
+            {
+                if (!doomed[i].Destroyed)
+                {
+                    doomed[i].Destroy(DestroyMode.Vanish);
+                    things++;
+                }
+            }
+            VentGasGrid.For(map)?.ClearAll();
+        }
+        foreach (Pawn pawn in PawnsFinder.AllMapsWorldAndTemporary_AliveOrDead)
+        {
+            List<Hediff> list = pawn.health?.hediffSet?.hediffs;
+            if (list == null)
+            {
+                continue;
+            }
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                if (list[i].def.modContentPack == pack)
+                {
+                    pawn.health.RemoveHediff(list[i]);
+                    hediffs++;
+                }
+            }
+        }
+        Messages.Message("GV_RemovedAllContent".Translate(things, hediffs), MessageTypeDefOf.TaskCompletion, false);
     }
 }
