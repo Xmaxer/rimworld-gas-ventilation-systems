@@ -84,7 +84,13 @@ public static class HarnessUtil
 
     public static Pawn SpawnPawn(PawnKindDef kind, Faction faction, IntVec3 cell, Map map)
     {
-        Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind, faction, forceGenerateNewPawn: true));
+        PawnGenerationRequest request = new PawnGenerationRequest(kind, faction, forceGenerateNewPawn: true);
+        if (ModsConfig.BiotechActive && kind.RaceProps.Humanlike)
+        {
+            // Random xenotypes (wasters, genes with toxic resistance) make gas scenarios non-deterministic.
+            request.ForcedXenotype = XenotypeDefOf.Baseliner;
+        }
+        Pawn pawn = PawnGenerator.GeneratePawn(request);
         GenSpawn.Spawn(pawn, cell, map);
         return pawn;
     }

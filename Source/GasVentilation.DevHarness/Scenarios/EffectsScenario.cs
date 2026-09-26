@@ -19,6 +19,12 @@ public sealed class EffectsScenario : HarnessScenario
     private Pawn mechImmune;
     private Pawn humanImmune;
 
+    /// <summary>
+    /// Tick of the checks. 1200 is the upper end of the sedative knockout target (M7 balance: ~830 ticks at full
+    /// density), so a slower-than-average pawn still passes.
+    /// </summary>
+    private const int CheckTick = 1200;
+
     public override string Name => "effects";
 
     public override int TimeoutTicks => 2000;
@@ -65,7 +71,7 @@ public sealed class EffectsScenario : HarnessScenario
                 }
             }
         }
-        if (ticksSinceSetup < 900)
+        if (ticksSinceSetup < CheckTick)
         {
             return ScenarioStatus.Running;
         }
@@ -85,7 +91,7 @@ public sealed class EffectsScenario : HarnessScenario
         ExpectSeverity(spider, "GV_InsecticideExposure", 0.2f, failures);
         ExpectNoHediff(mechImmune, "GV_SedativeExposure", failures);
         ExpectNoHediff(humanImmune, "GV_Haywire", failures);
-        HarnessUtil.Screenshot("effects-t900");
+        HarnessUtil.Screenshot("effects-t1200");
         return failures.Count == 0 ? ScenarioStatus.Passed : ScenarioStatus.Failed;
     }
 

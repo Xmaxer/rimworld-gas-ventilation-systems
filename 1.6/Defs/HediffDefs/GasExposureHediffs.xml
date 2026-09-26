@@ -23,7 +23,7 @@
       <li Class="GasVentilation.HediffCompProperties_PeriodicGasDamage">
         <damageDef>GV_ToxinBurn</damageDef>
         <intervalTicks>250</intervalTicks>
-        <damageAtFullSeverity>1.5</damageAtFullSeverity>
+        <damageAtFullSeverity>2.5</damageAtFullSeverity>
         <minSeverity>0.1</minSeverity>
         <partTag>BreathingSource</partTag>
       </li>
@@ -48,7 +48,7 @@
         <minSeverity>0.6</minSeverity>
         <label>severe</label>
         <capMods>
-          <li><capacity>Breathing</capacity><offset>-0.45</offset></li>
+          <li><capacity>Breathing</capacity><offset>-0.30</offset></li>
           <li><capacity>Sight</capacity><offset>-0.30</offset></li>
           <li><capacity>Consciousness</capacity><offset>-0.10</offset></li>
         </capMods>
@@ -187,7 +187,7 @@
       <li Class="GasVentilation.HediffCompProperties_PeriodicGasDamage">
         <damageDef>GV_InsecticideBurn</damageDef>
         <intervalTicks>300</intervalTicks>
-        <damageAtFullSeverity>2</damageAtFullSeverity>
+        <damageAtFullSeverity>6.5</damageAtFullSeverity>
         <minSeverity>0.1</minSeverity>
         <outerPartsOnly>true</outerPartsOnly>
       </li>

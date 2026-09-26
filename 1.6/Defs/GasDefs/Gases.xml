@@ -9,7 +9,9 @@
     <hiddenPipe>GV_HiddenPipe_Toxin</hiddenPipe>
     <color>(0.55, 0.78, 0.18)</color>
     <dissipationPerVisit>8</dissipationPerVisit>
-    <roofedFactor>0.75</roofedFactor>
+    <roofedFactor>0.4</roofedFactor>
+    <minDiffusion>8</minDiffusion>
+    <densityPerCanister>14000</densityPerCanister>
     <targets>OrganicBreathers</targets>
     <protection>Respiratory</protection>
     <exposureHediff>GV_ToxinExposure</exposureHediff>
@@ -24,11 +26,13 @@
     <hiddenPipe>GV_HiddenPipe_Sedative</hiddenPipe>
     <color>(0.66, 0.55, 0.95)</color>
     <dissipationPerVisit>8</dissipationPerVisit>
-    <roofedFactor>0.75</roofedFactor>
+    <roofedFactor>0.4</roofedFactor>
+    <minDiffusion>8</minDiffusion>
+    <densityPerCanister>14000</densityPerCanister>
     <targets>OrganicBreathers</targets>
     <protection>Respiratory</protection>
     <exposureHediff>GV_SedativeExposure</exposureHediff>
-    <dosePerTickAtFullDensity>0.0011</dosePerTickAtFullDensity>
+    <dosePerTickAtFullDensity>0.0009</dosePerTickAtFullDensity>
     <scaleDoseByBodySize>true</scaleDoseByBodySize>
   </GasVentilation.GasDef>
 
@@ -40,7 +44,9 @@
     <hiddenPipe>GV_HiddenPipe_Haywire</hiddenPipe>
     <color>(0.25, 0.70, 1.0)</color>
     <dissipationPerVisit>8</dissipationPerVisit>
-    <roofedFactor>0.75</roofedFactor>
+    <roofedFactor>0.4</roofedFactor>
+    <minDiffusion>8</minDiffusion>
+    <densityPerCanister>14000</densityPerCanister>
     <targets>Machines</targets>
     <protection>Electromagnetic</protection>
     <exposureHediff>GV_Haywire</exposureHediff>
@@ -55,7 +61,9 @@
     <hiddenPipe>GV_HiddenPipe_Insecticide</hiddenPipe>
     <color>(1.0, 0.62, 0.15)</color>
     <dissipationPerVisit>6</dissipationPerVisit>
-    <roofedFactor>0.75</roofedFactor>
+    <roofedFactor>0.5</roofedFactor>
+    <minDiffusion>8</minDiffusion>
+    <densityPerCanister>14000</densityPerCanister>
     <targets>Insectoids</targets>
     <protection>None</protection>
     <exposureHediff>GV_InsecticideExposure</exposureHediff>
