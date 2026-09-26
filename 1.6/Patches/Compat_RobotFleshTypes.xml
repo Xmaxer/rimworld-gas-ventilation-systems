@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <Operation Class="PatchOperationConditional">
+    <xpath>/Defs/FleshTypeDef[defName="ChJDroid"]</xpath>
+    <match Class="PatchOperationAddModExtension">
+      <xpath>/Defs/FleshTypeDef[defName="ChJDroid"]</xpath>
+      <value>
+        <li Class="GasVentilation.GasTargetExtension"><category>Synthetic</category></li>
+      </value>
+    </match>
+  </Operation>
+
+  <Operation Class="PatchOperationConditional">
+    <xpath>/Defs/FleshTypeDef[defName="AndroidTier"]</xpath>
+    <match Class="PatchOperationAddModExtension">
+      <xpath>/Defs/FleshTypeDef[defName="AndroidTier"]</xpath>
+      <value>
+        <li Class="GasVentilation.GasTargetExtension"><category>Synthetic</category></li>
+      </value>
+    </match>
+  </Operation>
+
+  <Operation Class="PatchOperationConditional">
+    <xpath>/Defs/FleshTypeDef[defName="ATR_AndroidTier"]</xpath>
+    <match Class="PatchOperationAddModExtension">
+      <xpath>/Defs/FleshTypeDef[defName="ATR_AndroidTier"]</xpath>
+      <value>
+        <li Class="GasVentilation.GasTargetExtension"><category>Synthetic</category></li>
+      </value>
+    </match>
+  </Operation>
+
+  <Operation Class="PatchOperationConditional">
+    <xpath>/Defs/FleshTypeDef[defName="ABF_FleshType_Synstruct_Base"]</xpath>
+    <match Class="PatchOperationAddModExtension">
+      <xpath>/Defs/FleshTypeDef[defName="ABF_FleshType_Synstruct_Base"]</xpath>
+      <value>
+        <li Class="GasVentilation.GasTargetExtension"><category>Synthetic</category></li>
+      </value>
+    </match>
+  </Operation>
+
+</Patch>

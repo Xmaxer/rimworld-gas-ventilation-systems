@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <!-- VRE androids are Human-race pawns; the synthetic body gene is their only reliable marker. -->
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>/Defs/GeneDef[defName="VREA_SyntheticBody"]</xpath>
+    <value>
+      <li Class="GasVentilation.GasTargetExtension">
+        <category>Synthetic</category>
+        <exposureFactor>0.5</exposureFactor>
+      </li>
+    </value>
+  </Operation>
+
+  <!-- Let VRE's hediff gate accept haywire on androids even if its heuristics change. -->
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>/Defs/HediffDef[defName="GV_Haywire"]</xpath>
+    <value>
+      <li Class="VREAndroids.AndroidSettingsExtension">
+        <androidCanCatchIt>true</androidCanCatchIt>
+      </li>
+    </value>
+  </Operation>
+
+</Patch>
