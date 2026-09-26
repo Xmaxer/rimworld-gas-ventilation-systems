@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="GasVentilation.Core.Tests/GasVentilation.Core.Tests.csproj" />
   <Project Path="GasVentilation.Core/GasVentilation.Core.csproj" />
+  <Project Path="GasVentilation/GasVentilation.csproj" />
 </Solution>

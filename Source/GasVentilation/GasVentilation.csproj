@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>GasVentilation</AssemblyName>
+    <RootNamespace>GasVentilation</RootNamespace>
+    <OutputPath>..\..\1.6\Assemblies\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+  </PropertyGroup>
+
+  <!-- The Unity-free core is compiled into this assembly; only one mod DLL ships. -->
+  <ItemGroup>
+    <Compile Include="..\GasVentilation.Core\**\*.cs"
+             Exclude="..\GasVentilation.Core\bin\**;..\GasVentilation.Core\obj\**"
+             LinkBase="Core" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4871" PrivateAssets="all" />
+    <PackageReference Include="Lib.Harmony.Ref" Version="2.4.2" PrivateAssets="all" />
+    <PackageReference Include="RimWorld.MultiplayerAPI" Version="0.6.0" GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <!-- VEF is a dependency mod: reference, never copy. -->
+  <ItemGroup>
+    <Reference Include="PipeSystem">
+      <HintPath>$(VefDir)\1.6\Assemblies\PipeSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="VEF">
+      <HintPath>$(VefDir)\1.6\Assemblies\VEF.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="GVCheckVef" BeforeTargets="ResolveAssemblyReferences"
+          Condition="!Exists('$(VefDir)\1.6\Assemblies\PipeSystem.dll')">
+    <Error Text="PipeSystem.dll not found at $(VefDir)\1.6\Assemblies. Subscribe to VEF (Workshop 2023507013) or pass -p:VefDir=&lt;folder&gt;." />
+  </Target>
+
+  <!-- Ship the Multiplayer API shim next to our DLL (it is a no-op when Multiplayer is not installed). -->
+  <Target Name="GVCopyMultiplayerApi" AfterTargets="Build">
+    <ItemGroup>
+      <GVMpApi Include="$(PkgRimWorld_MultiplayerAPI)\lib\**\0MultiplayerAPI.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(GVMpApi)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+  </Target>
+</Project>
