@@ -21,6 +21,7 @@ public sealed class HarnessRunner : GameComponent
             ["flee"] = () => new Scenarios.FleeScenario(),
             ["breakout"] = () => new Scenarios.BreakoutScenario(),
             ["balance"] = () => new Scenarios.BalanceScenario(),
+            ["perf"] = () => new Scenarios.PerfScenario(),
         };
 
     private readonly List<HarnessScenario> queue = new List<HarnessScenario>();
