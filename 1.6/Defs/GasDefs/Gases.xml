@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <GasVentilation.GasDef>
+    <defName>GV_Gas_Toxin</defName>
+    <label>toxin gas</label>
+    <description>A caustic gas that burns the lungs of organic, breathing creatures.</description>
+    <channel>0</channel>
+    <color>(0.55, 0.78, 0.18)</color>
+    <dissipationPerVisit>8</dissipationPerVisit>
+    <roofedFactor>0.75</roofedFactor>
+    <targets>OrganicBreathers</targets>
+    <protection>Respiratory</protection>
+    <dosePerTickAtFullDensity>0.0005</dosePerTickAtFullDensity>
+  </GasVentilation.GasDef>
+
+  <GasVentilation.GasDef>
+    <defName>GV_Gas_Sedative</defName>
+    <label>sedative gas</label>
+    <description>A fast-acting anaesthetic gas that knocks organic, breathing creatures unconscious.</description>
+    <channel>1</channel>
+    <color>(0.66, 0.55, 0.95)</color>
+    <dissipationPerVisit>8</dissipationPerVisit>
+    <roofedFactor>0.75</roofedFactor>
+    <targets>OrganicBreathers</targets>
+    <protection>Respiratory</protection>
+    <dosePerTickAtFullDensity>0.0011</dosePerTickAtFullDensity>
+    <scaleDoseByBodySize>true</scaleDoseByBodySize>
+  </GasVentilation.GasDef>
+
+  <GasVentilation.GasDef>
+    <defName>GV_Gas_Haywire</defName>
+    <label>haywire gas</label>
+    <description>A cloud of conductive nanite particulate that shorts out and scrambles mechanical bodies.</description>
+    <channel>2</channel>
+    <color>(0.25, 0.70, 1.0)</color>
+    <dissipationPerVisit>8</dissipationPerVisit>
+    <roofedFactor>0.75</roofedFactor>
+    <targets>Machines</targets>
+    <protection>Electromagnetic</protection>
+    <dosePerTickAtFullDensity>0.00055</dosePerTickAtFullDensity>
+  </GasVentilation.GasDef>
+
+  <GasVentilation.GasDef>
+    <defName>GV_Gas_Insecticide</defName>
+    <label>insecticide gas</label>
+    <description>A persistent insecticide that slowly poisons insectoids.</description>
+    <channel>3</channel>
+    <color>(1.0, 0.62, 0.15)</color>
+    <dissipationPerVisit>6</dissipationPerVisit>
+    <roofedFactor>0.75</roofedFactor>
+    <targets>Insectoids</targets>
+    <protection>None</protection>
+    <dosePerTickAtFullDensity>0.0004</dosePerTickAtFullDensity>
+  </GasVentilation.GasDef>
+
+</Defs>
