@@ -15,4 +15,5 @@
   <GV_CeilingVentFell>{0} fell from the ceiling after the roof above it was removed.</GV_CeilingVentFell>
   <GV_DeconstructGasPipes>Deconstruct gas pipes</GV_DeconstructGasPipes>
   <GV_DeconstructGasPipesDesc>Designate gas pipes of any gas for deconstruction, including hidden pipes under walls, floors and vents.</GV_DeconstructGasPipesDesc>
+  <GV_HaywireBerserkReason>Haywire gas scrambled its control systems.</GV_HaywireBerserkReason>
 </LanguageData>

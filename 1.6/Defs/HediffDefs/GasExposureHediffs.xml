@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <HediffDef Name="GV_GasExposureBase" Abstract="True">
+    <hediffClass>HediffWithComps</hediffClass>
+    <isBad>true</isBad>
+    <initialSeverity>0.001</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <everCurableByItem>false</everCurableByItem>
+  </HediffDef>
+
+  <!-- ===== Toxin ===== -->
+  <HediffDef ParentName="GV_GasExposureBase">
+    <defName>GV_ToxinExposure</defName>
+    <label>toxin gas exposure</label>
+    <description>Caustic toxin gas in the airways. Burns the lungs over time while the exposure lasts.</description>
+    <defaultLabelColor>(0.55, 0.78, 0.18)</defaultLabelColor>
+    <comps>
+      <li Class="GasVentilation.HediffCompProperties_GasExposure">
+        <decayPerDay>3</decayPerDay>
+      </li>
+      <li Class="GasVentilation.HediffCompProperties_PeriodicGasDamage">
+        <damageDef>GV_ToxinBurn</damageDef>
+        <intervalTicks>250</intervalTicks>
+        <damageAtFullSeverity>1.5</damageAtFullSeverity>
+        <minSeverity>0.1</minSeverity>
+        <partTag>BreathingSource</partTag>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>minor</label>
+        <capMods>
+          <li><capacity>Breathing</capacity><offset>-0.10</offset></li>
+          <li><capacity>Sight</capacity><offset>-0.05</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.3</minSeverity>
+        <label>moderate</label>
+        <capMods>
+          <li><capacity>Breathing</capacity><offset>-0.25</offset></li>
+          <li><capacity>Sight</capacity><offset>-0.15</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.6</minSeverity>
+        <label>severe</label>
+        <capMods>
+          <li><capacity>Breathing</capacity><offset>-0.45</offset></li>
+          <li><capacity>Sight</capacity><offset>-0.30</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.10</offset></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- ===== Sedative ===== -->
+  <HediffDef ParentName="GV_GasExposureBase">
+    <defName>GV_SedativeExposure</defName>
+    <label>sedative gas exposure</label>
+    <description>Anaesthetic gas in the bloodstream. Past a threshold it knocks the creature unconscious.</description>
+    <defaultLabelColor>(0.66, 0.55, 0.95)</defaultLabelColor>
+    <comps>
+      <li Class="GasVentilation.HediffCompProperties_GasExposure">
+        <decayPerDay>4</decayPerDay>
+      </li>
+      <li Class="GasVentilation.HediffCompProperties_SedationTrigger">
+        <threshold>0.7</threshold>
+        <latchHediff>GV_GasSedation</latchHediff>
+        <minTicks>2500</minTicks>
+        <maxTicks>15000</maxTicks>
+        <extendFactor>1.5</extendFactor>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>drowsy</label>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.10</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.35</minSeverity>
+        <label>groggy</label>
+        <painFactor>0.8</painFactor>
+        <capMods>
+          <li><capacity>Consciousness</capacity><setMax>0.5</setMax></li>
+          <li><capacity>Moving</capacity><offset>-0.20</offset></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>GV_GasSedation</defName>
+    <label>gas sedation</label>
+    <description>Knocked unconscious by sedative gas. Wears off after a while once the creature is out of the gas.</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.66, 0.55, 0.95)</defaultLabelColor>
+    <isBad>true</isBad>
+    <initialSeverity>1</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <scenarioCanAdd>false</scenarioCanAdd>
+    <comps>
+      <li Class="GasVentilation.HediffCompProperties_GasSedationTimer" />
+    </comps>
+    <stages>
+      <li>
+        <painFactor>0</painFactor>
+        <capMods>
+          <li><capacity>Consciousness</capacity><setMax>0.1</setMax></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- ===== Haywire ===== -->
+  <HediffDef ParentName="GV_GasExposureBase">
+    <defName>GV_Haywire</defName>
+    <label>haywire</label>
+    <description>Conductive nanite particulate shorting out circuitry. Deals internal damage; at critical levels causes stun pulses and violent malfunctions.</description>
+    <defaultLabelColor>(0.25, 0.70, 1.0)</defaultLabelColor>
+    <comps>
+      <li Class="GasVentilation.HediffCompProperties_GasExposure">
+        <decayPerDay>1.5</decayPerDay>
+      </li>
+      <li Class="GasVentilation.HediffCompProperties_PeriodicGasDamage">
+        <damageDef>GV_HaywireDischarge</damageDef>
+        <intervalTicks>250</intervalTicks>
+        <damageAtFullSeverity>6</damageAtFullSeverity>
+        <minSeverity>0.15</minSeverity>
+      </li>
+      <li Class="GasVentilation.HediffCompProperties_HaywireCritical">
+        <minSeverity>0.85</minSeverity>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>interference</label>
+        <capMods>
+          <li><capacity>Moving</capacity><offset>-0.10</offset></li>
+          <li><capacity>Sight</capacity><offset>-0.10</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.25</minSeverity>
+        <label>malfunctioning</label>
+        <capMods>
+          <li><capacity>Moving</capacity><offset>-0.25</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.20</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.10</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.6</minSeverity>
+        <label>haywire</label>
+        <capMods>
+          <li><capacity>Moving</capacity><offset>-0.40</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.40</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.20</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.85</minSeverity>
+        <label>critical</label>
+        <capMods>
+          <li><capacity>Moving</capacity><offset>-0.40</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.40</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.20</offset></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- ===== Insecticide ===== -->
+  <HediffDef ParentName="GV_GasExposureBase">
+    <defName>GV_InsecticideExposure</defName>
+    <label>insecticide poisoning</label>
+    <description>Insecticide working through the exoskeleton. Slowly burns the outer body.</description>
+    <defaultLabelColor>(1.0, 0.62, 0.15)</defaultLabelColor>
+    <comps>
+      <li Class="GasVentilation.HediffCompProperties_GasExposure">
+        <decayPerDay>1</decayPerDay>
+      </li>
+      <li Class="GasVentilation.HediffCompProperties_PeriodicGasDamage">
+        <damageDef>GV_InsecticideBurn</damageDef>
+        <intervalTicks>300</intervalTicks>
+        <damageAtFullSeverity>2</damageAtFullSeverity>
+        <minSeverity>0.1</minSeverity>
+        <outerPartsOnly>true</outerPartsOnly>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>irritated</label>
+        <capMods>
+          <li><capacity>Moving</capacity><offset>-0.10</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.3</minSeverity>
+        <label>poisoned</label>
+        <capMods>
+          <li><capacity>Moving</capacity><offset>-0.25</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.20</offset></li>
+          <li><capacity>Breathing</capacity><offset>-0.15</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.7</minSeverity>
+        <label>convulsing</label>
+        <painOffset>0.2</painOffset>
+        <capMods>
+          <li><capacity>Moving</capacity><offset>-0.40</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.20</offset></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+</Defs>

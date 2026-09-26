@@ -12,6 +12,7 @@
     <roofedFactor>0.75</roofedFactor>
     <targets>OrganicBreathers</targets>
     <protection>Respiratory</protection>
+    <exposureHediff>GV_ToxinExposure</exposureHediff>
     <dosePerTickAtFullDensity>0.0005</dosePerTickAtFullDensity>
   </GasVentilation.GasDef>
 
@@ -26,6 +27,7 @@
     <roofedFactor>0.75</roofedFactor>
     <targets>OrganicBreathers</targets>
     <protection>Respiratory</protection>
+    <exposureHediff>GV_SedativeExposure</exposureHediff>
     <dosePerTickAtFullDensity>0.0011</dosePerTickAtFullDensity>
     <scaleDoseByBodySize>true</scaleDoseByBodySize>
   </GasVentilation.GasDef>
@@ -41,6 +43,7 @@
     <roofedFactor>0.75</roofedFactor>
     <targets>Machines</targets>
     <protection>Electromagnetic</protection>
+    <exposureHediff>GV_Haywire</exposureHediff>
     <dosePerTickAtFullDensity>0.00055</dosePerTickAtFullDensity>
   </GasVentilation.GasDef>
 
@@ -55,6 +58,7 @@
     <roofedFactor>0.75</roofedFactor>
     <targets>Insectoids</targets>
     <protection>None</protection>
+    <exposureHediff>GV_InsecticideExposure</exposureHediff>
     <dosePerTickAtFullDensity>0.0004</dosePerTickAtFullDensity>
   </GasVentilation.GasDef>
 

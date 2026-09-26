@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <DamageDef>
+    <defName>GV_ToxinBurn</defName>
+    <label>toxin burn</label>
+    <workerClass>DamageWorker_AddInjury</workerClass>
+    <externalViolence>false</externalViolence>
+    <hasForcefulImpact>false</hasForcefulImpact>
+    <makesBlood>false</makesBlood>
+    <canInterruptJobs>false</canInterruptJobs>
+    <deathMessage>{0} has died from toxin gas.</deathMessage>
+    <hediff>GV_ChemicalBurn</hediff>
+  </DamageDef>
+
+  <DamageDef>
+    <defName>GV_HaywireDischarge</defName>
+    <label>haywire discharge</label>
+    <workerClass>DamageWorker_AddInjury</workerClass>
+    <externalViolence>false</externalViolence>
+    <externalViolenceForMechanoids>true</externalViolenceForMechanoids>
+    <hasForcefulImpact>false</hasForcefulImpact>
+    <makesBlood>false</makesBlood>
+    <canInterruptJobs>false</canInterruptJobs>
+    <deathMessage>{0} has been destroyed by haywire gas.</deathMessage>
+    <hediff>GV_ShortCircuitBurn</hediff>
+    <hediffSolid>GV_ShortCircuitBurn</hediffSolid>
+  </DamageDef>
+
+  <DamageDef>
+    <defName>GV_InsecticideBurn</defName>
+    <label>insecticide burn</label>
+    <workerClass>DamageWorker_AddInjury</workerClass>
+    <externalViolence>true</externalViolence>
+    <hasForcefulImpact>false</hasForcefulImpact>
+    <makesBlood>false</makesBlood>
+    <canInterruptJobs>false</canInterruptJobs>
+    <deathMessage>{0} has been killed by insecticide.</deathMessage>
+    <hediff>GV_ChemicalBurn</hediff>
+    <hediffSolid>GV_ChemicalBurn</hediffSolid>
+  </DamageDef>
+
+</Defs>

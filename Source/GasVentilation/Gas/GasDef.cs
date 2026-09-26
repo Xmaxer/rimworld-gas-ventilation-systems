@@ -88,5 +88,9 @@ public sealed class GasDef : Def
         {
             yield return "minDiffusion must be at least 1";
         }
+        if (exposureHediff == null)
+        {
+            yield return "exposureHediff is required";
+        }
     }
 }
