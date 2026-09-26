@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <packageId>Xmaxer.GasVentilation.DevHarness</packageId>
+  <name>Gas Ventilation Systems - Dev Harness (DO NOT PUBLISH)</name>
+  <author>Xmaxer</author>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <loadAfter>
+    <li>Xmaxer.GasVentilation</li>
+  </loadAfter>
+  <description>Automated in-game test scenarios for Gas Ventilation Systems. Inert unless a harness request file exists.</description>
+</ModMetaData>
