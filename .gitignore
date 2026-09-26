@@ -8,3 +8,9 @@ obj/
 .vs/
 *.user
 *.suo
+1.6/Assemblies/
+tools/DevHarness/1.6/Assemblies/
+
+# Packaging and smoke-test output
+dist/
+tools/.smoke-profile/
