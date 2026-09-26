@@ -16,6 +16,12 @@
     <overlayOptions>
       <overlayColor>(0.55, 0.78, 0.18)</overlayColor>
     </overlayOptions>
+    <noLinkedGraphicDefs>
+      <li>GV_VentWall_Toxin</li>
+      <li>GV_VentMounted_Toxin</li>
+      <li>GV_VentCeiling_Toxin</li>
+      <li>GV_VentFloor_Toxin</li>
+    </noLinkedGraphicDefs>
     <enableOverflow>false</enableOverflow>
   </PipeSystem.PipeNetDef>
 
@@ -34,6 +40,12 @@
     <overlayOptions>
       <overlayColor>(0.66, 0.55, 0.95)</overlayColor>
     </overlayOptions>
+    <noLinkedGraphicDefs>
+      <li>GV_VentWall_Sedative</li>
+      <li>GV_VentMounted_Sedative</li>
+      <li>GV_VentCeiling_Sedative</li>
+      <li>GV_VentFloor_Sedative</li>
+    </noLinkedGraphicDefs>
     <enableOverflow>false</enableOverflow>
   </PipeSystem.PipeNetDef>
 
@@ -52,6 +64,12 @@
     <overlayOptions>
       <overlayColor>(0.25, 0.70, 1.0)</overlayColor>
     </overlayOptions>
+    <noLinkedGraphicDefs>
+      <li>GV_VentWall_Haywire</li>
+      <li>GV_VentMounted_Haywire</li>
+      <li>GV_VentCeiling_Haywire</li>
+      <li>GV_VentFloor_Haywire</li>
+    </noLinkedGraphicDefs>
     <enableOverflow>false</enableOverflow>
   </PipeSystem.PipeNetDef>
 
@@ -70,6 +88,12 @@
     <overlayOptions>
       <overlayColor>(1.0, 0.62, 0.15)</overlayColor>
     </overlayOptions>
+    <noLinkedGraphicDefs>
+      <li>GV_VentWall_Insecticide</li>
+      <li>GV_VentMounted_Insecticide</li>
+      <li>GV_VentCeiling_Insecticide</li>
+      <li>GV_VentFloor_Insecticide</li>
+    </noLinkedGraphicDefs>
     <enableOverflow>false</enableOverflow>
   </PipeSystem.PipeNetDef>
 

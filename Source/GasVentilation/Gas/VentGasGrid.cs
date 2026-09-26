@@ -26,7 +26,10 @@ public sealed class VentGasGrid : MapComponent, IGasFieldListener
 
     public VentGasGrid(Map map) : base(map)
     {
+        Devices = new GasDeviceRegistry(map);
     }
+
+    public GasDeviceRegistry Devices { get; }
 
     /// <summary>Fast lookup with a one-entry cache (almost all calls are for the current map).</summary>
     public static VentGasGrid For(Map map)
@@ -73,9 +76,9 @@ public sealed class VentGasGrid : MapComponent, IGasFieldListener
         if (!eventsHooked)
         {
             map.events.BuildingSpawned += OnBuildingSpawned;
+            map.events.RoofChanged += Devices.OnRoofChanged;
             eventsHooked = true;
         }
-        // [M3] devices init
         // [M6] path source registration
     }
 
@@ -84,6 +87,7 @@ public sealed class VentGasGrid : MapComponent, IGasFieldListener
         if (eventsHooked)
         {
             map.events.BuildingSpawned -= OnBuildingSpawned;
+            map.events.RoofChanged -= Devices.OnRoofChanged;
             eventsHooked = false;
         }
         // [M6] path source disposal
@@ -96,11 +100,11 @@ public sealed class VentGasGrid : MapComponent, IGasFieldListener
 
     public override void MapComponentTick()
     {
+        Devices.Tick(Find.TickManager.TicksGame);
         if (field == null)
         {
             return;
         }
-        // [M3] device pulses
         simulator.Tick();
     }
 

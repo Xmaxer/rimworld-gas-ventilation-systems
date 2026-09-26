@@ -2,4 +2,15 @@
 <LanguageData>
   <GV_GasReadout>{0}: {1}</GV_GasReadout>
   <GV_DebugCategory>Gas Ventilation</GV_DebugCategory>
+  <GV_MustPlaceUnderRoof>Must be placed under a roof.</GV_MustPlaceUnderRoof>
+  <GV_VentOutputOutOfBounds>The vent would blow gas off the map.</GV_VentOutputOutOfBounds>
+  <GV_VentOutputBlocked>The vent's output cell is blocked.</GV_VentOutputBlocked>
+  <GV_VentMode_Off>Vent: off</GV_VentMode_Off>
+  <GV_VentMode_On>Vent: on</GV_VentMode_On>
+  <GV_VentMode_Sensor>Vent: sensor</GV_VentMode_Sensor>
+  <GV_VentModeDesc>Cycle the vent between off, always on, and sensor-controlled. Sensor-controlled vents open while an armed intruder sensor in the same room detects targets.</GV_VentModeDesc>
+  <GV_VentInspectMode>Mode: {0}</GV_VentInspectMode>
+  <GV_SensorTriggered>(triggered)</GV_SensorTriggered>
+  <GV_SensorIdle>(waiting)</GV_SensorIdle>
+  <GV_CeilingVentFell>{0} fell from the ceiling after the roof above it was removed.</GV_CeilingVentFell>
 </LanguageData>
