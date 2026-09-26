@@ -8,6 +8,8 @@ namespace GasVentilation.Core;
 /// </summary>
 public sealed class GasSimulator
 {
+    private static readonly int[][] Permutations = BuildPermutations();
+
     private readonly GasField field;
     private readonly GasChannelSettings[] channels;
     private readonly IGasEnvironment env;
@@ -138,5 +140,123 @@ public sealed class GasSimulator
 
     private void Diffuse(int cell)
     {
+        uint a = field.Get(cell);
+        if (!CanDiffuse(a))
+        {
+            return;
+        }
+        int[] order = Permutations[env.RandomInt(Permutations.Length)];
+        bool sourceChanged = false;
+        for (int i = 0; i < 4; i++)
+        {
+            int neighbour = Neighbour(cell, order[i]);
+            if (neighbour < 0 || !env.CanHoldGas(neighbour))
+            {
+                continue;
+            }
+            uint b = field.Get(neighbour);
+            uint newA = a;
+            uint newB = b;
+            bool moved = false;
+            for (int channel = 0; channel < GasPacking.Channels; channel++)
+            {
+                GasChannelSettings s = channels[channel];
+                if (!s.Diffuses)
+                {
+                    continue;
+                }
+                int da = GasPacking.Get(newA, channel);
+                if (da < s.MinDiffusion)
+                {
+                    continue;
+                }
+                int db = GasPacking.Get(newB, channel);
+                if (da <= db)
+                {
+                    continue;
+                }
+                int half = (da - db) / 2;
+                if (half < s.MinDiffusion)
+                {
+                    continue;
+                }
+                newA = GasPacking.With(newA, channel, da - half);
+                newB = GasPacking.With(newB, channel, db + half);
+                moved = true;
+            }
+            if (!moved)
+            {
+                continue;
+            }
+            field.Set(neighbour, newB);
+            a = newA;
+            sourceChanged = true;
+            if (!CanDiffuse(a))
+            {
+                break;
+            }
+        }
+        if (sourceChanged)
+        {
+            field.Set(cell, a);
+        }
+    }
+
+    private bool CanDiffuse(uint packed)
+    {
+        for (int channel = 0; channel < GasPacking.Channels; channel++)
+        {
+            GasChannelSettings s = channels[channel];
+            if (s.Diffuses && GasPacking.Get(packed, channel) >= s.MinDiffusion)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>Directions: 0 = north (+z), 1 = east (+x), 2 = south (-z), 3 = west (-x). Returns -1 off-grid.</summary>
+    private int Neighbour(int cell, int direction)
+    {
+        int width = field.Width;
+        int x = cell % width;
+        int z = cell / width;
+        switch (direction)
+        {
+            case 0:
+                return z + 1 < field.Height ? cell + width : -1;
+            case 1:
+                return x + 1 < width ? cell + 1 : -1;
+            case 2:
+                return z > 0 ? cell - width : -1;
+            default:
+                return x > 0 ? cell - 1 : -1;
+        }
+    }
+
+    private static int[][] BuildPermutations()
+    {
+        int[][] result = new int[24][];
+        int n = 0;
+        for (int a = 0; a < 4; a++)
+        {
+            for (int b = 0; b < 4; b++)
+            {
+                if (b == a)
+                {
+                    continue;
+                }
+                for (int c = 0; c < 4; c++)
+                {
+                    if (c == a || c == b)
+                    {
+                        continue;
+                    }
+                    int d = 6 - a - b - c;
+                    result[n++] = new[] { a, b, c, d };
+                }
+            }
+        }
+        return result;
     }
 }
