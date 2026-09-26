@@ -14,7 +14,10 @@ public static class HarnessUtil
     {
         "Could not load Texture2D",
         "Failed to find any textures at",
-        "Could not load UnityEngine.Texture2D"
+        "Could not load UnityEngine.Texture2D",
+        // Environment noise: the dev machine subscribes to two Workshop copies of some unrelated mods. Logged by
+        // ModLister while enumerating all installed mods, even inactive ones.
+        "Tried loading mod with the same packageId multiple times"
     };
 
     public static CellRect ReserveArea(Map map, int index)
