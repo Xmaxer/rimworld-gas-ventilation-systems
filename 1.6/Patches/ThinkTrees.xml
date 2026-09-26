@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <Operation Class="PatchOperationInsert">
+    <xpath>/Defs/ThinkTreeDef[defName="HumanlikeConstant"]/thinkRoot/subNodes/li[@Class="ThinkNode_ConditionalCanDoConstantThinkTreeJobNow"]/subNodes/li[@Class="JobGiver_FindOxygen"]</xpath>
+    <order>Append</order>
+    <value>
+      <li Class="GasVentilation.JobGiver_FleeGas" />
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationInsert">
+    <xpath>/Defs/ThinkTreeDef[defName="AnimalConstant"]/thinkRoot/subNodes/li[@Class="ThinkNode_ConditionalCanDoConstantThinkTreeJobNow"]/subNodes/li[@Class="JobGiver_AnimalFlee"]</xpath>
+    <order>Append</order>
+    <value>
+      <li Class="GasVentilation.JobGiver_FleeGas" />
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationInsert">
+    <xpath>/Defs/ThinkTreeDef[defName="InsectConstant"]/thinkRoot/subNodes/li[@Class="ThinkNode_ConditionalCanDoConstantThinkTreeJobNow"]/subNodes/li[@Class="JobGiver_AnimalFlee"]</xpath>
+    <order>Append</order>
+    <value>
+      <li Class="GasVentilation.JobGiver_FleeGas" />
+    </value>
+  </Operation>
+
+  <!-- Mechs: with Biotech there is a constant tree; without it, go into the main tree after the Downed subtree. -->
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Biotech</li>
+    </mods>
+    <match Class="PatchOperationInsert">
+      <xpath>/Defs/ThinkTreeDef[defName="MechConstant"]/thinkRoot/subNodes/li[@Class="ThinkNode_Subtree"][treeDef="Despawned"]</xpath>
+      <order>Append</order>
+      <value>
+        <li Class="ThinkNode_ConditionalCanDoConstantThinkTreeJobNow">
+          <subNodes>
+            <li Class="GasVentilation.JobGiver_FleeGas" />
+          </subNodes>
+        </li>
+      </value>
+    </match>
+    <nomatch Class="PatchOperationInsert">
+      <xpath>/Defs/ThinkTreeDef[defName="Mechanoid"]/thinkRoot/subNodes/li[@Class="ThinkNode_Subtree"][treeDef="Downed"]</xpath>
+      <order>Append</order>
+      <value>
+        <li Class="GasVentilation.JobGiver_FleeGas" />
+      </value>
+    </nomatch>
+  </Operation>
+
+</Patch>

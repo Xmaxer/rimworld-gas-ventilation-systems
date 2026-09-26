@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <JobDef>
+    <defName>GV_FleeGas</defName>
+    <driverClass>JobDriver_Goto</driverClass>
+    <reportString>escaping gas.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+</Defs>

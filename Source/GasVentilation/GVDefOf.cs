@@ -15,6 +15,8 @@ public static class GVDefOf
 
     public static ThingDef GV_CanisterEmpty;
 
+    public static JobDef GV_FleeGas;
+
     static GVDefOf()
     {
         DefOfHelper.EnsureInitializedInCtor(typeof(GVDefOf));
