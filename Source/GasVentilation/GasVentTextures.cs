@@ -13,6 +13,8 @@ public static class GasVentTextures
     public static readonly Texture2D SensorTargets = Load("UI/Commands/GV_SensorTargets");
     public static readonly Texture2D SensorLinger = Load("UI/Commands/GV_SensorLinger");
     public static readonly Texture2D SensorStopWhenDowned = Load("UI/Commands/GV_SensorStopWhenDowned");
+    public static readonly Texture2D Copy = Load("UI/Buttons/Copy");
+    public static readonly Texture2D Paste = Load("UI/Buttons/Paste");
 
     public static readonly Texture2D DeconstructPipes =
         ContentFinder<Texture2D>.Get("UI/Designators/GV_DeconstructGasPipes", false)

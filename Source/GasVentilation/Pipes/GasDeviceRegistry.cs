@@ -7,10 +7,12 @@ namespace GasVentilation;
 public sealed class GasDeviceRegistry
 {
     public const int PulseInterval = 25;
+    public const int SensorInterval = 60;
     private const int RoofCheckDelay = 60;
 
     private readonly Map map;
     private readonly List<CompGasVent> vents = new List<CompGasVent>();
+    private readonly List<CompIntruderSensor> sensors = new List<CompIntruderSensor>();
     private readonly List<CompGasVent> roofCheckVents = new List<CompGasVent>();
     private readonly List<int> roofCheckTicks = new List<int>();
     private readonly List<Thing> tmpThings = new List<Thing>();
@@ -43,6 +45,21 @@ public sealed class GasDeviceRegistry
         }
     }
 
+    public IReadOnlyList<CompIntruderSensor> Sensors => sensors;
+
+    public void Register(CompIntruderSensor sensor)
+    {
+        if (!sensors.Contains(sensor))
+        {
+            sensors.Add(sensor);
+        }
+    }
+
+    public void Deregister(CompIntruderSensor sensor)
+    {
+        sensors.Remove(sensor);
+    }
+
     public void ScheduleRoofCheck(CompGasVent vent)
     {
         roofCheckVents.Add(vent);
@@ -62,7 +79,10 @@ public sealed class GasDeviceRegistry
                 }
             }
         }
-        // [M5] sensor evaluation
+        if ((sensors.Count > 0 || vents.Count > 0) && ticksGame % SensorInterval == 0)
+        {
+            EvaluateSensors(ticksGame);
+        }
         if (roofCheckVents.Count > 0)
         {
             ProcessRoofChecks(ticksGame);
@@ -90,6 +110,39 @@ public sealed class GasDeviceRegistry
             }
         }
         tmpThings.Clear();
+    }
+
+    private void EvaluateSensors(int ticksGame)
+    {
+        for (int i = 0; i < sensors.Count; i++)
+        {
+            sensors[i].Evaluate(ticksGame);
+        }
+        for (int i = 0; i < vents.Count; i++)
+        {
+            CompGasVent vent = vents[i];
+            if (vent.Mode != VentMode.Sensor)
+            {
+                continue;
+            }
+            bool trigger = false;
+            if (sensors.Count > 0)
+            {
+                Room room = vent.OutputCell.GetRoom(map);
+                if (room != null)
+                {
+                    for (int s = 0; s < sensors.Count; s++)
+                    {
+                        if (sensors[s].Triggered && sensors[s].Room == room)
+                        {
+                            trigger = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            vent.SensorTriggered = trigger;
+        }
     }
 
     private void ProcessRoofChecks(int ticksGame)
