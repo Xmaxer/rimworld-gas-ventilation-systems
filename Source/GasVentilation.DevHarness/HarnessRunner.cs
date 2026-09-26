@@ -16,6 +16,7 @@ public sealed class HarnessRunner : GameComponent
             ["grid"] = () => new Scenarios.GridSpreadScenario(),
             ["pipes"] = () => new Scenarios.PipeNetworkScenario(),
             ["vents"] = () => new Scenarios.VentVariantsScenario(),
+            ["effects"] = () => new Scenarios.EffectsScenario(),
         };
 
     private readonly List<HarnessScenario> queue = new List<HarnessScenario>();
