@@ -109,13 +109,20 @@ public sealed class CompGasVentController : ThingComp
             icon = GasVentTextures.ForMode(mode),
             action = () => SetMode(NextMode(mode))
         };
-        yield return new Command_Action
+        foreach (CompGasVent trader in Traders)
         {
-            defaultLabel = "GV_VentGases".Translate(),
-            defaultDesc = "GV_VentGasesDesc".Translate(),
-            icon = GasVentTextures.VentGases,
-            action = () => Find.WindowStack.Add(new FloatMenu(GasMenuOptions()))
-        };
+            GasDef gas = trader.Gas;
+            VentGasSelection flag = gas.ventFlag;
+            yield return new Command_Toggle
+            {
+                defaultLabel = gas.LabelCap,
+                defaultDesc = "GV_VentGasToggleDesc".Translate(gas.label),
+                icon = GasVentTextures.GasSwatch,
+                defaultIconColor = gas.color,
+                isActive = () => (selection & flag) != 0,
+                toggleAction = () => ToggleGas(flag)
+            };
+        }
     }
 
     public override string CompInspectStringExtra()
@@ -153,19 +160,6 @@ public sealed class CompGasVentController : ThingComp
             sb.AppendLine().Append("GV_VentOutputBlocked".Translate());
         }
         return sb.ToString();
-    }
-
-    private List<FloatMenuOption> GasMenuOptions()
-    {
-        List<FloatMenuOption> options = new List<FloatMenuOption>();
-        foreach (CompGasVent trader in Traders)
-        {
-            VentGasSelection flag = trader.Gas.ventFlag;
-            bool on = (selection & flag) != 0;
-            string label = (on ? "[x] " : "[ ] ") + trader.Gas.LabelCap;
-            options.Add(new FloatMenuOption(label, () => ToggleGas(flag)));
-        }
-        return options;
     }
 
     private static VentMode NextMode(VentMode m)

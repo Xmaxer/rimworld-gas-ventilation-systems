@@ -57,6 +57,28 @@
     <modExtensions>
       <li Class="GasVentilation.GasPipeExtension" />
     </modExtensions>
+    <!-- compClass overrides CompProperties_Resource's default (PipeSystem.CompResource) so a pipe segment
+         doesn't print VEF's per-comp "stored in network" line four times over, once per gas, plus (in dev
+         mode) a raw debug dump of production/consumption/overflow figures our design never populates. See
+         GasVentilation.CompGasPipe. -->
+    <comps>
+      <li Class="PipeSystem.CompProperties_Resource">
+        <compClass>GasVentilation.CompGasPipe</compClass>
+        <pipeNet>GV_Net_Toxin</pipeNet>
+      </li>
+      <li Class="PipeSystem.CompProperties_Resource">
+        <compClass>GasVentilation.CompGasPipe</compClass>
+        <pipeNet>GV_Net_Sedative</pipeNet>
+      </li>
+      <li Class="PipeSystem.CompProperties_Resource">
+        <compClass>GasVentilation.CompGasPipe</compClass>
+        <pipeNet>GV_Net_Haywire</pipeNet>
+      </li>
+      <li Class="PipeSystem.CompProperties_Resource">
+        <compClass>GasVentilation.CompGasPipe</compClass>
+        <pipeNet>GV_Net_Insecticide</pipeNet>
+      </li>
+    </comps>
   </ThingDef>
 
   <!-- Carries all four gas networks at once: no per-gas variant. Each gas stays fully separate; they just
@@ -69,20 +91,6 @@
       <texPath>Things/Building/Linked/GV_Pipe_Atlas</texPath>
     </graphicData>
     <uiIconPath>UI/Icons/GasVentilation/GV_Pipe</uiIconPath>
-    <comps>
-      <li Class="PipeSystem.CompProperties_Resource">
-        <pipeNet>GV_Net_Toxin</pipeNet>
-      </li>
-      <li Class="PipeSystem.CompProperties_Resource">
-        <pipeNet>GV_Net_Sedative</pipeNet>
-      </li>
-      <li Class="PipeSystem.CompProperties_Resource">
-        <pipeNet>GV_Net_Haywire</pipeNet>
-      </li>
-      <li Class="PipeSystem.CompProperties_Resource">
-        <pipeNet>GV_Net_Insecticide</pipeNet>
-      </li>
-    </comps>
   </ThingDef>
 
   <!-- Hidden pipe: VE convention (Building_Pipe + fully transparent atlas + HiddenConduit flags). Also
@@ -109,20 +117,6 @@
     <costList>
       <Steel>4</Steel>
     </costList>
-    <comps>
-      <li Class="PipeSystem.CompProperties_Resource">
-        <pipeNet>GV_Net_Toxin</pipeNet>
-      </li>
-      <li Class="PipeSystem.CompProperties_Resource">
-        <pipeNet>GV_Net_Sedative</pipeNet>
-      </li>
-      <li Class="PipeSystem.CompProperties_Resource">
-        <pipeNet>GV_Net_Haywire</pipeNet>
-      </li>
-      <li Class="PipeSystem.CompProperties_Resource">
-        <pipeNet>GV_Net_Insecticide</pipeNet>
-      </li>
-    </comps>
   </ThingDef>
 
 </Defs>

@@ -383,14 +383,11 @@ New-Icon 'Textures/UI/Commands/GV_VentMode_Off' {
     Paint-Line $g 15 49 49 15 $grey 6 -Round
 }
 New-Icon 'Textures/UI/Commands/GV_VentMode_On' { param($g) Paint-Ellipse $g 32 32 24 24 $accent $ink 3 }
-New-Icon 'Textures/UI/Commands/GV_VentGases' {
+# Plain white swatch, one per gas-output toggle gizmo -- Command.iconDrawColor tints it per gas at runtime,
+# so this is deliberately colourless rather than gas-tinted itself.
+New-Icon 'Textures/UI/Commands/GV_GasSwatch' {
     param($g)
-    Paint-Path $g (New-RoundedRectPath (New-Rect 4 4 56 56) 8) $null $ink 3
-    for ($qi = 0; $qi -lt $GasColors.Count; $qi++) {
-        $qx = 6 + ($qi % 2) * 28; $qy = 6 + [Math]::Floor($qi / 2) * 28
-        $b = New-Object System.Drawing.SolidBrush $GasColors[$qi]
-        $g.FillRectangle($b, [single]$qx, [single]$qy, 26, 26); $b.Dispose()
-    }
+    Paint-Ellipse $g 32 32 24 24 ([System.Drawing.Color]::White) $ink 3
 }
 New-Icon 'Textures/UI/Commands/GV_VentMode_Sensor' {
     param($g)

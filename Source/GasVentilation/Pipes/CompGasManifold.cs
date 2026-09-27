@@ -91,13 +91,22 @@ public sealed class CompGasManifold : CompResourceStorage
         }
     }
 
-    /// <summary>Player-facing: queues a gas switch for a pawn to carry out. See <see cref="WorkGiver_ReconfigureManifold"/>.</summary>
+    /// <summary>Player-facing: queues a gas switch for a pawn to carry out (see <see cref="WorkGiver_ReconfigureManifold"/>),
+    /// or applies it instantly in dev mode's God mode.</summary>
     [SyncMethod]
     public void RequestGasChange(GasDef newGas)
     {
         if (newGas == activeGas)
         {
             pendingGas = null;
+            return;
+        }
+        // Dev mode + God mode: apply instantly, same as vanilla's own "skip requirements" debug behaviour,
+        // so playtesting doesn't need to wait on a pawn every time a gas is switched.
+        if (DebugSettings.godMode)
+        {
+            pendingGas = null;
+            SetActiveGas(newGas);
             return;
         }
         pendingGas = newGas;
@@ -129,20 +138,27 @@ public sealed class CompGasManifold : CompResourceStorage
         {
             defaultLabel = "GV_ManifoldGas".Translate(activeGas?.LabelCap ?? "GV_ManifoldGasNone".Translate()),
             defaultDesc = "GV_ManifoldGasDesc".Translate(),
-            icon = GasVentTextures.VentGases,
+            icon = GasVentTextures.GasSwatch,
             action = () => Find.WindowStack.Add(new FloatMenu(GasMenuOptions()))
         };
     }
 
+    /// <summary>
+    /// Deliberately does not call base.CompInspectStringExtra(): VEF's CompResourceStorage/CompResource chain
+    /// prints the stored amount twice over in slightly different phrasing, plus (in dev mode) a raw
+    /// PipeNet.ToString() dump of production/consumption/overflow figures our design never populates. Stored
+    /// vs. capacity is the one number that actually matters here.
+    /// </summary>
     public override string CompInspectStringExtra()
     {
-        string baseText = base.CompInspectStringExtra();
-        if (pendingGas == null)
+        string line = activeGas == null
+            ? "GV_ManifoldGasNone".Translate().ToString().CapitalizeFirst() + "."
+            : "GV_ManifoldStored".Translate(activeGas.LabelCap, AmountStored.ToString("F1"), Props.storageCapacity.ToString("F0"));
+        if (pendingGas != null)
         {
-            return baseText;
+            line += "\n" + "GV_ManifoldReconfiguring".Translate(pendingGas.LabelCap);
         }
-        string pendingLine = "GV_ManifoldReconfiguring".Translate(pendingGas.LabelCap);
-        return baseText.NullOrEmpty() ? pendingLine : baseText + "\n" + pendingLine;
+        return line;
     }
 
     private List<FloatMenuOption> GasMenuOptions()

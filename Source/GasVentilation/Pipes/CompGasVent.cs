@@ -42,6 +42,17 @@ public sealed class CompGasVent : CompResource
         VentGasGrid.For(map)?.Devices.Deregister(this);
     }
 
+    /// <summary>
+    /// VEF's stock CompResource.CompInspectStringExtra would print a "stored in network" line per comp (up to
+    /// four times over on this one vent) plus, in dev mode, a raw PipeNet.ToString() dump of
+    /// production/consumption/overflow figures our design never populates. The controller already shows the
+    /// one line that actually matters here: this gas's live output share.
+    /// </summary>
+    public override string CompInspectStringExtra()
+    {
+        return null;
+    }
+
     public void Pulse()
     {
         PipeNet net = PipeNet;
