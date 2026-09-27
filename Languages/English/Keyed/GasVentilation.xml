@@ -5,6 +5,7 @@
   <GV_MustPlaceUnderRoof>Must be placed under a roof.</GV_MustPlaceUnderRoof>
   <GV_VentOutputOutOfBounds>The vent would blow gas off the map.</GV_VentOutputOutOfBounds>
   <GV_VentOutputBlocked>The vent's output cell is blocked.</GV_VentOutputBlocked>
+  <GV_PipeBlocksVentOutput>A vent is blowing gas into this cell; connect the pipe from another side.</GV_PipeBlocksVentOutput>
   <GV_VentMode_Off>Vent: off</GV_VentMode_Off>
   <GV_VentMode_On>Vent: on</GV_VentMode_On>
   <GV_VentMode_Sensor>Vent: sensor</GV_VentMode_Sensor>

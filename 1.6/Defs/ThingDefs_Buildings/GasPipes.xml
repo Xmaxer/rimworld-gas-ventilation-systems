@@ -41,6 +41,7 @@
     </costList>
     <placeWorkers>
       <li>PipeSystem.PlaceWorker_Pipe</li>
+      <li>GasVentilation.PlaceWorker_ClearOfVentOutput</li>
     </placeWorkers>
     <rotatable>false</rotatable>
     <selectable>true</selectable>
