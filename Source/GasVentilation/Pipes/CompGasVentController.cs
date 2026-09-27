@@ -19,6 +19,7 @@ public sealed class CompGasVentController : ThingComp
     private VentGasSelection selection = VentGasSelection.None;
     private bool sensorTriggered;
     private List<CompGasVent> traders;
+    private CompPowerTrader powerComp;
 
     public CompProperties_GasVentController Props => (CompProperties_GasVentController)props;
 
@@ -34,13 +35,14 @@ public sealed class CompGasVentController : ThingComp
         set => sensorTriggered = value;
     }
 
-    public bool Emitting => mode == VentMode.On || (mode == VentMode.Sensor && sensorTriggered);
+    public bool Emitting => (mode == VentMode.On || (mode == VentMode.Sensor && sensorTriggered)) && (powerComp == null || powerComp.PowerOn);
 
     public List<CompGasVent> Traders => traders ??= parent.AllComps.FindAll(c => c is CompGasVent).ConvertAll(c => (CompGasVent)c);
 
     public override void PostSpawnSetup(bool respawningAfterLoad)
     {
         base.PostSpawnSetup(respawningAfterLoad);
+        powerComp = parent.GetComp<CompPowerTrader>();
         GasDeviceRegistry devices = VentGasGrid.For(parent.Map)?.Devices;
         devices?.RegisterController(this);
         if (!respawningAfterLoad && Props.requiresRoof)

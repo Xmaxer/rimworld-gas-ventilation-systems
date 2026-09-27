@@ -54,6 +54,14 @@ public static class HarnessUtil
         return rect;
     }
 
+    /// <summary>
+    /// Test rooms have no power grid, so RimWorld's own power-net logic recomputes any CompPowerTrader back
+    /// to unpowered on its next update -- setting PowerOn once at spawn isn't enough (SensorScenario already
+    /// had to work around this for its own sensor by re-forcing every tick). ReapplyForcedPower, called once
+    /// per harness tick, keeps every power-requiring building any scenario has spawned forced on instead.
+    /// </summary>
+    private static readonly List<CompPowerTrader> ForcedPower = new List<CompPowerTrader>();
+
     public static Thing SpawnBuilding(ThingDef def, IntVec3 cell, Map map, Rot4 rot, ThingDef stuff = null)
     {
         Thing thing = ThingMaker.MakeThing(def, stuff ?? (def.MadeFromStuff ? GenStuff.DefaultStuffFor(def) : null));
@@ -61,7 +69,26 @@ public static class HarnessUtil
         {
             thing.SetFactionDirect(Faction.OfPlayer);
         }
-        return GenSpawn.Spawn(thing, cell, map, rot, WipeMode.Vanish);
+        Thing spawned = GenSpawn.Spawn(thing, cell, map, rot, WipeMode.Vanish);
+        CompPowerTrader power = (spawned as ThingWithComps)?.GetComp<CompPowerTrader>();
+        if (power != null)
+        {
+            power.PowerOn = true;
+            ForcedPower.Add(power);
+        }
+        return spawned;
+    }
+
+    public static void ReapplyForcedPower()
+    {
+        for (int i = 0; i < ForcedPower.Count; i++)
+        {
+            CompPowerTrader power = ForcedPower[i];
+            if (power?.parent?.Spawned == true)
+            {
+                power.PowerOn = true;
+            }
+        }
     }
 
     /// <summary>Builds walls on the border of <paramref name="outer"/>; optionally roofs the interior.</summary>

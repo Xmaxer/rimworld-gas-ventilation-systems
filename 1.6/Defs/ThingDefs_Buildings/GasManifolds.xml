@@ -50,6 +50,11 @@
       <destroySound>BuildingDestroyed_Metal_Medium</destroySound>
     </building>
     <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>50</basePowerConsumption>
+      </li>
+      <li Class="CompProperties_Flickable" />
       <li Class="GasVentilation.CompProperties_GasManifold">
         <!-- Placeholder only: VEF's own ConfigErrors requires a non-null pipeNet on the shared def-level
              Props. The real, active pipeNet is set per-instance at runtime (see CompGasManifold), so this
@@ -57,6 +62,9 @@
         <pipeNet>GV_Net_Toxin</pipeNet>
         <storageCapacity>4</storageCapacity>
         <addTransferGizmo>false</addTransferGizmo>
+        <!-- Blocks hauler refill while unpowered (CompResourceStorage.AmountCanAccept) and rots stored gas
+             away after an extended outage, the same way vanilla food storage requires power. -->
+        <contentRequirePower>true</contentRequirePower>
         <refillOptions>
           <ratio>1</ratio>
         </refillOptions>

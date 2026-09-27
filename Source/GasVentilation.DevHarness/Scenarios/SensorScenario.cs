@@ -7,14 +7,14 @@ namespace GasVentilation.DevHarness.Scenarios;
 /// <summary>
 /// A sealed room with a sensor on the inside wall and a Sensor-mode wall vent fed by a manifold.
 /// No target: vent idle. Hostile pawn spawned: vent triggers and gas appears. Pawn removed: after the 600-tick
-/// linger, the vent goes idle again. There is no power grid in the harness, so the sensor is forced to powered.
+/// linger, the vent goes idle again. There is no power grid in the harness; HarnessUtil.SpawnBuilding/
+/// ReapplyForcedPower keep every power-requiring building spawned here forced on.
 /// </summary>
 public sealed class SensorScenario : HarnessScenario
 {
     private CellRect inner;
     private CompGasVentController vent;
     private CompIntruderSensor sensor;
-    private CompPowerTrader sensorPower;
     private Pawn intruder;
 
     public override string Name => "sensor";
@@ -36,7 +36,6 @@ public sealed class SensorScenario : HarnessScenario
         manifold.AddResource(4f);
         Thing sensorThing = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_IntruderSensor"), new IntVec3(x, 0, inner.maxZ), map, Rot4.North);
         sensor = sensorThing.TryGetComp<CompIntruderSensor>();
-        sensorPower = sensorThing.TryGetComp<CompPowerTrader>();
         vent.ToggleGas(VentGasSelection.Toxin);
         vent.SetMode(VentMode.Sensor);
         HarnessUtil.JumpCamera(inner.CenterCell);
@@ -44,10 +43,6 @@ public sealed class SensorScenario : HarnessScenario
 
     public override ScenarioStatus Tick(Map map, int ticksSinceSetup, List<string> failures)
     {
-        if (sensorPower != null)
-        {
-            sensorPower.PowerOn = true;
-        }
         if (ticksSinceSetup == 70)
         {
             if (sensor == null)

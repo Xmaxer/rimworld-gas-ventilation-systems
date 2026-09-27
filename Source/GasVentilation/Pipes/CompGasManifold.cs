@@ -44,7 +44,19 @@ public sealed class CompGasManifold : CompResourceStorage
     public int ShellCount => shellCount;
 
     /// <summary>Never registers with a network until a gas has been chosen.</summary>
-    public override bool TransmitResourceNow => activeGas != null;
+    private bool suppressTransmitDuringUnregister;
+
+    /// <summary>
+    /// False while temporarily null (no gas configured), AND false while SetActiveGas is mid-unregister.
+    /// The second case matters: PipeNetManager.UnregisterConnector rebuilds the *remaining* network via a
+    /// neighbour flood-fill (PipeNetManager.CreatePipeNetFrom), which re-scans physically adjacent things --
+    /// including this manifold, whose Props.pipeNet still reports the OLD gas at that point (SetActiveGas
+    /// only updates it after UnregisterConnector returns). Since that flood-fill only skips a comp it finds
+    /// when TransmitResourceNow is false, without this the manifold gets silently re-absorbed into the very
+    /// network it's supposed to be leaving. Confirmed live: after switching gas twice, the previous gas's
+    /// network still reported this manifold's stored amount.
+    /// </summary>
+    public override bool TransmitResourceNow => !suppressTransmitDuringUnregister && activeGas != null;
 
     public override void PostSpawnSetup(bool respawningAfterLoad)
     {
@@ -187,7 +199,15 @@ public sealed class CompGasManifold : CompResourceStorage
         if (spawned && activeGas != null)
         {
             EjectOnSwitch(map);
-            map.GetComponent<PipeNetManager>()?.UnregisterConnector(this);
+            suppressTransmitDuringUnregister = true;
+            try
+            {
+                map.GetComponent<PipeNetManager>()?.UnregisterConnector(this);
+            }
+            finally
+            {
+                suppressTransmitDuringUnregister = false;
+            }
         }
         activeGas = newGas;
         EnsureInstanceProps();
@@ -202,16 +222,33 @@ public sealed class CompGasManifold : CompResourceStorage
         }
     }
 
+    /// <summary>
+    /// Drops the actual racked canisters, not a gas burst -- a canister is an ordinary item (stored, hauled,
+    /// picked up) whether full, partially used or empty, and switching gas doesn't trigger it any more than
+    /// taking it out of storage would. Mirrors PostDestroy's deconstruct handling exactly: full canisters of
+    /// the old gas come out intact, and only a genuinely fractional remainder (less than one canister, which
+    /// can't be represented as an item) is vented as a small burst alongside one empty shell.
+    /// </summary>
     private void EjectOnSwitch(Map map)
     {
         float stored = AmountStored;
-        if (shellCount > 0)
+        int full = Mathf.FloorToInt(stored + 0.0001f);
+        float partial = stored - full;
+        bool partialShell = partial > 0.001f;
+        int emptyShells = shellCount - full - (partialShell ? 1 : 0);
+        IntVec3 cell = DropCell();
+        if (full > 0)
         {
-            Drop(GVDefOf.GV_CanisterEmpty, shellCount, DropCell(), map);
+            Drop(activeGas.canister, full, cell, map);
         }
-        if (stored > 0f)
+        if (emptyShells > 0)
         {
-            VentGasGrid.For(map)?.ReleaseBurst(parent.Position, activeGas, Mathf.RoundToInt(stored * activeGas.densityPerCanister));
+            Drop(GVDefOf.GV_CanisterEmpty, emptyShells, cell, map);
+        }
+        if (partialShell)
+        {
+            Drop(GVDefOf.GV_CanisterEmpty, 1, cell, map);
+            VentGasGrid.For(map)?.ReleaseBurst(parent.Position, activeGas, Mathf.RoundToInt(partial * activeGas.densityPerCanister));
         }
         Empty();
     }

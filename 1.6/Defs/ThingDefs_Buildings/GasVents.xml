@@ -26,6 +26,11 @@
       <Flammability>0.5</Flammability>
     </statBases>
     <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>25</basePowerConsumption>
+      </li>
+      <li Class="CompProperties_Flickable" />
       <li Class="GasVentilation.CompProperties_GasVent">
         <pipeNet>GV_Net_Toxin</pipeNet>
         <gas>GV_Gas_Toxin</gas>

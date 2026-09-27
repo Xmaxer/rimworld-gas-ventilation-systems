@@ -111,6 +111,7 @@ public sealed class HarnessRunner : GameComponent
         {
             return;
         }
+        HarnessUtil.ReapplyForcedPower();
         if (warmupTicks > 0)
         {
             warmupTicks--;

@@ -6,6 +6,10 @@ namespace GasVentilation.DevHarness.Scenarios;
 /// <summary>
 /// Manifold (4 sedative canisters) -> visible pipes -> wall vent (mode On) in the south wall of a sealed room.
 /// Expects gas in the room, canisters drained, at least one empty shell ejected, and no gas outside the room.
+/// The manifold is switched Toxin -> Haywire -> Sedative before filling, through the same RequestGasChange
+/// entry point the player's gizmo uses (under God mode, so it applies instantly) -- regression coverage for a
+/// real bug where repeated gas switching left a manifold simultaneously registered in multiple gas networks
+/// (see docs/implementation-notes.md, "PipeNet cross-registration bug").
 /// </summary>
 public sealed class PipeNetworkScenario : HarnessScenario
 {
@@ -30,7 +34,14 @@ public sealed class PipeNetworkScenario : HarnessScenario
         HarnessUtil.SpawnBuilding(pipe, new IntVec3(x, 0, outer.minZ - 2), map, Rot4.North);
         Thing manifoldThing = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_Manifold"), new IntVec3(x, 0, outer.minZ - 3), map, Rot4.North);
         manifold = manifoldThing.TryGetComp<CompGasManifold>();
-        manifold.SetActiveGas(GVDefOf.GV_Gas_Sedative);
+        // Real player entry point (RequestGasChange under God mode), not a direct SetActiveGas call, and
+        // switched twice before settling on Sedative -- see the class doc comment.
+        bool priorGodMode = Verse.DebugSettings.godMode;
+        Verse.DebugSettings.godMode = true;
+        manifold.RequestGasChange(GVDefOf.GV_Gas_Toxin);
+        manifold.RequestGasChange(GVDefOf.GV_Gas_Haywire);
+        manifold.RequestGasChange(GVDefOf.GV_Gas_Sedative);
+        Verse.DebugSettings.godMode = priorGodMode;
         manifold.AddResource(4f);
         CompGasVentController controller = vent.TryGetComp<CompGasVentController>();
         controller.SetMode(VentMode.On);
@@ -57,6 +68,15 @@ public sealed class PipeNetworkScenario : HarnessScenario
         if (inside < 1000)
         {
             failures.Add($"expected sedative gas in the room, total density {inside}");
+        }
+        int toxinInside = 0;
+        foreach (IntVec3 cell in inner)
+        {
+            toxinInside += grid.DensityAt(cell, GVDefOf.GV_Gas_Toxin);
+        }
+        if (toxinInside > 0)
+        {
+            failures.Add($"cross-network leak: toxin density {toxinInside} in a sedative-only setup");
         }
         if (manifold.AmountStored > 3.01f)
         {
