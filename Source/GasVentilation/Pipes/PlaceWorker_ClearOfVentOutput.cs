@@ -13,11 +13,11 @@ public sealed class PlaceWorker_ClearOfVentOutput : PlaceWorker
 {
     public override AcceptanceReport AllowsPlacing(BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
     {
-        IReadOnlyList<CompGasVent> vents = VentGasGrid.For(map).Devices.Vents;
-        for (int i = 0; i < vents.Count; i++)
+        IReadOnlyList<CompGasVentController> controllers = VentGasGrid.For(map).Devices.Controllers;
+        for (int i = 0; i < controllers.Count; i++)
         {
-            CompGasVent vent = vents[i];
-            if (vent.parent != thingToIgnore && vent.OutputCell == loc)
+            CompGasVentController controller = controllers[i];
+            if (controller.parent != thingToIgnore && controller.OutputCell == loc)
             {
                 return "GV_PipeBlocksVentOutput".Translate();
             }

@@ -25,12 +25,33 @@
       <WorkToBuild>800</WorkToBuild>
       <Flammability>0.5</Flammability>
     </statBases>
+    <comps>
+      <li Class="GasVentilation.CompProperties_GasVent">
+        <pipeNet>GV_Net_Toxin</pipeNet>
+        <gas>GV_Gas_Toxin</gas>
+      </li>
+      <li Class="GasVentilation.CompProperties_GasVent">
+        <pipeNet>GV_Net_Sedative</pipeNet>
+        <gas>GV_Gas_Sedative</gas>
+      </li>
+      <li Class="GasVentilation.CompProperties_GasVent">
+        <pipeNet>GV_Net_Haywire</pipeNet>
+        <gas>GV_Gas_Haywire</gas>
+      </li>
+      <li Class="GasVentilation.CompProperties_GasVent">
+        <pipeNet>GV_Net_Insecticide</pipeNet>
+        <gas>GV_Gas_Insecticide</gas>
+      </li>
+    </comps>
   </ThingDef>
 
   <!-- Replaces a wall cell (vanilla Vent rules); blows into the cell it faces. -->
-  <ThingDef ParentName="GV_VentBase" Name="GV_VentWallBase" Abstract="True">
-    <designatorDropdown>GV_Dropdown_VentWall</designatorDropdown>
+  <ThingDef ParentName="GV_VentBase">
+    <defName>GV_VentWall</defName>
+    <label>gas wall vent</label>
+    <description>Replaces a wall section and blows gas into the room it faces, for whichever gas(es) it is switched to output. Connects to gas pipes on any side, including hidden pipes under the neighbouring walls.</description>
     <graphicData>
+      <texPath>Things/Building/GasVentilation/VentWall/GV_VentWall</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <damageData>
         <cornerTL>Damage/Corner</cornerTL>
@@ -59,12 +80,20 @@
       <canPlaceOverWall>true</canPlaceOverWall>
       <isAirtight>true</isAirtight>
     </building>
+    <comps Inherit="True">
+      <li Class="GasVentilation.CompProperties_GasVentController">
+        <outputOffset>(0,0,1)</outputOffset>
+      </li>
+    </comps>
   </ThingDef>
 
   <!-- Hangs on an existing wall (vanilla wall attachment, like the wall lamp); blows into its own cell. -->
-  <ThingDef ParentName="GV_VentBase" Name="GV_VentMountedBase" Abstract="True">
-    <designatorDropdown>GV_Dropdown_VentMounted</designatorDropdown>
+  <ThingDef ParentName="GV_VentBase">
+    <defName>GV_VentMounted</defName>
+    <label>gas wall-mounted vent</label>
+    <description>A vent mounted on an existing wall that releases gas into the room, for whichever gas(es) it is switched to output. Connect it with a hidden pipe under the wall it hangs on, or a pipe beside it.</description>
     <graphicData>
+      <texPath>Things/Building/GasVentilation/VentMounted/GV_VentMounted</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawOffsetNorth>(0,0,0.9)</drawOffsetNorth>
       <drawOffsetSouth>(0,0,-0.9)</drawOffsetSouth>
@@ -89,12 +118,18 @@
     <placeWorkers>
       <li>Placeworker_AttachedToWall</li>
     </placeWorkers>
+    <comps Inherit="True">
+      <li Class="GasVentilation.CompProperties_GasVentController" />
+    </comps>
   </ThingDef>
 
   <!-- Hangs from the roof above; drawn over pawns; falls when the roof is removed. -->
-  <ThingDef ParentName="GV_VentBase" Name="GV_VentCeilingBase" Abstract="True">
-    <designatorDropdown>GV_Dropdown_VentCeiling</designatorDropdown>
+  <ThingDef ParentName="GV_VentBase">
+    <defName>GV_VentCeiling</defName>
+    <label>gas ceiling vent</label>
+    <description>A vent hung from the ceiling that releases gas into the room below, for whichever gas(es) it is switched to output. Must be built under a roof, and falls if the roof is removed. Connect it with gas pipes in neighbouring cells.</description>
     <graphicData>
+      <texPath>Things/Building/GasVentilation/VentCeiling/GV_VentCeiling</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <shaderType>Transparent</shaderType>
       <damageData>
@@ -116,12 +151,20 @@
     <placeWorkers>
       <li>GasVentilation.PlaceWorker_UnderRoof</li>
     </placeWorkers>
+    <comps Inherit="True">
+      <li Class="GasVentilation.CompProperties_GasVentController">
+        <requiresRoof>true</requiresRoof>
+      </li>
+    </comps>
   </ThingDef>
 
   <!-- Walkable floor grate; blows into its own cell; no furniture on top. -->
-  <ThingDef ParentName="GV_VentBase" Name="GV_VentFloorBase" Abstract="True">
-    <designatorDropdown>GV_Dropdown_VentFloor</designatorDropdown>
+  <ThingDef ParentName="GV_VentBase">
+    <defName>GV_VentFloor</defName>
+    <label>gas floor vent</label>
+    <description>A walkable floor grate that releases gas, for whichever gas(es) it is switched to output. Connect it with hidden pipes under the floor next to it.</description>
     <graphicData>
+      <texPath>Things/Building/GasVentilation/VentFloor/GV_VentFloor</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <damageData>
         <enabled>false</enabled>
@@ -136,249 +179,8 @@
     <building>
       <ai_chillDestination>false</ai_chillDestination>
     </building>
-  </ThingDef>
-
-  <!-- ===================== Toxin ===================== -->
-
-  <ThingDef ParentName="GV_VentWallBase">
-    <defName>GV_VentWall_Toxin</defName>
-    <label>toxin wall vent</label>
-    <description>Replaces a wall section and blows toxin gas into the room it faces. Connects to toxin gas pipes on any side, including hidden pipes under the neighbouring walls.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentWall/GV_VentWall_Toxin</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Toxin</pipeNet>
-        <gas>GV_Gas_Toxin</gas>
-        <outputOffset>(0,0,1)</outputOffset>
-      </li>
-    </comps>
-  </ThingDef>
-  <ThingDef ParentName="GV_VentMountedBase">
-    <defName>GV_VentMounted_Toxin</defName>
-    <label>toxin wall-mounted vent</label>
-    <description>A vent mounted on an existing wall that releases toxin gas into the room. Connect it with a hidden toxin pipe under the wall it hangs on, or a pipe beside it.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentMounted/GV_VentMounted_Toxin</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Toxin</pipeNet>
-        <gas>GV_Gas_Toxin</gas>
-      </li>
-    </comps>
-  </ThingDef>
-  <ThingDef ParentName="GV_VentCeilingBase">
-    <defName>GV_VentCeiling_Toxin</defName>
-    <label>toxin ceiling vent</label>
-    <description>A vent hung from the ceiling that releases toxin gas into the room below. Must be built under a roof, and falls if the roof is removed. Connect it with toxin pipes in neighbouring cells.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentCeiling/GV_VentCeiling_Toxin</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Toxin</pipeNet>
-        <gas>GV_Gas_Toxin</gas>
-        <requiresRoof>true</requiresRoof>
-      </li>
-    </comps>
-  </ThingDef>
-  <ThingDef ParentName="GV_VentFloorBase">
-    <defName>GV_VentFloor_Toxin</defName>
-    <label>toxin floor vent</label>
-    <description>A walkable floor grate that releases toxin gas. Connect it with hidden toxin pipes under the floor next to it.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentFloor/GV_VentFloor_Toxin</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Toxin</pipeNet>
-        <gas>GV_Gas_Toxin</gas>
-      </li>
-    </comps>
-  </ThingDef>
-
-  <!-- ===================== Sedative ===================== -->
-
-  <ThingDef ParentName="GV_VentWallBase">
-    <defName>GV_VentWall_Sedative</defName>
-    <label>sedative wall vent</label>
-    <description>Replaces a wall section and blows sedative gas into the room it faces. Connects to sedative gas pipes on any side, including hidden pipes under the neighbouring walls.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentWall/GV_VentWall_Sedative</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Sedative</pipeNet>
-        <gas>GV_Gas_Sedative</gas>
-        <outputOffset>(0,0,1)</outputOffset>
-      </li>
-    </comps>
-  </ThingDef>
-  <ThingDef ParentName="GV_VentMountedBase">
-    <defName>GV_VentMounted_Sedative</defName>
-    <label>sedative wall-mounted vent</label>
-    <description>A vent mounted on an existing wall that releases sedative gas into the room. Connect it with a hidden sedative pipe under the wall it hangs on, or a pipe beside it.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentMounted/GV_VentMounted_Sedative</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Sedative</pipeNet>
-        <gas>GV_Gas_Sedative</gas>
-      </li>
-    </comps>
-  </ThingDef>
-  <ThingDef ParentName="GV_VentCeilingBase">
-    <defName>GV_VentCeiling_Sedative</defName>
-    <label>sedative ceiling vent</label>
-    <description>A vent hung from the ceiling that releases sedative gas into the room below. Must be built under a roof, and falls if the roof is removed. Connect it with sedative pipes in neighbouring cells.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentCeiling/GV_VentCeiling_Sedative</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Sedative</pipeNet>
-        <gas>GV_Gas_Sedative</gas>
-        <requiresRoof>true</requiresRoof>
-      </li>
-    </comps>
-  </ThingDef>
-  <ThingDef ParentName="GV_VentFloorBase">
-    <defName>GV_VentFloor_Sedative</defName>
-    <label>sedative floor vent</label>
-    <description>A walkable floor grate that releases sedative gas. Connect it with hidden sedative pipes under the floor next to it.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentFloor/GV_VentFloor_Sedative</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Sedative</pipeNet>
-        <gas>GV_Gas_Sedative</gas>
-      </li>
-    </comps>
-  </ThingDef>
-
-  <!-- ===================== Haywire ===================== -->
-
-  <ThingDef ParentName="GV_VentWallBase">
-    <defName>GV_VentWall_Haywire</defName>
-    <label>haywire wall vent</label>
-    <description>Replaces a wall section and blows haywire gas into the room it faces. Connects to haywire gas pipes on any side, including hidden pipes under the neighbouring walls.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentWall/GV_VentWall_Haywire</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Haywire</pipeNet>
-        <gas>GV_Gas_Haywire</gas>
-        <outputOffset>(0,0,1)</outputOffset>
-      </li>
-    </comps>
-  </ThingDef>
-  <ThingDef ParentName="GV_VentMountedBase">
-    <defName>GV_VentMounted_Haywire</defName>
-    <label>haywire wall-mounted vent</label>
-    <description>A vent mounted on an existing wall that releases haywire gas into the room. Connect it with a hidden haywire pipe under the wall it hangs on, or a pipe beside it.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentMounted/GV_VentMounted_Haywire</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Haywire</pipeNet>
-        <gas>GV_Gas_Haywire</gas>
-      </li>
-    </comps>
-  </ThingDef>
-  <ThingDef ParentName="GV_VentCeilingBase">
-    <defName>GV_VentCeiling_Haywire</defName>
-    <label>haywire ceiling vent</label>
-    <description>A vent hung from the ceiling that releases haywire gas into the room below. Must be built under a roof, and falls if the roof is removed. Connect it with haywire pipes in neighbouring cells.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentCeiling/GV_VentCeiling_Haywire</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Haywire</pipeNet>
-        <gas>GV_Gas_Haywire</gas>
-        <requiresRoof>true</requiresRoof>
-      </li>
-    </comps>
-  </ThingDef>
-  <ThingDef ParentName="GV_VentFloorBase">
-    <defName>GV_VentFloor_Haywire</defName>
-    <label>haywire floor vent</label>
-    <description>A walkable floor grate that releases haywire gas. Connect it with hidden haywire pipes under the floor next to it.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentFloor/GV_VentFloor_Haywire</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Haywire</pipeNet>
-        <gas>GV_Gas_Haywire</gas>
-      </li>
-    </comps>
-  </ThingDef>
-
-  <!-- ===================== Insecticide ===================== -->
-
-  <ThingDef ParentName="GV_VentWallBase">
-    <defName>GV_VentWall_Insecticide</defName>
-    <label>insecticide wall vent</label>
-    <description>Replaces a wall section and blows insecticide gas into the room it faces. Connects to insecticide gas pipes on any side, including hidden pipes under the neighbouring walls.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentWall/GV_VentWall_Insecticide</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Insecticide</pipeNet>
-        <gas>GV_Gas_Insecticide</gas>
-        <outputOffset>(0,0,1)</outputOffset>
-      </li>
-    </comps>
-  </ThingDef>
-  <ThingDef ParentName="GV_VentMountedBase">
-    <defName>GV_VentMounted_Insecticide</defName>
-    <label>insecticide wall-mounted vent</label>
-    <description>A vent mounted on an existing wall that releases insecticide gas into the room. Connect it with a hidden insecticide pipe under the wall it hangs on, or a pipe beside it.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentMounted/GV_VentMounted_Insecticide</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Insecticide</pipeNet>
-        <gas>GV_Gas_Insecticide</gas>
-      </li>
-    </comps>
-  </ThingDef>
-  <ThingDef ParentName="GV_VentCeilingBase">
-    <defName>GV_VentCeiling_Insecticide</defName>
-    <label>insecticide ceiling vent</label>
-    <description>A vent hung from the ceiling that releases insecticide gas into the room below. Must be built under a roof, and falls if the roof is removed. Connect it with insecticide pipes in neighbouring cells.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentCeiling/GV_VentCeiling_Insecticide</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Insecticide</pipeNet>
-        <gas>GV_Gas_Insecticide</gas>
-        <requiresRoof>true</requiresRoof>
-      </li>
-    </comps>
-  </ThingDef>
-  <ThingDef ParentName="GV_VentFloorBase">
-    <defName>GV_VentFloor_Insecticide</defName>
-    <label>insecticide floor vent</label>
-    <description>A walkable floor grate that releases insecticide gas. Connect it with hidden insecticide pipes under the floor next to it.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/VentFloor/GV_VentFloor_Insecticide</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasVent">
-        <pipeNet>GV_Net_Insecticide</pipeNet>
-        <gas>GV_Gas_Insecticide</gas>
-      </li>
+    <comps Inherit="True">
+      <li Class="GasVentilation.CompProperties_GasVentController" />
     </comps>
   </ThingDef>
 

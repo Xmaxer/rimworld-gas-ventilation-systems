@@ -47,13 +47,17 @@ public sealed class PlaygroundScenario : HarnessScenario
         CellRect outer = new CellRect(area.minX + 6, area.minZ + 8, 9, 9);
         CellRect inner = HarnessUtil.BuildSealedRoom(map, outer, roofed: true);
         int x = outer.CenterCell.x;
-        Thing vent = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_VentWall_Toxin"), new IntVec3(x, 0, outer.minZ), map, Rot4.North);
-        ThingDef pipe = DefDatabase<ThingDef>.GetNamed("GV_Pipe_Toxin");
+        Thing vent = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_VentWall"), new IntVec3(x, 0, outer.minZ), map, Rot4.North);
+        ThingDef pipe = DefDatabase<ThingDef>.GetNamed("GV_Pipe");
         HarnessUtil.SpawnBuilding(pipe, new IntVec3(x, 0, outer.minZ - 1), map, Rot4.North);
         HarnessUtil.SpawnBuilding(pipe, new IntVec3(x, 0, outer.minZ - 2), map, Rot4.North);
-        Thing manifold = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_Manifold_Toxin"), new IntVec3(x, 0, outer.minZ - 3), map, Rot4.North);
-        manifold.TryGetComp<CompGasManifold>().AddResource(4f);
-        vent.TryGetComp<CompGasVent>().SetMode(VentMode.On);
+        Thing manifold = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_Manifold"), new IntVec3(x, 0, outer.minZ - 3), map, Rot4.North);
+        CompGasManifold manifoldComp = manifold.TryGetComp<CompGasManifold>();
+        manifoldComp.SetActiveGas(GVDefOf.GV_Gas_Toxin);
+        manifoldComp.AddResource(4f);
+        CompGasVentController ventController = vent.TryGetComp<CompGasVentController>();
+        ventController.ToggleGas(VentGasSelection.Toxin);
+        ventController.SetMode(VentMode.On);
 
         IntVec3 room = inner.CenterCell;
         string text =

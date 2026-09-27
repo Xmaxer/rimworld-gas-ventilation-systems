@@ -14,8 +14,11 @@ public static class GVDefOf
     public static MapMeshFlagDef GV_GasMesh;
 
     public static ThingDef GV_CanisterEmpty;
+    public static ThingDef GV_HiddenPipe;
+    public static ThingDef GV_Manifold;
 
     public static JobDef GV_FleeGas;
+    public static JobDef GV_ReconfigureManifold;
 
     static GVDefOf()
     {

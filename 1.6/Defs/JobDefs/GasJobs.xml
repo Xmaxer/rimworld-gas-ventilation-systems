@@ -6,4 +6,9 @@
     <reportString>escaping gas.</reportString>
     <casualInterruptible>false</casualInterruptible>
   </JobDef>
+  <JobDef>
+    <defName>GV_ReconfigureManifold</defName>
+    <driverClass>GasVentilation.JobDriver_ReconfigureManifold</driverClass>
+    <reportString>reconfiguring TargetA.</reportString>
+  </JobDef>
 </Defs>

@@ -9,6 +9,7 @@ public static class GasVentTextures
     public static readonly Texture2D VentOff = Load("UI/Commands/GV_VentMode_Off");
     public static readonly Texture2D VentOn = Load("UI/Commands/GV_VentMode_On");
     public static readonly Texture2D VentSensor = Load("UI/Commands/GV_VentMode_Sensor");
+    public static readonly Texture2D VentGases = Load("UI/Commands/GV_VentGases");
     public static readonly Texture2D SensorArmed = Load("UI/Commands/GV_SensorArmed");
     public static readonly Texture2D SensorTargets = Load("UI/Commands/GV_SensorTargets");
     public static readonly Texture2D SensorLinger = Load("UI/Commands/GV_SensorLinger");

@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
+  <!-- pipeDefs has no default value in PipeNetDef (it's null, not empty, unless XML sets it), and both
+       CompResource.RemovePipes and PipeSystem.LinkedPipes' static constructor call .Contains()/iterate it
+       unconditionally, so an unset pipeDefs crashes the game at startup. GV_Pipe/GV_HiddenPipe are shared
+       across every gas network (one physical multi-pipe carries all four), but LinkedPipes' static cache
+       keys a global dictionary by pipe ThingDef and throws if the same ThingDef is listed in more than one
+       net's pipeDefs. So: list them on GV_Net_Toxin only, and give the other three an explicit *empty* list
+       (present but no <li>s) rather than leaving the tag out. The only cost is RemovePipes' minor stray-pipe
+       cleanup being skipped for those three networks, a rare, harmless edge case for us. -->
   <PipeSystem.PipeNetDef>
     <defName>GV_Net_Toxin</defName>
     <resource>
@@ -10,17 +18,17 @@
       <onlyShowStored>true</onlyShowStored>
     </resource>
     <pipeDefs>
-      <li>GV_Pipe_Toxin</li>
-      <li>GV_HiddenPipe_Toxin</li>
+      <li>GV_Pipe</li>
+      <li>GV_HiddenPipe</li>
     </pipeDefs>
     <overlayOptions>
       <overlayColor>(0.55, 0.78, 0.18)</overlayColor>
     </overlayOptions>
     <noLinkedGraphicDefs>
-      <li>GV_VentWall_Toxin</li>
-      <li>GV_VentMounted_Toxin</li>
-      <li>GV_VentCeiling_Toxin</li>
-      <li>GV_VentFloor_Toxin</li>
+      <li>GV_VentWall</li>
+      <li>GV_VentMounted</li>
+      <li>GV_VentCeiling</li>
+      <li>GV_VentFloor</li>
     </noLinkedGraphicDefs>
     <enableOverflow>false</enableOverflow>
   </PipeSystem.PipeNetDef>
@@ -33,18 +41,15 @@
       <color>(0.66, 0.55, 0.95)</color>
       <onlyShowStored>true</onlyShowStored>
     </resource>
-    <pipeDefs>
-      <li>GV_Pipe_Sedative</li>
-      <li>GV_HiddenPipe_Sedative</li>
-    </pipeDefs>
+    <pipeDefs />
     <overlayOptions>
       <overlayColor>(0.66, 0.55, 0.95)</overlayColor>
     </overlayOptions>
     <noLinkedGraphicDefs>
-      <li>GV_VentWall_Sedative</li>
-      <li>GV_VentMounted_Sedative</li>
-      <li>GV_VentCeiling_Sedative</li>
-      <li>GV_VentFloor_Sedative</li>
+      <li>GV_VentWall</li>
+      <li>GV_VentMounted</li>
+      <li>GV_VentCeiling</li>
+      <li>GV_VentFloor</li>
     </noLinkedGraphicDefs>
     <enableOverflow>false</enableOverflow>
   </PipeSystem.PipeNetDef>
@@ -57,18 +62,15 @@
       <color>(0.25, 0.70, 1.0)</color>
       <onlyShowStored>true</onlyShowStored>
     </resource>
-    <pipeDefs>
-      <li>GV_Pipe_Haywire</li>
-      <li>GV_HiddenPipe_Haywire</li>
-    </pipeDefs>
+    <pipeDefs />
     <overlayOptions>
       <overlayColor>(0.25, 0.70, 1.0)</overlayColor>
     </overlayOptions>
     <noLinkedGraphicDefs>
-      <li>GV_VentWall_Haywire</li>
-      <li>GV_VentMounted_Haywire</li>
-      <li>GV_VentCeiling_Haywire</li>
-      <li>GV_VentFloor_Haywire</li>
+      <li>GV_VentWall</li>
+      <li>GV_VentMounted</li>
+      <li>GV_VentCeiling</li>
+      <li>GV_VentFloor</li>
     </noLinkedGraphicDefs>
     <enableOverflow>false</enableOverflow>
   </PipeSystem.PipeNetDef>
@@ -81,18 +83,15 @@
       <color>(1.0, 0.62, 0.15)</color>
       <onlyShowStored>true</onlyShowStored>
     </resource>
-    <pipeDefs>
-      <li>GV_Pipe_Insecticide</li>
-      <li>GV_HiddenPipe_Insecticide</li>
-    </pipeDefs>
+    <pipeDefs />
     <overlayOptions>
       <overlayColor>(1.0, 0.62, 0.15)</overlayColor>
     </overlayOptions>
     <noLinkedGraphicDefs>
-      <li>GV_VentWall_Insecticide</li>
-      <li>GV_VentMounted_Insecticide</li>
-      <li>GV_VentCeiling_Insecticide</li>
-      <li>GV_VentFloor_Insecticide</li>
+      <li>GV_VentWall</li>
+      <li>GV_VentMounted</li>
+      <li>GV_VentCeiling</li>
+      <li>GV_VentFloor</li>
     </noLinkedGraphicDefs>
     <enableOverflow>false</enableOverflow>
   </PipeSystem.PipeNetDef>

@@ -4,6 +4,11 @@ using Verse;
 
 namespace GasVentilation;
 
+/// <summary>
+/// No fixed gas or pipeNet: <see cref="CompGasManifold"/> clones this into an instance-owned copy and fills
+/// in <c>gas</c>/<c>pipeNet</c>/<c>refillOptions.thing</c> at runtime, since every spawned manifold can be
+/// independently configured for a different gas.
+/// </summary>
 public sealed class CompProperties_GasManifold : CompProperties_ResourceStorage
 {
     public GasDef gas;
@@ -19,13 +24,9 @@ public sealed class CompProperties_GasManifold : CompProperties_ResourceStorage
         {
             yield return error;
         }
-        if (gas == null)
+        if (refillOptions == null || refillOptions.ratio != 1f)
         {
-            yield return "gas is required";
-        }
-        if (refillOptions == null || refillOptions.thing == null || refillOptions.ratio != 1f)
-        {
-            yield return "refillOptions with a canister thing and ratio 1 is required (1 resource unit = 1 canister)";
+            yield return "refillOptions with ratio 1 is required (1 resource unit = 1 canister)";
         }
     }
 }

@@ -11,6 +11,14 @@
   <GV_VentMode_Sensor>Vent: sensor</GV_VentMode_Sensor>
   <GV_VentModeDesc>Cycle the vent between off, always on, and sensor-controlled. Sensor-controlled vents open while an armed intruder sensor in the same room detects targets.</GV_VentModeDesc>
   <GV_VentInspectMode>Mode: {0}</GV_VentInspectMode>
+  <GV_VentGases>Output gases</GV_VentGases>
+  <GV_VentGasesDesc>Choose which gas(es) this vent outputs. Any combination; each draws from its own network independently.</GV_VentGasesDesc>
+  <GV_VentNoGasSelected>No gas selected.</GV_VentNoGasSelected>
+  <GV_VentInspectOutput>{0} output: {1}</GV_VentInspectOutput>
+  <GV_ManifoldGas>Gas: {0}</GV_ManifoldGas>
+  <GV_ManifoldGasNone>none</GV_ManifoldGasNone>
+  <GV_ManifoldGasDesc>Choose which gas this manifold accepts and feeds into its network. A pawn must carry out a short reconfigure task to change it; any stored gas is vented and racked canisters ejected when it does.</GV_ManifoldGasDesc>
+  <GV_ManifoldReconfiguring>Reconfiguring for {0}...</GV_ManifoldReconfiguring>
   <GV_SensorTriggered>(triggered)</GV_SensorTriggered>
   <GV_SensorIdle>(waiting)</GV_SensorIdle>
   <GV_CeilingVentFell>{0} fell from the ceiling after the roof above it was removed.</GV_CeilingVentFell>

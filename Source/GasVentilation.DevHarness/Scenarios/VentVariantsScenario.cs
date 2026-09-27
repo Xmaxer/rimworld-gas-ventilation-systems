@@ -4,15 +4,15 @@ using Verse;
 namespace GasVentilation.DevHarness.Scenarios;
 
 /// <summary>
-/// Places each vent variant and checks registration and output cells. Then removes the roof above the ceiling
+/// Places each vent shape and checks registration and output cells. Then removes the roof above the ceiling
 /// vent and checks that it falls.
 /// </summary>
 public sealed class VentVariantsScenario : HarnessScenario
 {
-    private CompGasVent wall;
-    private CompGasVent mounted;
-    private CompGasVent floor;
-    private CompGasVent ceiling;
+    private CompGasVentController wall;
+    private CompGasVentController mounted;
+    private CompGasVentController floor;
+    private CompGasVentController ceiling;
     private IntVec3 ceilingCell;
     private bool roofRemoved;
 
@@ -24,22 +24,26 @@ public sealed class VentVariantsScenario : HarnessScenario
     {
         CellRect outer = new CellRect(area.minX + 4, area.minZ + 4, 9, 9);
         CellRect inner = HarnessUtil.BuildSealedRoom(map, outer, roofed: true);
-        wall = Spawn(map, "GV_VentWall_Haywire", new IntVec3(outer.CenterCell.x, 0, outer.minZ), Rot4.North);
-        mounted = Spawn(map, "GV_VentMounted_Haywire", new IntVec3(inner.minX + 1, 0, inner.maxZ), Rot4.North);
-        floor = Spawn(map, "GV_VentFloor_Haywire", new IntVec3(inner.minX + 1, 0, inner.minZ + 1), Rot4.North);
+        wall = Spawn(map, "GV_VentWall", new IntVec3(outer.CenterCell.x, 0, outer.minZ), Rot4.North);
+        mounted = Spawn(map, "GV_VentMounted", new IntVec3(inner.minX + 1, 0, inner.maxZ), Rot4.North);
+        floor = Spawn(map, "GV_VentFloor", new IntVec3(inner.minX + 1, 0, inner.minZ + 1), Rot4.North);
         ceilingCell = new IntVec3(inner.maxX - 1, 0, inner.CenterCell.z);
-        ceiling = Spawn(map, "GV_VentCeiling_Haywire", ceilingCell, Rot4.North);
+        ceiling = Spawn(map, "GV_VentCeiling", ceilingCell, Rot4.North);
+        wall.ToggleGas(VentGasSelection.Haywire);
+        mounted.ToggleGas(VentGasSelection.Haywire);
+        floor.ToggleGas(VentGasSelection.Haywire);
+        ceiling.ToggleGas(VentGasSelection.Haywire);
     }
 
     public override ScenarioStatus Tick(Map map, int ticksSinceSetup, List<string> failures)
     {
         if (ticksSinceSetup == 150)
         {
-            IReadOnlyList<CompGasVent> vents = VentGasGrid.For(map).Devices.Vents;
-            Check(vents, wall, failures);
-            Check(vents, mounted, failures);
-            Check(vents, floor, failures);
-            Check(vents, ceiling, failures);
+            IReadOnlyList<CompGasVentController> controllers = VentGasGrid.For(map).Devices.Controllers;
+            Check(controllers, wall, failures);
+            Check(controllers, mounted, failures);
+            Check(controllers, floor, failures);
+            Check(controllers, ceiling, failures);
             if (wall.OutputCell != wall.parent.Position + IntVec3.North)
             {
                 failures.Add("wall vent output should be the cell it faces");
@@ -67,24 +71,24 @@ public sealed class VentVariantsScenario : HarnessScenario
         return ScenarioStatus.Running;
     }
 
-    private static CompGasVent Spawn(Map map, string defName, IntVec3 cell, Rot4 rot)
+    private static CompGasVentController Spawn(Map map, string defName, IntVec3 cell, Rot4 rot)
     {
-        return HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed(defName), cell, map, rot).TryGetComp<CompGasVent>();
+        return HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed(defName), cell, map, rot).TryGetComp<CompGasVentController>();
     }
 
-    private static void Check(IReadOnlyList<CompGasVent> vents, CompGasVent vent, List<string> failures)
+    private static void Check(IReadOnlyList<CompGasVentController> controllers, CompGasVentController controller, List<string> failures)
     {
         bool found = false;
-        for (int i = 0; i < vents.Count; i++)
+        for (int i = 0; i < controllers.Count; i++)
         {
-            if (vents[i] == vent)
+            if (controllers[i] == controller)
             {
                 found = true;
             }
         }
         if (!found)
         {
-            failures.Add($"{vent.parent.def.defName} is not registered with the device registry");
+            failures.Add($"{controller.parent.def.defName} is not registered with the device registry");
         }
     }
 }

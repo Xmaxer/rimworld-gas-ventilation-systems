@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
-  <ThingDef ParentName="BuildingBase" Name="GV_ManifoldBase" Abstract="True">
+  <ThingDef ParentName="BuildingBase">
+    <defName>GV_Manifold</defName>
+    <label>canister manifold</label>
+    <description>Racks up to four canisters and feeds their gas into whichever gas network it is configured for. A pawn must reconfigure it (a short job, like flicking a switch) to change which gas it accepts; any stored gas is vented and any racked canisters are ejected when it does. Haulers bring full canisters automatically, and drained canisters come back out as empty shells. If destroyed, the stored gas bursts out.</description>
     <thingClass>Building</thingClass>
     <graphicData>
+      <texPath>Things/Building/GasVentilation/GV_Manifold</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(1,1)</drawSize>
       <damageData>
@@ -34,7 +38,6 @@
     </costList>
     <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
     <designationCategory>Security</designationCategory>
-    <designatorDropdown>GV_Dropdown_Manifolds</designatorDropdown>
     <constructionSkillPrerequisite>4</constructionSkillPrerequisite>
     <researchPrerequisites>
       <li>GV_GasVentilation</li>
@@ -46,86 +49,15 @@
     <building>
       <destroySound>BuildingDestroyed_Metal_Medium</destroySound>
     </building>
-  </ThingDef>
-
-  <ThingDef ParentName="GV_ManifoldBase">
-    <defName>GV_Manifold_Toxin</defName>
-    <label>toxin canister manifold</label>
-    <description>Racks up to four toxin canisters and feeds their gas into a toxin gas network. Haulers bring full canisters automatically, and drained canisters come back out as empty shells. If destroyed, the stored gas bursts out.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/Manifold/GV_Manifold_Toxin</texPath>
-    </graphicData>
     <comps>
       <li Class="GasVentilation.CompProperties_GasManifold">
+        <!-- Placeholder only: VEF's own ConfigErrors requires a non-null pipeNet on the shared def-level
+             Props. The real, active pipeNet is set per-instance at runtime (see CompGasManifold), so this
+             value is never actually used for registration. -->
         <pipeNet>GV_Net_Toxin</pipeNet>
-        <gas>GV_Gas_Toxin</gas>
         <storageCapacity>4</storageCapacity>
         <addTransferGizmo>false</addTransferGizmo>
         <refillOptions>
-          <thing>GV_Canister_Toxin</thing>
-          <ratio>1</ratio>
-        </refillOptions>
-      </li>
-    </comps>
-  </ThingDef>
-
-  <ThingDef ParentName="GV_ManifoldBase">
-    <defName>GV_Manifold_Sedative</defName>
-    <label>sedative canister manifold</label>
-    <description>Racks up to four sedative canisters and feeds their gas into a sedative gas network. Haulers bring full canisters automatically, and drained canisters come back out as empty shells. If destroyed, the stored gas bursts out.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/Manifold/GV_Manifold_Sedative</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasManifold">
-        <pipeNet>GV_Net_Sedative</pipeNet>
-        <gas>GV_Gas_Sedative</gas>
-        <storageCapacity>4</storageCapacity>
-        <addTransferGizmo>false</addTransferGizmo>
-        <refillOptions>
-          <thing>GV_Canister_Sedative</thing>
-          <ratio>1</ratio>
-        </refillOptions>
-      </li>
-    </comps>
-  </ThingDef>
-
-  <ThingDef ParentName="GV_ManifoldBase">
-    <defName>GV_Manifold_Haywire</defName>
-    <label>haywire canister manifold</label>
-    <description>Racks up to four haywire canisters and feeds their gas into a haywire gas network. Haulers bring full canisters automatically, and drained canisters come back out as empty shells. If destroyed, the stored gas bursts out.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/Manifold/GV_Manifold_Haywire</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasManifold">
-        <pipeNet>GV_Net_Haywire</pipeNet>
-        <gas>GV_Gas_Haywire</gas>
-        <storageCapacity>4</storageCapacity>
-        <addTransferGizmo>false</addTransferGizmo>
-        <refillOptions>
-          <thing>GV_Canister_Haywire</thing>
-          <ratio>1</ratio>
-        </refillOptions>
-      </li>
-    </comps>
-  </ThingDef>
-
-  <ThingDef ParentName="GV_ManifoldBase">
-    <defName>GV_Manifold_Insecticide</defName>
-    <label>insecticide canister manifold</label>
-    <description>Racks up to four insecticide canisters and feeds their gas into an insecticide gas network. Haulers bring full canisters automatically, and drained canisters come back out as empty shells. If destroyed, the stored gas bursts out.</description>
-    <graphicData>
-      <texPath>Things/Building/GasVentilation/Manifold/GV_Manifold_Insecticide</texPath>
-    </graphicData>
-    <comps>
-      <li Class="GasVentilation.CompProperties_GasManifold">
-        <pipeNet>GV_Net_Insecticide</pipeNet>
-        <gas>GV_Gas_Insecticide</gas>
-        <storageCapacity>4</storageCapacity>
-        <addTransferGizmo>false</addTransferGizmo>
-        <refillOptions>
-          <thing>GV_Canister_Insecticide</thing>
           <ratio>1</ratio>
         </refillOptions>
       </li>

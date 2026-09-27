@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GasVentilation.Core;
+using PipeSystem;
 using UnityEngine;
 using Verse;
 
@@ -41,8 +42,14 @@ public sealed class GasDef : Def
     /// <summary>Density units a vent tries to emit per pulse (every 25 ticks).</summary>
     public int emitPerPulse = 240;
 
-    /// <summary>Hidden pipe of this gas's network (used to restore a pipe when a ceiling vent falls).</summary>
-    public ThingDef hiddenPipe;
+    /// <summary>This gas's own network. Manifolds and vents bind to it at runtime when configured for this gas.</summary>
+    public PipeNetDef pipeNet;
+
+    /// <summary>This gas's bit in <see cref="VentGasSelection"/>, for vent output toggles.</summary>
+    public VentGasSelection ventFlag = VentGasSelection.None;
+
+    /// <summary>The filled canister item that refills a manifold configured for this gas.</summary>
+    public ThingDef canister;
 
     // Effects
     public GasTargetRule targets;
@@ -91,6 +98,14 @@ public sealed class GasDef : Def
         if (exposureHediff == null)
         {
             yield return "exposureHediff is required";
+        }
+        if (pipeNet == null)
+        {
+            yield return "pipeNet is required";
+        }
+        if (canister == null)
+        {
+            yield return "canister is required";
         }
     }
 }

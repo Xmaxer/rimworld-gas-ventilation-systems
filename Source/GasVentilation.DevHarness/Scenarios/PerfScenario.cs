@@ -36,11 +36,13 @@ public sealed class PerfScenario : HarnessScenario
             Pawn animal = HarnessUtil.SpawnPawn(muffalo, null, inner.RandomCell, map);
             animal.SetFaction(Faction.OfPlayer);
         }
-        ThingDef floorVent = DefDatabase<ThingDef>.GetNamed("GV_VentFloor_Haywire");
+        ThingDef floorVent = DefDatabase<ThingDef>.GetNamed("GV_VentFloor");
         for (int i = 0; i < 16; i++)
         {
             IntVec3 cell = new IntVec3(inner.minX + 1 + (i % 8) * 2, 0, inner.minZ + 2 + (i / 8) * 10);
-            HarnessUtil.SpawnBuilding(floorVent, cell, map, Rot4.North).TryGetComp<CompGasVent>().SetMode(VentMode.On);
+            CompGasVentController controller = HarnessUtil.SpawnBuilding(floorVent, cell, map, Rot4.North).TryGetComp<CompGasVentController>();
+            controller.ToggleGas(VentGasSelection.Haywire);
+            controller.SetMode(VentMode.On);
         }
         HarnessTiming.Reset();
     }
@@ -61,7 +63,7 @@ public sealed class PerfScenario : HarnessScenario
             {
                 failures.Add($"GasExposureScanner tick too slow: {scanner:F1} us");
             }
-            List<Thing> vents = new List<Thing>(map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed("GV_VentFloor_Haywire")));
+            List<Thing> vents = new List<Thing>(map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed("GV_VentFloor")));
             for (int i = 0; i < vents.Count; i++)
             {
                 vents[i].Destroy(DestroyMode.Vanish);
@@ -70,7 +72,7 @@ public sealed class PerfScenario : HarnessScenario
             List<Building> buildings = map.listerBuildings.allBuildingsColonist;
             for (int i = 0; i < buildings.Count; i++)
             {
-                buildings[i].TryGetComp<CompGasVent>()?.SetMode(VentMode.Off);
+                buildings[i].TryGetComp<CompGasVentController>()?.SetMode(VentMode.Off);
             }
             VentGasGrid.For(map).ClearAll();
             HarnessTiming.Reset();

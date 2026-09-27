@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <WorkGiverDef>
+    <defName>GV_ReconfigureManifold</defName>
+    <label>reconfigure gas manifold</label>
+    <giverClass>GasVentilation.WorkGiver_ReconfigureManifold</giverClass>
+    <verb>reconfigure</verb>
+    <gerund>reconfiguring</gerund>
+    <workType>BasicWorker</workType>
+    <priorityInType>50</priorityInType>
+    <scanThings>true</scanThings>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+</Defs>

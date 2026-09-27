@@ -24,14 +24,17 @@ public sealed class PipeNetworkScenario : HarnessScenario
         outer = new CellRect(area.minX + 6, area.minZ + 8, 9, 9);
         inner = HarnessUtil.BuildSealedRoom(map, outer, roofed: true);
         int x = outer.CenterCell.x;
-        Thing vent = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_VentWall_Sedative"), new IntVec3(x, 0, outer.minZ), map, Rot4.North);
-        ThingDef pipe = DefDatabase<ThingDef>.GetNamed("GV_Pipe_Sedative");
+        Thing vent = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_VentWall"), new IntVec3(x, 0, outer.minZ), map, Rot4.North);
+        ThingDef pipe = DefDatabase<ThingDef>.GetNamed("GV_Pipe");
         HarnessUtil.SpawnBuilding(pipe, new IntVec3(x, 0, outer.minZ - 1), map, Rot4.North);
         HarnessUtil.SpawnBuilding(pipe, new IntVec3(x, 0, outer.minZ - 2), map, Rot4.North);
-        Thing manifoldThing = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_Manifold_Sedative"), new IntVec3(x, 0, outer.minZ - 3), map, Rot4.North);
+        Thing manifoldThing = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_Manifold"), new IntVec3(x, 0, outer.minZ - 3), map, Rot4.North);
         manifold = manifoldThing.TryGetComp<CompGasManifold>();
+        manifold.SetActiveGas(GVDefOf.GV_Gas_Sedative);
         manifold.AddResource(4f);
-        vent.TryGetComp<CompGasVent>().SetMode(VentMode.On);
+        CompGasVentController controller = vent.TryGetComp<CompGasVentController>();
+        controller.SetMode(VentMode.On);
+        controller.ToggleGas(VentGasSelection.Sedative);
         HarnessUtil.JumpCamera(inner.CenterCell);
     }
 

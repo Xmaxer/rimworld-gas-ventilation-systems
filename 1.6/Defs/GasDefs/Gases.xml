@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 
   <GasVentilation.GasDef>
@@ -6,7 +6,9 @@
     <label>toxin gas</label>
     <description>A caustic gas that burns the lungs of organic, breathing creatures.</description>
     <channel>0</channel>
-    <hiddenPipe>GV_HiddenPipe_Toxin</hiddenPipe>
+    <pipeNet>GV_Net_Toxin</pipeNet>
+    <canister>GV_Canister_Toxin</canister>
+    <ventFlag>Toxin</ventFlag>
     <color>(0.55, 0.78, 0.18)</color>
     <dissipationPerVisit>8</dissipationPerVisit>
     <roofedFactor>0.4</roofedFactor>
@@ -23,7 +25,9 @@
     <label>sedative gas</label>
     <description>A fast-acting anaesthetic gas that knocks organic, breathing creatures unconscious.</description>
     <channel>1</channel>
-    <hiddenPipe>GV_HiddenPipe_Sedative</hiddenPipe>
+    <pipeNet>GV_Net_Sedative</pipeNet>
+    <canister>GV_Canister_Sedative</canister>
+    <ventFlag>Sedative</ventFlag>
     <color>(0.66, 0.55, 0.95)</color>
     <dissipationPerVisit>8</dissipationPerVisit>
     <roofedFactor>0.4</roofedFactor>
@@ -41,7 +45,9 @@
     <label>haywire gas</label>
     <description>A cloud of conductive nanite particulate that shorts out and scrambles mechanical bodies.</description>
     <channel>2</channel>
-    <hiddenPipe>GV_HiddenPipe_Haywire</hiddenPipe>
+    <pipeNet>GV_Net_Haywire</pipeNet>
+    <canister>GV_Canister_Haywire</canister>
+    <ventFlag>Haywire</ventFlag>
     <color>(0.25, 0.70, 1.0)</color>
     <dissipationPerVisit>8</dissipationPerVisit>
     <roofedFactor>0.4</roofedFactor>
@@ -58,7 +64,9 @@
     <label>insecticide gas</label>
     <description>A persistent insecticide that slowly poisons insectoids.</description>
     <channel>3</channel>
-    <hiddenPipe>GV_HiddenPipe_Insecticide</hiddenPipe>
+    <pipeNet>GV_Net_Insecticide</pipeNet>
+    <canister>GV_Canister_Insecticide</canister>
+    <ventFlag>Insecticide</ventFlag>
     <color>(1.0, 0.62, 0.15)</color>
     <dissipationPerVisit>6</dissipationPerVisit>
     <roofedFactor>0.5</roofedFactor>
@@ -71,3 +79,4 @@
   </GasVentilation.GasDef>
 
 </Defs>
+

@@ -12,7 +12,7 @@ namespace GasVentilation.DevHarness.Scenarios;
 public sealed class SensorScenario : HarnessScenario
 {
     private CellRect inner;
-    private CompGasVent vent;
+    private CompGasVentController vent;
     private CompIntruderSensor sensor;
     private CompPowerTrader sensorPower;
     private Pawn intruder;
@@ -26,15 +26,18 @@ public sealed class SensorScenario : HarnessScenario
         CellRect outer = new CellRect(area.minX + 6, area.minZ + 8, 9, 9);
         inner = HarnessUtil.BuildSealedRoom(map, outer, roofed: true);
         int x = outer.CenterCell.x;
-        vent = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_VentWall_Toxin"), new IntVec3(x, 0, outer.minZ), map, Rot4.North).TryGetComp<CompGasVent>();
-        ThingDef pipe = DefDatabase<ThingDef>.GetNamed("GV_Pipe_Toxin");
+        vent = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_VentWall"), new IntVec3(x, 0, outer.minZ), map, Rot4.North).TryGetComp<CompGasVentController>();
+        ThingDef pipe = DefDatabase<ThingDef>.GetNamed("GV_Pipe");
         HarnessUtil.SpawnBuilding(pipe, new IntVec3(x, 0, outer.minZ - 1), map, Rot4.North);
         HarnessUtil.SpawnBuilding(pipe, new IntVec3(x, 0, outer.minZ - 2), map, Rot4.North);
-        HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_Manifold_Toxin"), new IntVec3(x, 0, outer.minZ - 3), map, Rot4.North)
-            .TryGetComp<CompGasManifold>().AddResource(4f);
+        CompGasManifold manifold = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_Manifold"), new IntVec3(x, 0, outer.minZ - 3), map, Rot4.North)
+            .TryGetComp<CompGasManifold>();
+        manifold.SetActiveGas(GVDefOf.GV_Gas_Toxin);
+        manifold.AddResource(4f);
         Thing sensorThing = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_IntruderSensor"), new IntVec3(x, 0, inner.maxZ), map, Rot4.North);
         sensor = sensorThing.TryGetComp<CompIntruderSensor>();
         sensorPower = sensorThing.TryGetComp<CompPowerTrader>();
+        vent.ToggleGas(VentGasSelection.Toxin);
         vent.SetMode(VentMode.Sensor);
         HarnessUtil.JumpCamera(inner.CenterCell);
     }

@@ -18,7 +18,7 @@ public sealed class BalanceScenario : HarnessScenario
     private Pawn mech;
     private Pawn spider;
     private CellRect fillRoom;
-    private CompGasVent fillVent;
+    private CompGasVentController fillVent;
     private CompGasManifold fillManifold;
     private int sedationTick = -1;
     private int lungTick = -1;
@@ -59,12 +59,14 @@ public sealed class BalanceScenario : HarnessScenario
         saturated.Add((i, GVDefOf.GV_Gas_Insecticide));
 
         IntVec3 ventCell = new IntVec3(fOuter.maxX, 0, fOuter.CenterCell.z);
-        fillVent = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_VentWall_Toxin"), ventCell, map, Rot4.West).TryGetComp<CompGasVent>();
-        ThingDef pipe = DefDatabase<ThingDef>.GetNamed("GV_Pipe_Toxin");
+        fillVent = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_VentWall"), ventCell, map, Rot4.West).TryGetComp<CompGasVentController>();
+        ThingDef pipe = DefDatabase<ThingDef>.GetNamed("GV_Pipe");
         HarnessUtil.SpawnBuilding(pipe, ventCell + IntVec3.East, map, Rot4.North);
         HarnessUtil.SpawnBuilding(pipe, ventCell + IntVec3.East * 2, map, Rot4.North);
-        fillManifold = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_Manifold_Toxin"), ventCell + IntVec3.East * 3, map, Rot4.North).TryGetComp<CompGasManifold>();
+        fillManifold = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_Manifold"), ventCell + IntVec3.East * 3, map, Rot4.North).TryGetComp<CompGasManifold>();
+        fillManifold.SetActiveGas(GVDefOf.GV_Gas_Toxin);
         fillManifold.AddResource(4f);
+        fillVent.ToggleGas(VentGasSelection.Toxin);
         fillVent.SetMode(VentMode.On);
     }
 

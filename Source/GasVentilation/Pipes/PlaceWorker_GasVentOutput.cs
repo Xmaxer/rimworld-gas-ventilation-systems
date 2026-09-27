@@ -34,7 +34,7 @@ public sealed class PlaceWorker_GasVentOutput : PlaceWorker
 
     private static IntVec3 OutputCellFor(BuildableDef def, IntVec3 loc, Rot4 rot)
     {
-        CompProperties_GasVent props = (def as ThingDef)?.GetCompProperties<CompProperties_GasVent>();
+        CompProperties_GasVentController props = (def as ThingDef)?.GetCompProperties<CompProperties_GasVentController>();
         IntVec3 offset = props?.outputOffset ?? IntVec3.Zero;
         return loc + offset.RotatedBy(rot);
     }

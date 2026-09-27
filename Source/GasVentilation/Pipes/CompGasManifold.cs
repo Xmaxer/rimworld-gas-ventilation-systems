@@ -1,11 +1,22 @@
+using System.Collections.Generic;
+using Multiplayer.API;
 using PipeSystem;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
 namespace GasVentilation;
 
 /// <summary>
-/// VEF storage where one resource unit is one canister. Additions to VEF's storage:
+/// VEF storage where one resource unit is one canister, configurable for any one gas at a time. Since
+/// <see cref="ThingComp.props"/> is shared by every spawned instance of the def, this comp clones it into an
+/// instance-owned copy the first time it spawns, then mutates only that copy's <c>gas</c>/<c>pipeNet</c>/
+/// <c>refillOptions.thing</c> when <see cref="SetActiveGas"/> runs -- never the shared def-level object.
+///
+/// Additions to VEF's storage:
+/// - the active gas is chosen by a pawn job (see JobDriver_ReconfigureManifold), not an instant toggle;
+/// - switching gas ejects any racked canister shells and bursts any stored gas, then re-registers with the
+///   new gas's PipeNet (mirroring PostDeSpawn/PostSpawnSetup's own unregister/register dance);
 /// - pawn refill is enabled by default on newly built manifolds;
 /// - the refill registration is cleaned up on despawn (VEF's toggle otherwise drops reinstalled manifolds);
 /// - canister bodies are tracked, and drained ones are ejected as empty shells;
@@ -13,21 +24,33 @@ namespace GasVentilation;
 /// </summary>
 public sealed class CompGasManifold : CompResourceStorage
 {
+    private static readonly GasDef[] AllGases =
+    {
+        GVDefOf.GV_Gas_Toxin, GVDefOf.GV_Gas_Sedative, GVDefOf.GV_Gas_Haywire, GVDefOf.GV_Gas_Insecticide
+    };
+
+    private CompProperties_GasManifold instanceProps;
+    private GasDef activeGas;
+    private GasDef pendingGas;
     private int shellCount;
 
-    public new CompProperties_GasManifold Props => (CompProperties_GasManifold)props;
+    public new CompProperties_GasManifold Props => instanceProps ?? (CompProperties_GasManifold)props;
+
+    public GasDef ActiveGas => activeGas;
+
+    /// <summary>Set by the reconfigure gizmo; cleared once a pawn finishes the job that applies it.</summary>
+    public GasDef PendingGas => pendingGas;
 
     public int ShellCount => shellCount;
 
-    public override void PostPostMake()
-    {
-        base.PostPostMake();
-        markedForRefill = true;
-    }
+    /// <summary>Never registers with a network until a gas has been chosen.</summary>
+    public override bool TransmitResourceNow => activeGas != null;
 
     public override void PostSpawnSetup(bool respawningAfterLoad)
     {
+        EnsureInstanceProps();
         base.PostSpawnSetup(respawningAfterLoad);
+        markedForRefill = true;
         shellCount = Mathf.Max(shellCount, BodiesFor(AmountStored));
     }
 
@@ -40,6 +63,8 @@ public sealed class CompGasManifold : CompResourceStorage
     public override void PostExposeData()
     {
         base.PostExposeData();
+        Scribe_Defs.Look(ref activeGas, "gvActiveGas");
+        Scribe_Defs.Look(ref pendingGas, "gvPendingGas");
         Scribe_Values.Look(ref shellCount, "gvShellCount");
     }
 
@@ -66,15 +91,124 @@ public sealed class CompGasManifold : CompResourceStorage
         }
     }
 
-    public override void PostDestroy(DestroyMode mode, Map previousMap)
+    /// <summary>Player-facing: queues a gas switch for a pawn to carry out. See <see cref="WorkGiver_ReconfigureManifold"/>.</summary>
+    [SyncMethod]
+    public void RequestGasChange(GasDef newGas)
     {
-        float stored = AmountStored;
-        base.PostDestroy(mode, previousMap);
-        if (previousMap == null || stored <= 0f)
+        if (newGas == activeGas)
+        {
+            pendingGas = null;
+            return;
+        }
+        pendingGas = newGas;
+    }
+
+    /// <summary>Called by JobDriver_ReconfigureManifold once the pawn's wait toil finishes.</summary>
+    public void CompleteReconfigure()
+    {
+        if (pendingGas == null)
         {
             return;
         }
-        GasDef gas = Props.gas;
+        GasDef newGas = pendingGas;
+        pendingGas = null;
+        SetActiveGas(newGas);
+    }
+
+    public override IEnumerable<Gizmo> CompGetGizmosExtra()
+    {
+        foreach (Gizmo gizmo in base.CompGetGizmosExtra())
+        {
+            yield return gizmo;
+        }
+        if (parent.Faction != Faction.OfPlayer)
+        {
+            yield break;
+        }
+        yield return new Command_Action
+        {
+            defaultLabel = "GV_ManifoldGas".Translate(activeGas?.LabelCap ?? "GV_ManifoldGasNone".Translate()),
+            defaultDesc = "GV_ManifoldGasDesc".Translate(),
+            icon = GasVentTextures.VentGases,
+            action = () => Find.WindowStack.Add(new FloatMenu(GasMenuOptions()))
+        };
+    }
+
+    public override string CompInspectStringExtra()
+    {
+        string baseText = base.CompInspectStringExtra();
+        if (pendingGas == null)
+        {
+            return baseText;
+        }
+        string pendingLine = "GV_ManifoldReconfiguring".Translate(pendingGas.LabelCap);
+        return baseText.NullOrEmpty() ? pendingLine : baseText + "\n" + pendingLine;
+    }
+
+    private List<FloatMenuOption> GasMenuOptions()
+    {
+        List<FloatMenuOption> options = new List<FloatMenuOption>();
+        for (int i = 0; i < AllGases.Length; i++)
+        {
+            GasDef gas = AllGases[i];
+            bool isTarget = (pendingGas ?? activeGas) == gas;
+            string label = (isTarget ? "[x] " : "[ ] ") + gas.LabelCap;
+            options.Add(new FloatMenuOption(label, () => RequestGasChange(gas)));
+        }
+        return options;
+    }
+
+    /// <summary>Ejects any racked shells, bursts any stored gas, and rebinds to the new gas's network.</summary>
+    [SyncMethod]
+    public void SetActiveGas(GasDef newGas)
+    {
+        if (newGas == activeGas)
+        {
+            return;
+        }
+        bool spawned = parent.Spawned;
+        Map map = parent.Map;
+        if (spawned && activeGas != null)
+        {
+            EjectOnSwitch(map);
+            map.GetComponent<PipeNetManager>()?.UnregisterConnector(this);
+        }
+        activeGas = newGas;
+        EnsureInstanceProps();
+        ApplyActiveGasToProps();
+        if (spawned)
+        {
+            shellCount = 0;
+            if (TransmitResourceNow)
+            {
+                map.GetComponent<PipeNetManager>().RegisterConnector(this);
+            }
+        }
+    }
+
+    private void EjectOnSwitch(Map map)
+    {
+        float stored = AmountStored;
+        if (shellCount > 0)
+        {
+            Drop(GVDefOf.GV_CanisterEmpty, shellCount, DropCell(), map);
+        }
+        if (stored > 0f)
+        {
+            VentGasGrid.For(map)?.ReleaseBurst(parent.Position, activeGas, Mathf.RoundToInt(stored * activeGas.densityPerCanister));
+        }
+        Empty();
+    }
+
+    public override void PostDestroy(DestroyMode mode, Map previousMap)
+    {
+        float stored = AmountStored;
+        GasDef gas = activeGas;
+        base.PostDestroy(mode, previousMap);
+        if (previousMap == null || stored <= 0f || gas == null)
+        {
+            return;
+        }
         IntVec3 position = parent.Position;
         switch (mode)
         {
@@ -85,7 +219,7 @@ public sealed class CompGasManifold : CompResourceStorage
                 float partial = stored - full;
                 if (full > 0)
                 {
-                    Drop(Props.refillOptions.thing, full, position, previousMap);
+                    Drop(gas.canister, full, position, previousMap);
                 }
                 if (partial > 0.001f)
                 {
@@ -99,6 +233,55 @@ public sealed class CompGasManifold : CompResourceStorage
                 VentGasGrid.For(previousMap)?.ReleaseBurst(position, gas, Mathf.RoundToInt(stored * gas.densityPerCanister));
                 break;
         }
+    }
+
+    private void EnsureInstanceProps()
+    {
+        if (instanceProps != null)
+        {
+            return;
+        }
+        CompProperties_GasManifold shared = (CompProperties_GasManifold)props;
+        instanceProps = new CompProperties_GasManifold
+        {
+            compClass = shared.compClass,
+            soundAmbient = shared.soundAmbient,
+            storageCapacity = shared.storageCapacity,
+            drawStorageBar = shared.drawStorageBar,
+            addStorageInfo = shared.addStorageInfo,
+            addTransferGizmo = shared.addTransferGizmo,
+            showOffMatWhenTransfering = shared.showOffMatWhenTransfering,
+            margin = shared.margin,
+            barSize = shared.barSize,
+            centerOffset = shared.centerOffset,
+            barHorizontal = shared.barHorizontal,
+            rotateBarWithBuilding = shared.rotateBarWithBuilding,
+            extractOptions = shared.extractOptions,
+            destroyOptions = shared.destroyOptions,
+            contentRequirePower = shared.contentRequirePower,
+            preventRotInNegativeTemp = shared.preventRotInNegativeTemp,
+            daysToRotStart = shared.daysToRotStart,
+            refillOptions = new RefillOptions
+            {
+                alwaysRefill = shared.refillOptions.alwaysRefill,
+                refillTime = shared.refillOptions.refillTime,
+                refillTimeScalesWithAmount = shared.refillOptions.refillTimeScalesWithAmount,
+                ratio = shared.refillOptions.ratio
+            }
+        };
+        props = instanceProps;
+        ApplyActiveGasToProps();
+    }
+
+    private void ApplyActiveGasToProps()
+    {
+        instanceProps.gas = activeGas;
+        // CompResource.PostSpawnSetup calls RemovePipes() unconditionally (not gated on TransmitResourceNow),
+        // and RemovePipes reads Props.pipeNet.pipeDefs without a null check -- so pipeNet must never actually
+        // be null, even before a gas is chosen. TransmitResourceNow (activeGas != null) is what really gates
+        // network registration/emission, so this placeholder is otherwise inert.
+        instanceProps.pipeNet = activeGas?.pipeNet ?? GVDefOf.GV_Gas_Toxin.pipeNet;
+        instanceProps.refillOptions.thing = activeGas?.canister;
     }
 
     private IntVec3 DropCell()
