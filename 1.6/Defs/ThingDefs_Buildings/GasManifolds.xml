@@ -46,6 +46,9 @@
     <thingCategories>
       <li>BuildingsSecurity</li>
     </thingCategories>
+    <inspectorTabs>
+      <li>GasVentilation.ITab_GasManifold</li>
+    </inspectorTabs>
     <building>
       <destroySound>BuildingDestroyed_Metal_Medium</destroySound>
     </building>

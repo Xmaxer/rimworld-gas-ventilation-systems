@@ -51,5 +51,8 @@
       <li>GV_GasVentilation</li>
     </researchPrerequisites>
     <constructionSkillPrerequisite>4</constructionSkillPrerequisite>
+    <inspectorTabs>
+      <li>GasVentilation.ITab_GasSensor</li>
+    </inspectorTabs>
   </ThingDef>
 </Defs>

@@ -14,9 +14,7 @@
   <GV_VentGasToggleDesc>Toggle this vent's {0} output on or off. Any combination of gases can be on at once; each draws from its own network independently.</GV_VentGasToggleDesc>
   <GV_VentNoGasSelected>No gas selected.</GV_VentNoGasSelected>
   <GV_VentInspectOutput>{0} output: {1}</GV_VentInspectOutput>
-  <GV_ManifoldGas>Gas: {0}</GV_ManifoldGas>
   <GV_ManifoldGasNone>none</GV_ManifoldGasNone>
-  <GV_ManifoldGasDesc>Choose which gas this manifold accepts and feeds into its network. A pawn must carry out a short reconfigure task to change it; any stored gas is vented and racked canisters ejected when it does.</GV_ManifoldGasDesc>
   <GV_ManifoldReconfiguring>Reconfiguring for {0}...</GV_ManifoldReconfiguring>
   <GV_ManifoldStored>{0}: {1} / {2} canisters</GV_ManifoldStored>
   <GV_CanisterFill>{0}% full</GV_CanisterFill>
@@ -30,8 +28,6 @@
   <GV_RemovedAllContent>Gas Ventilation: removed {0} things and {1} hediffs. Save, then disable the mod.</GV_RemovedAllContent>
   <GV_SensorArmed>Armed</GV_SensorArmed>
   <GV_SensorArmedDesc>While armed and powered, the sensor opens sensor-controlled vents in its room when targets are present.</GV_SensorArmedDesc>
-  <GV_SensorTargets>Targets</GV_SensorTargets>
-  <GV_SensorTargetsDesc>Choose which kinds of intruders trigger the sensor.</GV_SensorTargetsDesc>
   <GV_SensorTarget_Humanlikes>Humanlikes</GV_SensorTarget_Humanlikes>
   <GV_SensorTarget_Mechanoids>Mechanoids and drones</GV_SensorTarget_Mechanoids>
   <GV_SensorTarget_Insectoids>Insectoids</GV_SensorTarget_Insectoids>
@@ -54,4 +50,10 @@
   <GV_SensorInspectTargets>Targets: {0}</GV_SensorInspectTargets>
   <GV_SensorInspectOpenRoom>This room is open to the map edge; the sensor will not trigger.</GV_SensorInspectOpenRoom>
   <GV_SensorInspectUnpowered>No power.</GV_SensorInspectUnpowered>
+  <GV_SensorInspectLinked>Triggers {0} linked vent(s).</GV_SensorInspectLinked>
+  <GV_SensorInspectRoomFallback>No vents linked -- triggers every Sensor-mode vent in this room.</GV_SensorInspectRoomFallback>
+  <GV_GasManifoldTab>Gas</GV_GasManifoldTab>
+  <GV_GasSensorTab>Sensor</GV_GasSensorTab>
+  <GV_GasSensorTriggers>Triggers</GV_GasSensorTriggers>
+  <GV_GasSensorNoVents>No vents on this map yet.</GV_GasSensorNoVents>
 </LanguageData>

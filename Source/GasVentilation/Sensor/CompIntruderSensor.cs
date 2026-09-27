@@ -11,7 +11,7 @@ public sealed class CompIntruderSensor : ThingComp
 {
     private const int MaxLingerSeconds = 120;
 
-    private static readonly SensorTargets[] TargetOptions =
+    internal static readonly SensorTargets[] TargetOptions =
     {
         SensorTargets.Humanlikes, SensorTargets.Mechanoids, SensorTargets.Insectoids, SensorTargets.Animals, SensorTargets.IncludeNonHostile
     };
@@ -30,6 +30,11 @@ public sealed class CompIntruderSensor : ThingComp
     private int lastSeenTick = -99999;
     private CompPowerTrader power;
 
+    /// <summary>Explicitly linked vents (see ITab_GasSensor). Empty by default: <see cref="GasDeviceRegistry"/>
+    /// falls back to triggering every Sensor-mode vent in the same room, same as before this existed. Once any
+    /// vent is linked, the sensor only ever triggers its links -- room membership stops mattering for it.</summary>
+    private List<Thing> linkedVents = new List<Thing>();
+
     public bool Triggered => triggered;
 
     public bool Armed => armed;
@@ -41,6 +46,15 @@ public sealed class CompIntruderSensor : ThingComp
     public bool StopWhenAllDowned => stopWhenAllDowned;
 
     public Room Room => parent.Spawned ? parent.GetRoom() : null;
+
+    public bool HasExplicitLinks => linkedVents.Count > 0;
+
+    public IReadOnlyList<Thing> LinkedVents => linkedVents;
+
+    public bool IsLinkedTo(CompGasVentController controller)
+    {
+        return controller != null && linkedVents.Contains(controller.parent);
+    }
 
     public override void PostSpawnSetup(bool respawningAfterLoad)
     {
@@ -65,6 +79,12 @@ public sealed class CompIntruderSensor : ThingComp
         Scribe_Values.Look(ref stopWhenAllDowned, "gvStopWhenAllDowned");
         Scribe_Values.Look(ref triggered, "gvTriggered");
         Scribe_Values.Look(ref lastSeenTick, "gvLastSeenTick", -99999);
+        Scribe_Collections.Look(ref linkedVents, "gvLinkedVents", LookMode.Reference);
+        if (Scribe.mode == LoadSaveMode.PostLoadInit)
+        {
+            linkedVents ??= new List<Thing>();
+            linkedVents.RemoveAll(t => t == null);
+        }
     }
 
     /// <summary>Called by GasDeviceRegistry every SensorInterval ticks.</summary>
@@ -163,6 +183,16 @@ public sealed class CompIntruderSensor : ThingComp
         stopWhenAllDowned = value;
     }
 
+    /// <summary>Called from ITab_GasSensor's vent checklist.</summary>
+    [SyncMethod]
+    public void ToggleLink(Thing vent)
+    {
+        if (!linkedVents.Remove(vent))
+        {
+            linkedVents.Add(vent);
+        }
+    }
+
     [SyncMethod]
     public void ApplySettings(bool newArmed, SensorTargets newTargets, int newLinger, bool newStopWhenAllDowned)
     {
@@ -195,13 +225,6 @@ public sealed class CompIntruderSensor : ThingComp
             icon = GasVentTextures.SensorArmed,
             isActive = () => armed,
             toggleAction = () => SetArmed(!armed)
-        };
-        yield return new Command_Action
-        {
-            defaultLabel = "GV_SensorTargets".Translate(),
-            defaultDesc = "GV_SensorTargetsDesc".Translate(),
-            icon = GasVentTextures.SensorTargets,
-            action = () => Find.WindowStack.Add(new FloatMenu(TargetMenuOptions()))
         };
         yield return new Command_Action
         {
@@ -258,6 +281,9 @@ public sealed class CompIntruderSensor : ThingComp
             sb.Append(", ").Append((triggered ? "GV_SensorInspectTriggered" : "GV_SensorInspectIdle").Translate());
         }
         sb.AppendLine().Append("GV_SensorInspectTargets".Translate(TargetsLabel()));
+        sb.AppendLine().Append(linkedVents.Count > 0
+            ? "GV_SensorInspectLinked".Translate(linkedVents.Count)
+            : "GV_SensorInspectRoomFallback".Translate());
         Room room = Room;
         if (room != null && room.TouchesMapEdge)
         {
@@ -268,19 +294,6 @@ public sealed class CompIntruderSensor : ThingComp
             sb.AppendLine().Append("GV_SensorInspectUnpowered".Translate());
         }
         return sb.ToString();
-    }
-
-    private List<FloatMenuOption> TargetMenuOptions()
-    {
-        List<FloatMenuOption> options = new List<FloatMenuOption>();
-        for (int i = 0; i < TargetOptions.Length; i++)
-        {
-            SensorTargets flag = TargetOptions[i];
-            bool on = (targets & flag) != 0;
-            string label = (on ? "[x] " : "[ ] ") + ("GV_SensorTarget_" + flag).Translate();
-            options.Add(new FloatMenuOption(label, () => SetTargets(targets ^ flag)));
-        }
-        return options;
     }
 
     private static string LingerLabel(int ticks)

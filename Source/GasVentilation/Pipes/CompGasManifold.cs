@@ -24,7 +24,7 @@ namespace GasVentilation;
 /// </summary>
 public sealed class CompGasManifold : CompResourceStorage
 {
-    private static readonly GasDef[] AllGases =
+    internal static readonly GasDef[] AllGases =
     {
         GVDefOf.GV_Gas_Toxin, GVDefOf.GV_Gas_Sedative, GVDefOf.GV_Gas_Haywire, GVDefOf.GV_Gas_Insecticide
     };
@@ -129,25 +129,6 @@ public sealed class CompGasManifold : CompResourceStorage
         SetActiveGas(newGas);
     }
 
-    public override IEnumerable<Gizmo> CompGetGizmosExtra()
-    {
-        foreach (Gizmo gizmo in base.CompGetGizmosExtra())
-        {
-            yield return gizmo;
-        }
-        if (parent.Faction != Faction.OfPlayer)
-        {
-            yield break;
-        }
-        yield return new Command_Action
-        {
-            defaultLabel = "GV_ManifoldGas".Translate(activeGas?.LabelCap ?? "GV_ManifoldGasNone".Translate()),
-            defaultDesc = "GV_ManifoldGasDesc".Translate(),
-            icon = GasVentTextures.GasSwatch,
-            action = () => Find.WindowStack.Add(new FloatMenu(GasMenuOptions()))
-        };
-    }
-
     /// <summary>
     /// Deliberately does not call base.CompInspectStringExtra(): VEF's CompResourceStorage/CompResource chain
     /// prints the stored amount twice over in slightly different phrasing, plus (in dev mode) a raw
@@ -164,19 +145,6 @@ public sealed class CompGasManifold : CompResourceStorage
             line += "\n" + "GV_ManifoldReconfiguring".Translate(pendingGas.LabelCap);
         }
         return line;
-    }
-
-    private List<FloatMenuOption> GasMenuOptions()
-    {
-        List<FloatMenuOption> options = new List<FloatMenuOption>();
-        for (int i = 0; i < AllGases.Length; i++)
-        {
-            GasDef gas = AllGases[i];
-            bool isTarget = (pendingGas ?? activeGas) == gas;
-            string label = (isTarget ? "[x] " : "[ ] ") + gas.LabelCap;
-            options.Add(new FloatMenuOption(label, () => RequestGasChange(gas)));
-        }
-        return options;
     }
 
     /// <summary>Ejects any racked shells, bursts any stored gas, and rebinds to the new gas's network.</summary>

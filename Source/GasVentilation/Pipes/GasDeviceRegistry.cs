@@ -197,16 +197,35 @@ public sealed class GasDeviceRegistry
             bool trigger = false;
             if (sensors.Count > 0)
             {
-                Room room = controller.OutputCell.GetRoom(map);
-                if (room != null)
+                // Explicitly linked sensors (see ITab_GasSensor) trigger this vent regardless of room; a sensor
+                // with no links falls back to the original behaviour, room membership.
+                Room room = null;
+                bool roomLooked = false;
+                for (int s = 0; s < sensors.Count; s++)
                 {
-                    for (int s = 0; s < sensors.Count; s++)
+                    CompIntruderSensor sensor = sensors[s];
+                    if (!sensor.Triggered)
                     {
-                        if (sensors[s].Triggered && sensors[s].Room == room)
+                        continue;
+                    }
+                    if (sensor.HasExplicitLinks)
+                    {
+                        if (sensor.IsLinkedTo(controller))
                         {
                             trigger = true;
                             break;
                         }
+                        continue;
+                    }
+                    if (!roomLooked)
+                    {
+                        room = controller.OutputCell.GetRoom(map);
+                        roomLooked = true;
+                    }
+                    if (room != null && sensor.Room == room)
+                    {
+                        trigger = true;
+                        break;
                     }
                 }
             }
