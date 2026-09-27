@@ -64,6 +64,7 @@
     <graphicData>
       <texPath>Things/Building/Linked/GV_HiddenPipe_Atlas</texPath>
     </graphicData>
+    <designatorDropdown>GV_Dropdown_HiddenGasPipes</designatorDropdown>
     <building>
       <ai_neverTrashThis>true</ai_neverTrashThis>
       <isTargetable>false</isTargetable>

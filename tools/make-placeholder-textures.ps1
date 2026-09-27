@@ -44,7 +44,7 @@ $Opposite = @{ up = 'down'; down = 'up'; right = 'left'; left = 'right' }
 # Kind: Front = front-facing Graphic_Multi, Wall = wall attachment Graphic_Multi, Ceiling/Floor = Graphic_Single.
 # Size = N/S size (W,H); Graphic_Multi east files use the rotated size. File may contain {0} for the gas name.
 $Buildings = @(
-    @{ Kind = 'Front';   Dir = 'Things/Building/GasVentilation/Manifold';    File = 'GV_Manifold_{0}';    PerGas = $true;  Size = 256, 128; Label = 'MANIFOLD' }
+    @{ Kind = 'Front';   Dir = 'Things/Building/GasVentilation/Manifold';    File = 'GV_Manifold_{0}';    PerGas = $true;  Size = 128, 128; Label = 'MANIFOLD' }
     @{ Kind = 'Front';   Dir = 'Things/Building/GasVentilation/VentWall';    File = 'GV_VentWall_{0}';    PerGas = $true;  Size = 128, 128; Label = 'VENT' }
     @{ Kind = 'Wall';    Dir = 'Things/Building/GasVentilation/VentMounted'; File = 'GV_VentMounted_{0}'; PerGas = $true;  Size = 128, 128; Label = 'VENT' }
     @{ Kind = 'Ceiling'; Dir = 'Things/Building/GasVentilation/VentCeiling'; File = 'GV_VentCeiling_{0}'; PerGas = $true;  Size = 128, 128; Label = 'CEIL' }

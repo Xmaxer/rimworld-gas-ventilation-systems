@@ -10,7 +10,6 @@
     <rotatable>true</rotatable>
     <selectable>true</selectable>
     <designationCategory>Security</designationCategory>
-    <designatorDropdown>GV_Dropdown_Vents</designatorDropdown>
     <researchPrerequisites>
       <li>GV_GasVentilation</li>
     </researchPrerequisites>
@@ -30,6 +29,7 @@
 
   <!-- Replaces a wall cell (vanilla Vent rules); blows into the cell it faces. -->
   <ThingDef ParentName="GV_VentBase" Name="GV_VentWallBase" Abstract="True">
+    <designatorDropdown>GV_Dropdown_VentWall</designatorDropdown>
     <graphicData>
       <graphicClass>Graphic_Multi</graphicClass>
       <damageData>
@@ -63,6 +63,7 @@
 
   <!-- Hangs on an existing wall (vanilla wall attachment, like the wall lamp); blows into its own cell. -->
   <ThingDef ParentName="GV_VentBase" Name="GV_VentMountedBase" Abstract="True">
+    <designatorDropdown>GV_Dropdown_VentMounted</designatorDropdown>
     <graphicData>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawOffsetNorth>(0,0,0.9)</drawOffsetNorth>
@@ -92,6 +93,7 @@
 
   <!-- Hangs from the roof above; drawn over pawns; falls when the roof is removed. -->
   <ThingDef ParentName="GV_VentBase" Name="GV_VentCeilingBase" Abstract="True">
+    <designatorDropdown>GV_Dropdown_VentCeiling</designatorDropdown>
     <graphicData>
       <graphicClass>Graphic_Single</graphicClass>
       <shaderType>Transparent</shaderType>
@@ -118,6 +120,7 @@
 
   <!-- Walkable floor grate; blows into its own cell; no furniture on top. -->
   <ThingDef ParentName="GV_VentBase" Name="GV_VentFloorBase" Abstract="True">
+    <designatorDropdown>GV_Dropdown_VentFloor</designatorDropdown>
     <graphicData>
       <graphicClass>Graphic_Single</graphicClass>
       <damageData>

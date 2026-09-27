@@ -4,10 +4,25 @@
     <defName>GV_Dropdown_GasPipes</defName>
   </DesignatorDropdownGroupDef>
   <DesignatorDropdownGroupDef>
+    <defName>GV_Dropdown_HiddenGasPipes</defName>
+  </DesignatorDropdownGroupDef>
+  <DesignatorDropdownGroupDef>
     <defName>GV_Dropdown_Manifolds</defName>
   </DesignatorDropdownGroupDef>
   <DesignatorDropdownGroupDef>
-    <defName>GV_Dropdown_Vents</defName>
+    <defName>GV_Dropdown_VentWall</defName>
+    <useGridMenu>true</useGridMenu>
+  </DesignatorDropdownGroupDef>
+  <DesignatorDropdownGroupDef>
+    <defName>GV_Dropdown_VentMounted</defName>
+    <useGridMenu>true</useGridMenu>
+  </DesignatorDropdownGroupDef>
+  <DesignatorDropdownGroupDef>
+    <defName>GV_Dropdown_VentCeiling</defName>
+    <useGridMenu>true</useGridMenu>
+  </DesignatorDropdownGroupDef>
+  <DesignatorDropdownGroupDef>
+    <defName>GV_Dropdown_VentFloor</defName>
     <useGridMenu>true</useGridMenu>
   </DesignatorDropdownGroupDef>
 </Defs>
