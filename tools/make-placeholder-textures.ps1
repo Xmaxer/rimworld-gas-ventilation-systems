@@ -30,6 +30,9 @@ $Palette = @{
     Ink        = '#1A1A1A'   # outlines
     Compounder = '#6E8F8C'   # muted grey-teal, not gas-tinted
     Sensor     = '#8C979F'   # neutral grey, not gas-tinted
+    Manifold   = '#8C8368'   # warm neutral grey -- holds one gas at a time, chosen at runtime, so not gas-tinted
+    Vent       = '#5C8AA6'   # neutral blue-grey -- outputs whichever gas(es) are toggled on, so not gas-tinted
+    Pipe       = '#8A9296'   # neutral steel -- carries all four gas networks at once, so not gas-tinted
     Accent     = '#3FB8AF'   # neutral UI accent
     Steel      = '#A7B0B8'
     Off        = '#8A8A8A'
@@ -48,15 +51,17 @@ $Rotations = @(
 $Opposite = @{ up = 'down'; down = 'up'; right = 'left'; left = 'right' }
 
 # Kind: Front = front-facing Graphic_Multi, Wall = wall attachment Graphic_Multi, Ceiling/Floor = Graphic_Single.
-# Size = N/S size (W,H); Graphic_Multi east files use the rotated size. File may contain {0} for the gas name.
+# Size = N/S size (W,H); Graphic_Multi east files use the rotated size. None of these are gas-tinted any more --
+# gas is a runtime setting (manifold: one at a time via a pawn job; vents: any combination via a toggle), not a
+# build-time def choice, so there is exactly one file per shape.
 $Buildings = @(
-    @{ Kind = 'Front';   Dir = 'Things/Building/GasVentilation/Manifold';    File = 'GV_Manifold_{0}';    PerGas = $true;  Size = 128, 128; Label = 'MANIFOLD' }
-    @{ Kind = 'Front';   Dir = 'Things/Building/GasVentilation/VentWall';    File = 'GV_VentWall_{0}';    PerGas = $true;  Size = 128, 128; Label = 'VENT' }
-    @{ Kind = 'Wall';    Dir = 'Things/Building/GasVentilation/VentMounted'; File = 'GV_VentMounted_{0}'; PerGas = $true;  Size = 128, 128; Label = 'VENT' }
-    @{ Kind = 'Ceiling'; Dir = 'Things/Building/GasVentilation/VentCeiling'; File = 'GV_VentCeiling_{0}'; PerGas = $true;  Size = 128, 128; Label = 'CEIL' }
-    @{ Kind = 'Floor';   Dir = 'Things/Building/GasVentilation/VentFloor';   File = 'GV_VentFloor_{0}';   PerGas = $true;  Size = 128, 128; Label = 'FLOOR' }
-    @{ Kind = 'Front';   Dir = 'Things/Building/GasVentilation';             File = 'GV_GasCompounder';   PerGas = $false; Size = 448, 192; Label = 'COMPOUNDER'; Color = $Palette.Compounder }
-    @{ Kind = 'Wall';    Dir = 'Things/Building/GasVentilation';             File = 'GV_IntruderSensor';  PerGas = $false; Size = 128, 128; Label = 'SENSOR';     Color = $Palette.Sensor }
+    @{ Kind = 'Front';   Dir = 'Things/Building/GasVentilation';             File = 'GV_Manifold';    Size = 128, 128; Label = 'MANIFOLD'; Color = $Palette.Manifold }
+    @{ Kind = 'Front';   Dir = 'Things/Building/GasVentilation/VentWall';    File = 'GV_VentWall';    Size = 128, 128; Label = 'VENT';     Color = $Palette.Vent }
+    @{ Kind = 'Wall';    Dir = 'Things/Building/GasVentilation/VentMounted'; File = 'GV_VentMounted'; Size = 128, 128; Label = 'VENT';     Color = $Palette.Vent }
+    @{ Kind = 'Ceiling'; Dir = 'Things/Building/GasVentilation/VentCeiling'; File = 'GV_VentCeiling'; Size = 128, 128; Label = 'CEIL';     Color = $Palette.Vent }
+    @{ Kind = 'Floor';   Dir = 'Things/Building/GasVentilation/VentFloor';   File = 'GV_VentFloor';   Size = 128, 128; Label = 'FLOOR';    Color = $Palette.Vent }
+    @{ Kind = 'Front';   Dir = 'Things/Building/GasVentilation';             File = 'GV_GasCompounder'; Size = 448, 192; Label = 'COMPOUNDER'; Color = $Palette.Compounder }
+    @{ Kind = 'Wall';    Dir = 'Things/Building/GasVentilation';             File = 'GV_IntruderSensor'; Size = 128, 128; Label = 'SENSOR';     Color = $Palette.Sensor }
 )
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -220,6 +225,11 @@ function New-PipeAtlas([string]$RelPath, $LineColor, $EdgeColor) {
             $hub = if ($ends.Count -eq 0) { $pass.Hub - 3 } else { $pass.Hub }
             Paint-Ellipse $c.G $cx $cy $hub $hub $pass.Color
         }
+        # Four small gas-coloured dots at the hub: this one physical pipe carries all four networks at once.
+        $dotOffsets = @(@(-3.2, -3.2), @(3.2, -3.2), @(-3.2, 3.2), @(3.2, 3.2))
+        for ($gi = 0; $gi -lt $GasColors.Count; $gi++) {
+            Paint-Ellipse $c.G ($cx + $dotOffsets[$gi][0]) ($cy + $dotOffsets[$gi][1]) 2.1 2.1 $GasColors[$gi]
+        }
         # Calibration number in the (always empty) top-left quadrant of the tile, fully inside the safe box.
         Draw-Label $c.G ([string]$index) (New-Rect ($ix + 2) ($iy + 2) 20 18) 16 -OutlineWidth 2
     }
@@ -331,44 +341,39 @@ function New-Icon([string]$RelPath, [scriptblock]$Paint) {
 # ---------------------------------------------------------------------------------------------------------------
 $ink = Get-Color $Palette.Ink
 $accent = Get-Color $Palette.Accent
+$GasColors = @($Gases.Values | ForEach-Object { Get-Color $_ })
+$pipeColor = Get-Color $Palette.Pipe
 
-# Pipe atlases (4 gas-tinted + 1 shared blueprint). GV_HiddenPipe_Atlas is deliberately not generated here.
-foreach ($gas in $Gases.Keys) {
-    $col = Get-Color $Gases[$gas]
-    New-PipeAtlas "Textures/Things/Building/Linked/GV_Pipe_${gas}_Atlas" $col (Get-Shade $col 0.35)
-}
+# Pipe atlases: one neutral multi-gas pipe (visible + hidden atlas is generated separately and untouched here)
+# plus the shared blueprint. Every tile gets four small gas-coloured dots at the hub -- one physical pipe run
+# carries all four networks at once, not a gas-tinted variant per network.
+New-PipeAtlas 'Textures/Things/Building/Linked/GV_Pipe_Atlas' $pipeColor (Get-Shade $pipeColor 0.35)
 New-PipeAtlas 'Textures/Things/Building/Linked/GV_Pipe_Blueprint_Atlas' (Get-Color '#BFD9FF' 170) (Get-Color '#5A8FD8' 200)
 
-# Buildings
+# Buildings -- one file per shape, no gas variants.
 foreach ($def in $Buildings) {
-    $variants = if ($def.PerGas) { @($Gases.Keys) } else { @('') }   # '' = the single shared, non-gas variant
-    foreach ($gas in $variants) {
-        $color = if ($gas) { Get-Color $Gases[$gas] } else { Get-Color $def.Color }
-        $base = "Textures/$($def.Dir)/" + ($def.File -f $gas)
-        switch ($def.Kind) {
-            'Front' {
-                foreach ($rot in $Rotations) {
-                    $w, $h = if ($rot.Suffix -eq 'east') { $def.Size[1], $def.Size[0] } else { $def.Size[0], $def.Size[1] }
-                    New-FrontBuilding "${base}_$($rot.Suffix)" $w $h $color $rot $def.Label
-                }
+    $color = Get-Color $def.Color
+    $base = "Textures/$($def.Dir)/$($def.File)"
+    switch ($def.Kind) {
+        'Front' {
+            foreach ($rot in $Rotations) {
+                $w, $h = if ($rot.Suffix -eq 'east') { $def.Size[1], $def.Size[0] } else { $def.Size[0], $def.Size[1] }
+                New-FrontBuilding "${base}_$($rot.Suffix)" $w $h $color $rot $def.Label
             }
-            'Wall'    { foreach ($rot in $Rotations) { New-WallMounted "${base}_$($rot.Suffix)" $def.Size[0] $color $rot $def.Label } }
-            'Ceiling' { New-CeilingVent $base $def.Size[0] $color $def.Label }
-            'Floor'   { New-FloorVent $base $def.Size[0] $color $def.Label }
         }
+        'Wall'    { foreach ($rot in $Rotations) { New-WallMounted "${base}_$($rot.Suffix)" $def.Size[0] $color $rot $def.Label } }
+        'Ceiling' { New-CeilingVent $base $def.Size[0] $color $def.Label }
+        'Floor'   { New-FloorVent $base $def.Size[0] $color $def.Label }
     }
 }
 
-# Items
+# Items -- canisters stay gas-flavoured (they're items you craft/haul, not building variants).
 New-Canister 'Textures/Things/Item/GasVentilation/GV_CanisterEmpty'
 foreach ($gas in $Gases.Keys) { New-Canister "Textures/Things/Item/GasVentilation/GV_Canister_$gas" (Get-Color $Gases[$gas]) }
 
-# Architect icons
-foreach ($gas in $Gases.Keys) {
-    $col = Get-Color $Gases[$gas]
-    New-Icon "Textures/UI/Icons/GasVentilation/GV_Pipe_$gas" { param($g) Add-PipeGlyph $g $col }
-    New-Icon "Textures/UI/Icons/GasVentilation/GV_HiddenPipe_$gas" { param($g) Add-PipeGlyph $g $col -Dashed }
-}
+# Architect icons -- one pipe icon, one hidden-pipe icon (both neutral, multi-gas).
+New-Icon 'Textures/UI/Icons/GasVentilation/GV_Pipe' { param($g) Add-PipeGlyph $g $pipeColor }
+New-Icon 'Textures/UI/Icons/GasVentilation/GV_HiddenPipe' { param($g) Add-PipeGlyph $g $pipeColor -Dashed }
 
 # Gizmo icons
 New-Icon 'Textures/UI/Commands/GV_VentMode_Off' {
@@ -378,6 +383,15 @@ New-Icon 'Textures/UI/Commands/GV_VentMode_Off' {
     Paint-Line $g 15 49 49 15 $grey 6 -Round
 }
 New-Icon 'Textures/UI/Commands/GV_VentMode_On' { param($g) Paint-Ellipse $g 32 32 24 24 $accent $ink 3 }
+New-Icon 'Textures/UI/Commands/GV_VentGases' {
+    param($g)
+    Paint-Path $g (New-RoundedRectPath (New-Rect 4 4 56 56) 8) $null $ink 3
+    for ($qi = 0; $qi -lt $GasColors.Count; $qi++) {
+        $qx = 6 + ($qi % 2) * 28; $qy = 6 + [Math]::Floor($qi / 2) * 28
+        $b = New-Object System.Drawing.SolidBrush $GasColors[$qi]
+        $g.FillRectangle($b, [single]$qx, [single]$qy, 26, 26); $b.Dispose()
+    }
+}
 New-Icon 'Textures/UI/Commands/GV_VentMode_Sensor' {
     param($g)
     Paint-Ellipse $g 32 32 25 25 $null $accent 5
