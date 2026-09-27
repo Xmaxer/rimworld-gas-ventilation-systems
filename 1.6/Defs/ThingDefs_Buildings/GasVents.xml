@@ -4,7 +4,7 @@
   <!-- ===================== Bases ===================== -->
 
   <ThingDef ParentName="BuildingBase" Name="GV_VentBase" Abstract="True">
-    <thingClass>Building</thingClass>
+    <thingClass>GasVentilation.Building_GasVent</thingClass>
     <category>Building</category>
     <tickerType>Never</tickerType>
     <rotatable>true</rotatable>

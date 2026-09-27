@@ -85,10 +85,24 @@ public sealed class ITab_GasSensor : ITab
                 Widgets.DrawHighlight(rowRect);
                 TargetHighlighter.Highlight(vent.parent, arrow: true, colonistBar: false, circleOverlay: true);
             }
+
+            // The name jumps the camera to the vent (a look, not a toggle); only the checkbox itself links it.
+            const float checkboxSize = 24f;
+            Rect checkboxRect = new Rect(rowRect.xMax - checkboxSize, rowRect.y + (rowRect.height - checkboxSize) / 2f, checkboxSize, checkboxSize);
+            Rect labelRect = new Rect(rowRect.x, rowRect.y, rowRect.width - checkboxSize - 4f, rowRect.height);
+            TextAnchor prevAnchor = Text.Anchor;
+            Text.Anchor = TextAnchor.MiddleLeft;
+            string label = $"{vent.parent.LabelCap} -- {("GV_VentMode_" + vent.Mode).Translate()}";
+            Widgets.Label(labelRect, label);
+            Text.Anchor = prevAnchor;
+            if (Widgets.ButtonInvisible(labelRect))
+            {
+                CameraJumper.TryJumpAndSelect(vent.parent);
+            }
+
             bool linked = sensor.IsLinkedTo(vent);
             bool prev = linked;
-            string label = $"{vent.parent.LabelCap} ({vent.parent.Position.x}, {vent.parent.Position.z}) -- {("GV_VentMode_" + vent.Mode).Translate()}";
-            Widgets.CheckboxLabeled(rowRect, label, ref linked);
+            Widgets.Checkbox(new Vector2(checkboxRect.x, checkboxRect.y), ref linked, checkboxSize);
             if (linked != prev)
             {
                 sensor.ToggleLink(vent.parent);
