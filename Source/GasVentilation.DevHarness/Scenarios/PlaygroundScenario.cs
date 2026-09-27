@@ -142,7 +142,13 @@ public sealed class PlaygroundScenario : HarnessScenario
         else
         {
             HarnessUtil.SpawnBuilding(GVDefOf.GV_HiddenPipe, new IntVec3(x, 0, outer.minZ), map, Rot4.North);
-            ventThing = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed(ventDefName), new IntVec3(x, 0, outer.minZ + 1), map, Rot4.North);
+            // GV_VentMounted is a wall attachment: RimWorld's own PowerConnectionMaker.TryConnectToAnyPowerNet
+            // calls GenConstruct.GetWallAttachedTo(parent).Position with no null-check, which NREs every
+            // single frame forever if the attachment isn't rotated to face an actual wall (the wall must sit
+            // at position + CardinalDirections[rotation], not just anywhere adjacent). South here points back
+            // at the boundary wall one cell behind it.
+            Rot4 rot = ventDefName == "GV_VentMounted" ? Rot4.South : Rot4.North;
+            ventThing = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed(ventDefName), new IntVec3(x, 0, outer.minZ + 1), map, rot);
         }
         Thing manifoldThing = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_Manifold"), new IntVec3(x, 0, outer.minZ - 3), map, Rot4.North);
         CompGasManifold manifold = manifoldThing.TryGetComp<CompGasManifold>();
@@ -179,16 +185,25 @@ public sealed class PlaygroundScenario : HarnessScenario
         return Describe(ventThing, $"one vent outputting both {gasA.label} and {gasB.label} at once, fed by two manifolds");
     }
 
-    /// <summary>One manifold, two vents on the same network -- confirms proportional throughput sharing under contention.</summary>
+    /// <summary>
+    /// One manifold, two wall vents on the same south wall, sharing one pipe network -- confirms proportional
+    /// throughput sharing under contention. Both verticals join a horizontal pipe row so the manifold (behind
+    /// its centre cell) is adjacent to the whole chain; PipeNet connectivity is pure cell-adjacency, so every
+    /// segment has to actually touch the next one.
+    /// </summary>
     private static string BuildContentionRoom(Map map, CellRect outer, GasDef gas)
     {
         HarnessUtil.BuildSealedRoom(map, outer, roofed: true);
         int x = outer.CenterCell.x;
         ThingDef pipe = DefDatabase<ThingDef>.GetNamed("GV_Pipe");
-        Thing ventA = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_VentWall"), new IntVec3(x, 0, outer.minZ), map, Rot4.North);
-        Thing ventB = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_VentMounted"), new IntVec3(outer.minX, 0, outer.CenterCell.z), map, Rot4.East);
-        HarnessUtil.SpawnBuilding(pipe, new IntVec3(x, 0, outer.minZ - 1), map, Rot4.North);
-        HarnessUtil.SpawnBuilding(pipe, new IntVec3(x, 0, outer.minZ - 2), map, Rot4.North);
+        Thing ventA = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_VentWall"), new IntVec3(x - 2, 0, outer.minZ), map, Rot4.North);
+        Thing ventB = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_VentWall"), new IntVec3(x + 2, 0, outer.minZ), map, Rot4.North);
+        HarnessUtil.SpawnBuilding(pipe, new IntVec3(x - 2, 0, outer.minZ - 1), map, Rot4.North);
+        HarnessUtil.SpawnBuilding(pipe, new IntVec3(x + 2, 0, outer.minZ - 1), map, Rot4.North);
+        for (int dx = -2; dx <= 2; dx++)
+        {
+            HarnessUtil.SpawnBuilding(pipe, new IntVec3(x + dx, 0, outer.minZ - 2), map, Rot4.North);
+        }
         CompGasManifold manifold = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_Manifold"), new IntVec3(x, 0, outer.minZ - 3), map, Rot4.North).TryGetComp<CompGasManifold>();
         manifold.SetActiveGas(gas);
         manifold.AddResource(2f);
