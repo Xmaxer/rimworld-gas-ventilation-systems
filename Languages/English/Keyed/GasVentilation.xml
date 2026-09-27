@@ -56,4 +56,5 @@
   <GV_GasSensorTab>Sensor</GV_GasSensorTab>
   <GV_GasSensorTriggers>Triggers</GV_GasSensorTriggers>
   <GV_GasSensorNoVents>No vents on this map yet.</GV_GasSensorNoVents>
+  <GV_SensorAutoSwitchedVentMode>{0} was not in Sensor mode; switched it to Sensor mode so this trigger link works.</GV_SensorAutoSwitchedVentMode>
 </LanguageData>

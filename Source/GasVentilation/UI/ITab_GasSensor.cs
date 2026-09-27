@@ -79,13 +79,24 @@ public sealed class ITab_GasSensor : ITab
         for (int i = 0; i < vents.Count; i++)
         {
             CompGasVentController vent = vents[i];
+            Rect rowRect = list.GetRect(RowHeight);
+            if (Mouse.IsOver(rowRect))
+            {
+                Widgets.DrawHighlight(rowRect);
+                TargetHighlighter.Highlight(vent.parent, arrow: true, colonistBar: false, circleOverlay: true);
+            }
             bool linked = sensor.IsLinkedTo(vent);
             bool prev = linked;
             string label = $"{vent.parent.LabelCap} ({vent.parent.Position.x}, {vent.parent.Position.z}) -- {("GV_VentMode_" + vent.Mode).Translate()}";
-            list.CheckboxLabeled(label, ref linked);
+            Widgets.CheckboxLabeled(rowRect, label, ref linked);
             if (linked != prev)
             {
                 sensor.ToggleLink(vent.parent);
+                if (linked && vent.Mode != VentMode.Sensor)
+                {
+                    vent.SetMode(VentMode.Sensor);
+                    Messages.Message("GV_SensorAutoSwitchedVentMode".Translate(vent.parent.LabelCap), vent.parent, MessageTypeDefOf.CautionInput);
+                }
             }
         }
         list.End();
