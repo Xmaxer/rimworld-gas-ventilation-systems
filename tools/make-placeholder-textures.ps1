@@ -4,7 +4,13 @@
 # every file it generates, so real art should replace this script's output, not be mixed into it.
 #
 # Pipe atlases double as a row-order calibration chart: every 64x64 tile carries its index, laid out with
-#   index = north*1 + east*2 + south*4 + west*8,  col = index % 4,  row = floor(index / 4)  (row 0 = top of the PNG)
+#   index = north*1 + east*2 + south*4 + west*8,  col = index % 4,  row = floor(index / 4)
+# CONFIRMED IN-GAME (calibration atlas read back against 9 known connection shapes, 9/9 match): the engine's
+# row 0 is the BOTTOM of the PNG, not the top (a Unity V-flip on the atlas UVs) -- so tile art for a given
+# index is placed at file row (3 - floor(index/4)), not floor(index/4). Column is not flipped.
+# Also confirmed from Verse.MaterialAtlasPool: mainTextureScale is 0.1875 of a 0.25-wide cell with 1/32
+# padding, i.e. only the inner 48x48 px of every 64x64 tile is ever sampled -- an 8px border on every edge
+# is invisible in-game. All art and labels below are inset into that safe inner box, not the full tile.
 # so placing a small pipe cluster in game shows directly whether row 0 lands at the top or bottom of the atlas.
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
@@ -195,22 +201,27 @@ function Draw-ArrowAndLabel($G, [System.Drawing.RectangleF]$Area, [string]$Dir, 
 function New-PipeAtlas([string]$RelPath, $LineColor, $EdgeColor) {
     $c = New-Canvas 256 256
     $tile = 64
+    $pad = 8  # px trimmed off every edge of every tile by the engine's atlas sampling (see note above)
+    $inner = $tile - 2 * $pad
     for ($index = 0; $index -lt 16; $index++) {
-        $ox = ($index % 4) * $tile; $oy = [Math]::Floor($index / 4) * $tile
+        $fileRow = 3 - [Math]::Floor($index / 4)  # row-flip: engine row 0 samples the bottom of the file
+        $ox = ($index % 4) * $tile; $oy = $fileRow * $tile
+        $ix = $ox + $pad; $iy = $oy + $pad  # inner (safe/visible) box origin for this tile
         $cx = $ox + $tile / 2; $cy = $oy + $tile / 2
         $ends = @()
-        if ($index -band 1) { $ends += , @($cx, $oy) }            # north
-        if ($index -band 2) { $ends += , @(($ox + $tile), $cy) }  # east
-        if ($index -band 4) { $ends += , @($cx, ($oy + $tile)) }  # south
-        if ($index -band 8) { $ends += , @($ox, $cy) }            # west
-        # Two passes (dark edge, then colour) so joins between segments stay clean. Flat caps meet the tile edge.
+        if ($index -band 1) { $ends += , @($cx, $iy) }              # north
+        if ($index -band 2) { $ends += , @(($ix + $inner), $cy) }   # east
+        if ($index -band 4) { $ends += , @($cx, ($iy + $inner)) }   # south
+        if ($index -band 8) { $ends += , @($ix, $cy) }              # west
+        # Two passes (dark edge, then colour) so joins between segments stay clean. Ends stop at the safe
+        # inner box, not the raw tile edge, so adjacent tiles still line up once the engine crops the border.
         foreach ($pass in @(@{ Color = $EdgeColor; Width = 16; Hub = 11 }, @{ Color = $LineColor; Width = 10; Hub = 8 })) {
             foreach ($e in $ends) { Paint-Line $c.G $cx $cy $e[0] $e[1] $pass.Color $pass.Width }
             $hub = if ($ends.Count -eq 0) { $pass.Hub - 3 } else { $pass.Hub }
             Paint-Ellipse $c.G $cx $cy $hub $hub $pass.Color
         }
-        # Calibration number in the (always empty) top-left quadrant of the tile.
-        Draw-Label $c.G ([string]$index) (New-Rect ($ox + 1) ($oy + 1) 25 23) 22 -OutlineWidth 2.5
+        # Calibration number in the (always empty) top-left quadrant of the tile, fully inside the safe box.
+        Draw-Label $c.G ([string]$index) (New-Rect ($ix + 2) ($iy + 2) 20 18) 16 -OutlineWidth 2
     }
     Save-Canvas $c $RelPath
 }
