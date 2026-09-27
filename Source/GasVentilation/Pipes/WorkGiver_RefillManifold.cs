@@ -48,7 +48,8 @@ public sealed class WorkGiver_RefillManifold : WorkGiver_Scanner
         }
         float fillEach = (best as Thing_GasCanister)?.fill ?? 1f;
         Job job = JobMaker.MakeJob(GVDefOf.GV_RefillManifold, t, best);
-        job.count = Mathf.Max(Mathf.CeilToInt(manifold.AmountCanAccept / fillEach), 1);
+        int wanted = Mathf.Max(Mathf.CeilToInt(manifold.AmountCanAccept / fillEach), 1);
+        job.count = Mathf.Min(wanted, best.stackCount);
         return job;
     }
 
