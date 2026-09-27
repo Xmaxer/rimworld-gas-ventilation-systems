@@ -13,4 +13,17 @@
       <li>Manipulation</li>
     </requiredCapacities>
   </WorkGiverDef>
+  <WorkGiverDef>
+    <defName>GV_RefillManifold</defName>
+    <label>refill gas manifold</label>
+    <giverClass>GasVentilation.WorkGiver_RefillManifold</giverClass>
+    <verb>refill</verb>
+    <gerund>refilling</gerund>
+    <workType>Hauling</workType>
+    <priorityInType>50</priorityInType>
+    <scanThings>true</scanThings>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
 </Defs>

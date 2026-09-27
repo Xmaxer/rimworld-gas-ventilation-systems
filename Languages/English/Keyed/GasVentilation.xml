@@ -19,6 +19,8 @@
   <GV_ManifoldGasDesc>Choose which gas this manifold accepts and feeds into its network. A pawn must carry out a short reconfigure task to change it; any stored gas is vented and racked canisters ejected when it does.</GV_ManifoldGasDesc>
   <GV_ManifoldReconfiguring>Reconfiguring for {0}...</GV_ManifoldReconfiguring>
   <GV_ManifoldStored>{0}: {1} / {2} canisters</GV_ManifoldStored>
+  <GV_CanisterFill>{0}% full</GV_CanisterFill>
+  <GV_NothingToRefill>No {0} canister to refill this with.</GV_NothingToRefill>
   <GV_SensorTriggered>(triggered)</GV_SensorTriggered>
   <GV_SensorIdle>(waiting)</GV_SensorIdle>
   <GV_CeilingVentFell>{0} fell from the ceiling after the roof above it was removed.</GV_CeilingVentFell>

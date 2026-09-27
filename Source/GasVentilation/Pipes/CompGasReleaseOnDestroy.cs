@@ -15,7 +15,8 @@ public sealed class CompGasReleaseOnDestroy : ThingComp
         {
             return;
         }
-        int amount = Mathf.RoundToInt(Props.gas.densityPerCanister * Props.canistersPerItem * parent.stackCount);
+        float fill = (parent as Thing_GasCanister)?.fill ?? 1f;
+        int amount = Mathf.RoundToInt(Props.gas.densityPerCanister * Props.canistersPerItem * fill * parent.stackCount);
         VentGasGrid.For(previousMap)?.ReleaseBurst(parent.Position, Props.gas, amount);
     }
 }

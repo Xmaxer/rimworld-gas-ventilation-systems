@@ -65,9 +65,6 @@
         <!-- Blocks hauler refill while unpowered (CompResourceStorage.AmountCanAccept) and rots stored gas
              away after an extended outage, the same way vanilla food storage requires power. -->
         <contentRequirePower>true</contentRequirePower>
-        <refillOptions>
-          <ratio>1</ratio>
-        </refillOptions>
       </li>
     </comps>
   </ThingDef>

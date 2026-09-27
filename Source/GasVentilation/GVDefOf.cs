@@ -19,6 +19,7 @@ public static class GVDefOf
 
     public static JobDef GV_FleeGas;
     public static JobDef GV_ReconfigureManifold;
+    public static JobDef GV_RefillManifold;
 
     static GVDefOf()
     {

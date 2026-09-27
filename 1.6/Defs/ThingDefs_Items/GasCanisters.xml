@@ -52,7 +52,13 @@
     </recipeMaker>
   </ThingDef>
 
-  <ThingDef ParentName="GV_CanisterBase">
+  <!-- Filled canisters track their own fill level (0-1); see GasVentilation.Thing_GasCanister. Freshly
+       crafted here, they default to fully full (1). -->
+  <ThingDef ParentName="GV_CanisterBase" Name="GV_CanisterFilledBase" Abstract="True">
+    <thingClass>GasVentilation.Thing_GasCanister</thingClass>
+  </ThingDef>
+
+  <ThingDef ParentName="GV_CanisterFilledBase">
     <defName>GV_Canister_Toxin</defName>
     <label>toxin canister</label>
     <description>A pressure canister filled with toxin gas agent. Load it into a toxin canister manifold. Releases its gas if destroyed.</description>
@@ -69,7 +75,7 @@
     </comps>
   </ThingDef>
 
-  <ThingDef ParentName="GV_CanisterBase">
+  <ThingDef ParentName="GV_CanisterFilledBase">
     <defName>GV_Canister_Sedative</defName>
     <label>sedative canister</label>
     <description>A pressure canister filled with sedative gas agent. Load it into a sedative canister manifold. Releases its gas if destroyed.</description>
@@ -86,7 +92,7 @@
     </comps>
   </ThingDef>
 
-  <ThingDef ParentName="GV_CanisterBase">
+  <ThingDef ParentName="GV_CanisterFilledBase">
     <defName>GV_Canister_Haywire</defName>
     <label>haywire canister</label>
     <description>A pressure canister filled with conductive nanite particulate. Load it into a haywire canister manifold. Releases its gas if destroyed.</description>
@@ -103,7 +109,7 @@
     </comps>
   </ThingDef>
 
-  <ThingDef ParentName="GV_CanisterBase">
+  <ThingDef ParentName="GV_CanisterFilledBase">
     <defName>GV_Canister_Insecticide</defName>
     <label>insecticide canister</label>
     <description>A pressure canister filled with insecticide agent. Load it into an insecticide canister manifold. Releases its gas if destroyed.</description>

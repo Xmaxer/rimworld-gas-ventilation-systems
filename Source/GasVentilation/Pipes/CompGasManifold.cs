@@ -10,17 +10,17 @@ namespace GasVentilation;
 /// <summary>
 /// VEF storage where one resource unit is one canister, configurable for any one gas at a time. Since
 /// <see cref="ThingComp.props"/> is shared by every spawned instance of the def, this comp clones it into an
-/// instance-owned copy the first time it spawns, then mutates only that copy's <c>gas</c>/<c>pipeNet</c>/
-/// <c>refillOptions.thing</c> when <see cref="SetActiveGas"/> runs -- never the shared def-level object.
+/// instance-owned copy the first time it spawns, then mutates only that copy's <c>gas</c>/<c>pipeNet</c> when
+/// <see cref="SetActiveGas"/> runs -- never the shared def-level object.
 ///
 /// Additions to VEF's storage:
 /// - the active gas is chosen by a pawn job (see JobDriver_ReconfigureManifold), not an instant toggle;
-/// - switching gas ejects any racked canister shells and bursts any stored gas, then re-registers with the
-///   new gas's PipeNet (mirroring PostDeSpawn/PostSpawnSetup's own unregister/register dance);
-/// - pawn refill is enabled by default on newly built manifolds;
-/// - the refill registration is cleaned up on despawn (VEF's toggle otherwise drops reinstalled manifolds);
+/// - switching gas ejects any racked canisters (full and a genuinely fractional partial, as real items -- see
+///   Thing_GasCanister) and re-registers with the new gas's PipeNet;
+/// - refilling from canisters is a custom job (WorkGiver_RefillManifold/JobDriver_RefillManifold), not VEF's
+///   stock one, since that assumes every canister contributes a fixed flat amount -- ours can be partial;
 /// - canister bodies are tracked, and drained ones are ejected as empty shells;
-/// - deconstruction returns full canisters, and destruction bursts the stored gas.
+/// - deconstruction returns full canisters (and a partial, as above), and destruction bursts the stored gas.
 /// </summary>
 public sealed class CompGasManifold : CompResourceStorage
 {
@@ -62,14 +62,7 @@ public sealed class CompGasManifold : CompResourceStorage
     {
         EnsureInstanceProps();
         base.PostSpawnSetup(respawningAfterLoad);
-        markedForRefill = true;
         shellCount = Mathf.Max(shellCount, BodiesFor(AmountStored));
-    }
-
-    public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
-    {
-        base.PostDeSpawn(map, mode);
-        map.GetComponent<PipeNetManager>()?.wantRefill.Remove(parent);
     }
 
     public override void PostExposeData()
@@ -226,16 +219,16 @@ public sealed class CompGasManifold : CompResourceStorage
     /// Drops the actual racked canisters, not a gas burst -- a canister is an ordinary item (stored, hauled,
     /// picked up) whether full, partially used or empty, and switching gas doesn't trigger it any more than
     /// taking it out of storage would. Mirrors PostDestroy's deconstruct handling exactly: full canisters of
-    /// the old gas come out intact, and only a genuinely fractional remainder (less than one canister, which
-    /// can't be represented as an item) is vented as a small burst alongside one empty shell.
+    /// the old gas come out intact, and a genuinely fractional remainder comes out too, as a real partially
+    /// filled canister (Thing_GasCanister.fill less than 1) rather than a burst.
     /// </summary>
     private void EjectOnSwitch(Map map)
     {
         float stored = AmountStored;
         int full = Mathf.FloorToInt(stored + 0.0001f);
         float partial = stored - full;
-        bool partialShell = partial > 0.001f;
-        int emptyShells = shellCount - full - (partialShell ? 1 : 0);
+        bool hasPartial = partial > 0.001f;
+        int emptyShells = shellCount - full - (hasPartial ? 1 : 0);
         IntVec3 cell = DropCell();
         if (full > 0)
         {
@@ -245,10 +238,9 @@ public sealed class CompGasManifold : CompResourceStorage
         {
             Drop(GVDefOf.GV_CanisterEmpty, emptyShells, cell, map);
         }
-        if (partialShell)
+        if (hasPartial)
         {
-            Drop(GVDefOf.GV_CanisterEmpty, 1, cell, map);
-            VentGasGrid.For(map)?.ReleaseBurst(parent.Position, activeGas, Mathf.RoundToInt(partial * activeGas.densityPerCanister));
+            DropPartialCanister(activeGas.canister, partial, cell, map);
         }
         Empty();
     }
@@ -276,8 +268,7 @@ public sealed class CompGasManifold : CompResourceStorage
                 }
                 if (partial > 0.001f)
                 {
-                    Drop(GVDefOf.GV_CanisterEmpty, 1, position, previousMap);
-                    VentGasGrid.For(previousMap)?.ReleaseBurst(position, gas, Mathf.RoundToInt(partial * gas.densityPerCanister));
+                    DropPartialCanister(gas.canister, partial, position, previousMap);
                 }
                 break;
             }
@@ -313,14 +304,7 @@ public sealed class CompGasManifold : CompResourceStorage
             destroyOptions = shared.destroyOptions,
             contentRequirePower = shared.contentRequirePower,
             preventRotInNegativeTemp = shared.preventRotInNegativeTemp,
-            daysToRotStart = shared.daysToRotStart,
-            refillOptions = new RefillOptions
-            {
-                alwaysRefill = shared.refillOptions.alwaysRefill,
-                refillTime = shared.refillOptions.refillTime,
-                refillTimeScalesWithAmount = shared.refillOptions.refillTimeScalesWithAmount,
-                ratio = shared.refillOptions.ratio
-            }
+            daysToRotStart = shared.daysToRotStart
         };
         props = instanceProps;
         ApplyActiveGasToProps();
@@ -334,7 +318,6 @@ public sealed class CompGasManifold : CompResourceStorage
         // be null, even before a gas is chosen. TransmitResourceNow (activeGas != null) is what really gates
         // network registration/emission, so this placeholder is otherwise inert.
         instanceProps.pipeNet = activeGas?.pipeNet ?? GVDefOf.GV_Gas_Toxin.pipeNet;
-        instanceProps.refillOptions.thing = activeGas?.canister;
     }
 
     private IntVec3 DropCell()
@@ -351,6 +334,13 @@ public sealed class CompGasManifold : CompResourceStorage
     {
         Thing thing = ThingMaker.MakeThing(def);
         thing.stackCount = count;
+        GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Near);
+    }
+
+    private static void DropPartialCanister(ThingDef canisterDef, float fill, IntVec3 cell, Map map)
+    {
+        Thing_GasCanister thing = (Thing_GasCanister)ThingMaker.MakeThing(canisterDef);
+        thing.fill = fill;
         GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Near);
     }
 }

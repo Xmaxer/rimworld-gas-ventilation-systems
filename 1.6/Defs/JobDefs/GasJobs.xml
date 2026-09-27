@@ -11,4 +11,9 @@
     <driverClass>GasVentilation.JobDriver_ReconfigureManifold</driverClass>
     <reportString>reconfiguring TargetA.</reportString>
   </JobDef>
+  <JobDef>
+    <defName>GV_RefillManifold</defName>
+    <driverClass>GasVentilation.JobDriver_RefillManifold</driverClass>
+    <reportString>refilling TargetA with TargetB.</reportString>
+  </JobDef>
 </Defs>

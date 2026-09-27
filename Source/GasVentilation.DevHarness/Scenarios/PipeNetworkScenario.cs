@@ -55,7 +55,12 @@ public sealed class PipeNetworkScenario : HarnessScenario
         {
             HarnessUtil.Screenshot("pipes-t600");
         }
-        if (ticksSinceSetup < 2400)
+        // 2400 previously left a razor-thin margin: AmountStored crosses below 3 canisters only shortly
+        // before this point, and the manifold's own CompTickRare (which ejects the empty shell once bodies
+        // drops) fires on its own ~250-tick offset -- so the check could run before that catch-up tick, even
+        // though nothing was actually wrong (confirmed against the prior commit: same failure, unrelated to
+        // this change). 2650 gives at least one full rare-tick cycle of headroom after the crossing.
+        if (ticksSinceSetup < 2650)
         {
             return ScenarioStatus.Running;
         }
