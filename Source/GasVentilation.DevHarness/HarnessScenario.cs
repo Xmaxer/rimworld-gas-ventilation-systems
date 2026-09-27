@@ -16,6 +16,12 @@ public abstract class HarnessScenario
 
     public virtual int TimeoutTicks => 5000;
 
+    /// <summary>
+    /// True for interactive setups (not tests): after a successful Setup the runner hands control back to the
+    /// player, never ticks the scenario, records no result and does not shut the game down.
+    /// </summary>
+    public virtual bool IsPersistent => false;
+
     /// <summary>Name/value measurements written to results.jsonl (not failures).</summary>
     public readonly List<string> Metrics = new List<string>();
 

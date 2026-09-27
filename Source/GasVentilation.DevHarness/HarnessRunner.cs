@@ -22,6 +22,7 @@ public sealed class HarnessRunner : GameComponent
             ["breakout"] = () => new Scenarios.BreakoutScenario(),
             ["balance"] = () => new Scenarios.BalanceScenario(),
             ["perf"] = () => new Scenarios.PerfScenario(),
+            ["playground"] = () => new Scenarios.PlaygroundScenario(),
         };
 
     private readonly List<HarnessScenario> queue = new List<HarnessScenario>();
@@ -62,6 +63,28 @@ public sealed class HarnessRunner : GameComponent
         }
         active = true;
         Log.Message($"[GasVentHarness] active with {queue.Count} scenario(s)");
+    }
+
+    /// <summary>
+    /// Runs after FinalizeInit when a save is loaded. Persistent (interactive) scenarios only make sense on a new
+    /// game: tools/play.ps1 writes request.txt on every launch, and re-running the playground on a loaded colony
+    /// would clear its corner and drop duplicate resources.
+    /// </summary>
+    public override void LoadedGame()
+    {
+        int before = queue.Count;
+        for (int i = queue.Count - 1; i >= 0; i--)
+        {
+            if (queue[i].IsPersistent)
+            {
+                queue.RemoveAt(i);
+            }
+        }
+        if (before > 0 && queue.Count == 0)
+        {
+            active = false;
+            Log.Message("[GasVentHarness] loaded save: skipping persistent scenario(s); harness inactive");
+        }
     }
 
     public override void GameComponentUpdate()
@@ -114,6 +137,11 @@ public sealed class HarnessRunner : GameComponent
                 current = null;
                 return;
             }
+            if (current.IsPersistent)
+            {
+                HandOffToPlayer();
+                return;
+            }
             setupTick = Find.TickManager.TicksGame;
             return;
         }
@@ -139,6 +167,19 @@ public sealed class HarnessRunner : GameComponent
             Record(status, elapsed);
             current = null;
         }
+    }
+
+    /// <summary>
+    /// A persistent scenario set up successfully: stop driving the game (no forced Ultrafast, no window closing,
+    /// no timeout, no results, no shutdown) and leave it paused for the player.
+    /// </summary>
+    private void HandOffToPlayer()
+    {
+        Log.Message($"[GasVentHarness] {current.Name}: persistent setup complete, control handed back to the player");
+        current = null;
+        queue.Clear();
+        active = false;
+        Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
     }
 
     private void Record(ScenarioStatus status, int ticks)
