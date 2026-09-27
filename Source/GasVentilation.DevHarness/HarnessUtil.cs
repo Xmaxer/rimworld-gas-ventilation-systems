@@ -28,8 +28,22 @@ public static class HarnessUtil
         int x0 = 10 + (index % 4) * 30;
         int z0 = 10 + (index / 4) * 30;
         CellRect rect = new CellRect(x0, z0, 24, 24).ClipInsideMap(map);
+        FlattenCells(map, rect);
+        return rect;
+    }
+
+    /// <summary>Concretes, unroofs and unfogs the whole map, destroying anything natural on it (rocks, trees,
+    /// water, map-gen debris). Dev convenience only: PlaygroundScenario uses it so the interactive test gallery
+    /// is never blocked by terrain, and colonists can walk to any part of the map instantly.</summary>
+    public static void FlattenMap(Map map)
+    {
+        FlattenCells(map, map.AllCells);
+    }
+
+    private static void FlattenCells(Map map, IEnumerable<IntVec3> cells)
+    {
         List<Thing> doomed = new List<Thing>();
-        foreach (IntVec3 c in rect)
+        foreach (IntVec3 c in cells)
         {
             List<Thing> things = c.GetThingList(map);
             for (int i = 0; i < things.Count; i++)
@@ -51,7 +65,17 @@ public static class HarnessUtil
                 doomed[i].Destroy(DestroyMode.Vanish);
             }
         }
-        return rect;
+    }
+
+    /// <summary>Despawns and respawns a pawn at a new cell -- a plain Position set doesn't update spawned-position
+    /// tracking (pathing grid, region links), which a debug teleport still needs to keep consistent.</summary>
+    public static void Teleport(Pawn pawn, IntVec3 cell, Map map)
+    {
+        if (pawn.Spawned)
+        {
+            pawn.DeSpawn(DestroyMode.Vanish);
+        }
+        GenSpawn.Spawn(pawn, cell, map);
     }
 
     /// <summary>
