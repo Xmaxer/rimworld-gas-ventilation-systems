@@ -13,6 +13,7 @@ public static class GasVentTextures
     public static readonly Texture2D SensorArmed = Load("UI/Commands/GV_SensorArmed");
     public static readonly Texture2D SensorLinger = Load("UI/Commands/GV_SensorLinger");
     public static readonly Texture2D SensorStopWhenDowned = Load("UI/Commands/GV_SensorStopWhenDowned");
+    public static readonly Texture2D DoorLocked = Load("UI/Overlays/GV_DoorLocked");
     public static readonly Texture2D Copy = Load("UI/Buttons/Copy");
     public static readonly Texture2D Paste = Load("UI/Buttons/Paste");
 

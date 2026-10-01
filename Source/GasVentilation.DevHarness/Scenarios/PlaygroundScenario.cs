@@ -108,6 +108,7 @@ public sealed class PlaygroundScenario : HarnessScenario
         descriptions.Add(BuildContentionRoom(map, RoomOuter(galleryOrigin, index++), toxin));
         descriptions.Add(BuildSensorRoom(map, RoomOuter(galleryOrigin, index++), sedative));
         descriptions.Add(BuildRestockRoom(map, RoomOuter(galleryOrigin, index++), toxin, sedative, haywire, insecticide));
+        descriptions.Add(BuildDoorLockRoom(map, RoomOuter(galleryOrigin, index++)));
 
         return descriptions;
     }
@@ -233,6 +234,25 @@ public sealed class PlaygroundScenario : HarnessScenario
         controller.ToggleGas(gas.ventFlag);
         controller.SetMode(VentMode.Sensor);
         return Describe(ventThing, $"{gas.label} sensor room -- vent stays idle until a hostile walks in");
+    }
+
+    /// <summary>
+    /// Sealed room whose south wall cell is a powered door instead of plain wall, plus an intruder sensor
+    /// inside linked to that door (CompIntruderSensor.ToggleDoorLink). Default targets are hostiles only, so
+    /// walking a hostile up to the door locks it while colonists pass freely; toggling the sensor's "Colonists"
+    /// target in its ITab locks it against colonists too, for testing the dangerous opt-in case.
+    /// </summary>
+    private static string BuildDoorLockRoom(Map map, CellRect outer)
+    {
+        CellRect inner = HarnessUtil.BuildSealedRoom(map, outer, roofed: true);
+        int x = outer.CenterCell.x;
+        IntVec3 doorCell = new IntVec3(x, 0, outer.minZ);
+        doorCell.GetFirstThing(map, ThingDefOf.Wall)?.Destroy(DestroyMode.Vanish);
+        Thing doorThing = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("Autodoor"), doorCell, map, Rot4.North, ThingDefOf.Plasteel);
+        Thing sensorThing = HarnessUtil.SpawnBuilding(DefDatabase<ThingDef>.GetNamed("GV_IntruderSensor"), new IntVec3(x, 0, inner.maxZ), map, Rot4.North);
+        sensorThing.TryGetComp<CompIntruderSensor>().ToggleDoorLink(doorThing);
+        return Describe(doorThing, "autodoor linked to an intruder sensor -- walk a hostile up to lock it; " +
+            "toggle the sensor's \"Colonists\" target (Sensor tab) to also lock it against colonists");
     }
 
     /// <summary>Unconfigured manifold plus a stack of full canisters for every gas, for testing reconfigure/refill jobs by hand.</summary>

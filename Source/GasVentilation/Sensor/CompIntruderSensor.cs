@@ -13,7 +13,8 @@ public sealed class CompIntruderSensor : ThingComp
 
     internal static readonly SensorTargets[] TargetOptions =
     {
-        SensorTargets.Humanlikes, SensorTargets.Mechanoids, SensorTargets.Insectoids, SensorTargets.Animals, SensorTargets.IncludeNonHostile
+        SensorTargets.Humanlikes, SensorTargets.Mechanoids, SensorTargets.Insectoids, SensorTargets.Animals,
+        SensorTargets.IncludeNonHostile, SensorTargets.Colonists
     };
 
     private static bool clipboardSet;
@@ -35,6 +36,10 @@ public sealed class CompIntruderSensor : ThingComp
     /// vent is linked, the sensor only ever triggers its links -- room membership stops mattering for it.</summary>
     private List<Thing> linkedVents = new List<Thing>();
 
+    /// <summary>Explicitly linked powered doors (see ITab_GasSensor). Unlike vents, doors have no room-based
+    /// fallback -- a door only ever locks because it's linked to a sensor that is currently triggered.</summary>
+    private List<Thing> linkedDoors = new List<Thing>();
+
     public bool Triggered => triggered;
 
     public bool Armed => armed;
@@ -54,6 +59,15 @@ public sealed class CompIntruderSensor : ThingComp
     public bool IsLinkedTo(CompGasVentController controller)
     {
         return controller != null && linkedVents.Contains(controller.parent);
+    }
+
+    public bool HasExplicitDoorLinks => linkedDoors.Count > 0;
+
+    public IReadOnlyList<Thing> LinkedDoors => linkedDoors;
+
+    public bool IsLinkedToDoor(Thing door)
+    {
+        return door != null && linkedDoors.Contains(door);
     }
 
     public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -80,10 +94,13 @@ public sealed class CompIntruderSensor : ThingComp
         Scribe_Values.Look(ref triggered, "gvTriggered");
         Scribe_Values.Look(ref lastSeenTick, "gvLastSeenTick", -99999);
         Scribe_Collections.Look(ref linkedVents, "gvLinkedVents", LookMode.Reference);
+        Scribe_Collections.Look(ref linkedDoors, "gvLinkedDoors", LookMode.Reference);
         if (Scribe.mode == LoadSaveMode.PostLoadInit)
         {
             linkedVents ??= new List<Thing>();
             linkedVents.RemoveAll(t => t == null);
+            linkedDoors ??= new List<Thing>();
+            linkedDoors.RemoveAll(t => t == null);
         }
     }
 
@@ -125,11 +142,26 @@ public sealed class CompIntruderSensor : ThingComp
 
     private bool Matches(Pawn pawn)
     {
-        if (pawn.Dead || pawn.Faction == Faction.OfPlayer || pawn.IsPrisonerOfColony || pawn.IsSlaveOfColony)
+        return MatchesTargets(pawn, targets);
+    }
+
+    /// <summary>Shared by sensor detection and <see cref="CompDoorLock"/> (a locked door blocks exactly the
+    /// pawns its linking sensor(s) would detect). Colonists are excluded unless <see cref="SensorTargets.Colonists"/>
+    /// is set; prisoners and slaves are always excluded regardless -- they're never "the colony" for this purpose.</summary>
+    internal static bool MatchesTargets(Pawn pawn, SensorTargets targets)
+    {
+        if (pawn.Dead || pawn.IsPrisonerOfColony || pawn.IsSlaveOfColony)
         {
             return false;
         }
-        if ((targets & SensorTargets.IncludeNonHostile) == 0 && !pawn.HostileTo(Faction.OfPlayer))
+        if (pawn.Faction == Faction.OfPlayer)
+        {
+            if ((targets & SensorTargets.Colonists) == 0)
+            {
+                return false;
+            }
+        }
+        else if ((targets & SensorTargets.IncludeNonHostile) == 0 && !pawn.HostileTo(Faction.OfPlayer))
         {
             return false;
         }
@@ -190,6 +222,16 @@ public sealed class CompIntruderSensor : ThingComp
         if (!linkedVents.Remove(vent))
         {
             linkedVents.Add(vent);
+        }
+    }
+
+    /// <summary>Called from ITab_GasSensor's door checklist.</summary>
+    [SyncMethod]
+    public void ToggleDoorLink(Thing door)
+    {
+        if (!linkedDoors.Remove(door))
+        {
+            linkedDoors.Add(door);
         }
     }
 
@@ -284,6 +326,10 @@ public sealed class CompIntruderSensor : ThingComp
         sb.AppendLine().Append(linkedVents.Count > 0
             ? "GV_SensorInspectLinked".Translate(linkedVents.Count)
             : "GV_SensorInspectRoomFallback".Translate());
+        if (linkedDoors.Count > 0)
+        {
+            sb.AppendLine().Append("GV_SensorInspectLinkedDoors".Translate(linkedDoors.Count));
+        }
         Room room = Room;
         if (room != null && room.TouchesMapEdge)
         {

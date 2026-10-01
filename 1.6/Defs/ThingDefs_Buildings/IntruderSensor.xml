@@ -3,7 +3,7 @@
   <ThingDef ParentName="BuildingBase">
     <defName>GV_IntruderSensor</defName>
     <label>intruder sensor</label>
-    <description>A wall-mounted motion and thermal sensor. While armed and powered, it opens every sensor-controlled gas vent in its room when chosen targets enter, and closes them again after they leave. It does not work in rooms open to the map edge.</description>
+    <description>A wall-mounted motion and thermal sensor. While armed and powered, it opens every sensor-controlled gas vent in its room when chosen targets enter, and closes them again after they leave. It can also lock any powered door linked to it for as long as it stays triggered. It does not work in rooms open to the map edge.</description>
     <thingClass>Building</thingClass>
     <category>Building</category>
     <tickerType>Never</tickerType>

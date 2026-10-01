@@ -33,6 +33,7 @@
   <GV_SensorTarget_Insectoids>Insectoids</GV_SensorTarget_Insectoids>
   <GV_SensorTarget_Animals>Animals</GV_SensorTarget_Animals>
   <GV_SensorTarget_IncludeNonHostile>Include non-hostile outsiders</GV_SensorTarget_IncludeNonHostile>
+  <GV_SensorTarget_Colonists>Colonists</GV_SensorTarget_Colonists>
   <GV_SensorTarget_None>none</GV_SensorTarget_None>
   <GV_SensorLinger>Linger: {0}</GV_SensorLinger>
   <GV_SensorLingerDesc>How long vents stay open after the last target leaves the room.</GV_SensorLingerDesc>
@@ -52,9 +53,15 @@
   <GV_SensorInspectUnpowered>No power.</GV_SensorInspectUnpowered>
   <GV_SensorInspectLinked>Triggers {0} linked vent(s).</GV_SensorInspectLinked>
   <GV_SensorInspectRoomFallback>No vents linked -- triggers every Sensor-mode vent in this room.</GV_SensorInspectRoomFallback>
+  <GV_SensorInspectLinkedDoors>Locks {0} linked door(s).</GV_SensorInspectLinkedDoors>
   <GV_GasManifoldTab>Gas</GV_GasManifoldTab>
   <GV_GasSensorTab>Sensor</GV_GasSensorTab>
   <GV_GasSensorTriggers>Triggers</GV_GasSensorTriggers>
   <GV_GasSensorNoVents>No vents on this map yet.</GV_GasSensorNoVents>
+  <GV_GasSensorLocks>Locks</GV_GasSensorLocks>
+  <GV_GasSensorNoDoors>No powered doors on this map yet.</GV_GasSensorNoDoors>
+  <GV_GasSensorNoDoorsLinked>No doors linked -- this sensor does not lock anything.</GV_GasSensorNoDoorsLinked>
+  <GV_DoorLockedInspect>Locked (gas sensor)</GV_DoorLockedInspect>
+  <GV_DoorLockedDisablesHoldOpen>A gas sensor is holding this door locked.</GV_DoorLockedDisablesHoldOpen>
   <GV_SensorAutoSwitchedVentMode>{0} was not in Sensor mode; switched it to Sensor mode so this trigger link works.</GV_SensorAutoSwitchedVentMode>
 </LanguageData>

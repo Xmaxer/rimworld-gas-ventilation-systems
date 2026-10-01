@@ -17,6 +17,7 @@ public sealed class GasDeviceRegistry
     private readonly List<CompGasVent> vents = new List<CompGasVent>();
     private readonly List<CompGasVentController> controllers = new List<CompGasVentController>();
     private readonly List<CompIntruderSensor> sensors = new List<CompIntruderSensor>();
+    private readonly List<CompDoorLock> doorLocks = new List<CompDoorLock>();
     private readonly List<CompGasVentController> roofCheckVents = new List<CompGasVentController>();
     private readonly List<int> roofCheckTicks = new List<int>();
     private readonly List<Thing> tmpThings = new List<Thing>();
@@ -68,6 +69,8 @@ public sealed class GasDeviceRegistry
 
     public IReadOnlyList<CompIntruderSensor> Sensors => sensors;
 
+    public IReadOnlyList<CompDoorLock> DoorLocks => doorLocks;
+
     public void Register(CompIntruderSensor sensor)
     {
         if (!sensors.Contains(sensor))
@@ -79,6 +82,19 @@ public sealed class GasDeviceRegistry
     public void Deregister(CompIntruderSensor sensor)
     {
         sensors.Remove(sensor);
+    }
+
+    public void RegisterDoorLock(CompDoorLock doorLock)
+    {
+        if (!doorLocks.Contains(doorLock))
+        {
+            doorLocks.Add(doorLock);
+        }
+    }
+
+    public void DeregisterDoorLock(CompDoorLock doorLock)
+    {
+        doorLocks.Remove(doorLock);
     }
 
     public void ScheduleRoofCheck(CompGasVentController controller)
@@ -101,7 +117,7 @@ public sealed class GasDeviceRegistry
                 }
             }
         }
-        if ((sensors.Count > 0 || controllers.Count > 0) && ticksGame % SensorInterval == 0)
+        if ((sensors.Count > 0 || controllers.Count > 0 || doorLocks.Count > 0) && ticksGame % SensorInterval == 0)
         {
             EvaluateSensors(ticksGame);
         }
@@ -230,6 +246,20 @@ public sealed class GasDeviceRegistry
                 }
             }
             controller.SensorTriggered = trigger;
+        }
+        for (int i = 0; i < doorLocks.Count; i++)
+        {
+            CompDoorLock doorLock = doorLocks[i];
+            SensorTargets locked = SensorTargets.None;
+            for (int s = 0; s < sensors.Count; s++)
+            {
+                CompIntruderSensor sensor = sensors[s];
+                if (sensor.Triggered && sensor.IsLinkedToDoor(doorLock.parent))
+                {
+                    locked |= sensor.Targets;
+                }
+            }
+            doorLock.SetLockedTargets(locked);
         }
     }
 
