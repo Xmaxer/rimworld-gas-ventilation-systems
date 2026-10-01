@@ -8,14 +8,17 @@
 # The profile persists between runs (unlike the smoke-test profile, which is wiped every time),
 # so a test colony you build survives a re-launch.
 #
-# By default it also requests the DevHarness "playground" scenario: when you start a NEW colony,
-# the mod's research is finished, starter materials are dropped next to your colonists and a small
-# sealed demo room (toxin manifold -> pipe -> vent On) is built in the south-west corner, then the
-# game is handed back to you (paused). Loaded saves are left alone. -NoPlayground skips all that.
+# By default it also requests a DevHarness persistent scenario (-Scenario, default "playground"):
+# when you start a NEW colony, the mod's research is finished, starter materials are dropped next to
+# your colonists and a small sealed demo room (toxin manifold -> pipe -> vent On) is built in the
+# south-west corner, then the game is handed back to you (paused). Loaded saves are left alone.
+# -Scenario showcase instead builds the four-room trailer-footage set (see ShowcaseScenario.cs).
+# -NoPlayground skips requesting any scenario at all.
 param(
     [string]$RimWorldDir = 'C:\Program Files (x86)\Steam\steamapps\common\RimWorld',
     [switch]$SkipDeploy,
-    [switch]$NoPlayground
+    [switch]$NoPlayground,
+    [string]$Scenario = 'playground'
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
@@ -95,11 +98,11 @@ $harnessDir = Join-Path $profileDir 'GasVentHarness'
 $requestPath = Join-Path $harnessDir 'request.txt'
 if ($NoPlayground) {
     Remove-Item -Force $requestPath -ErrorAction SilentlyContinue
-    Write-Output 'Playground disabled: new colonies start untouched.'
+    Write-Output 'Scenario disabled: new colonies start untouched.'
 } else {
     New-Item -ItemType Directory -Force $harnessDir | Out-Null
-    Set-Content -Encoding ASCII $requestPath 'playground'
-    Write-Output 'Playground requested: a new colony gets research finished, starter materials and a demo room.'
+    Set-Content -Encoding ASCII $requestPath $Scenario
+    Write-Output "Scenario '$Scenario' requested on a new colony."
 }
 
 Write-Output ''
