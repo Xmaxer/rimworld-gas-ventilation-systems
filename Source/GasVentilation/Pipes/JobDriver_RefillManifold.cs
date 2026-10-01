@@ -25,7 +25,7 @@ public sealed class JobDriver_RefillManifold : JobDriver
     protected override IEnumerable<Toil> MakeNewToils()
     {
         this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
-        this.FailOnDespawnedNullOrForbidden(TargetIndex.B);
+        this.FailOnDestroyedNullOrForbidden(TargetIndex.B);
 
         yield return Toils_Reserve.Reserve(TargetIndex.B, stackCount: job.count);
         yield return Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.ClosestTouch)
