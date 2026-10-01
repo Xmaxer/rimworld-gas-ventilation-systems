@@ -7,8 +7,8 @@ description: Use when adding or restyling a Linked-graphic connection atlas (a 4
 
 A Linked atlas (e.g. the pipe atlas) is a single 256x256 PNG holding 16 tiles of 64x64 px,
 one per possible neighbor-connection shape, in the same layout vanilla uses for its power
-conduit atlas. See `docs/texture-spec.md` for the authoritative layout rules; the two that
-matter most for art safety:
+conduit atlas. See `docs/texture-spec.md` (gitignored, local-only -- ask the user for it if
+it's missing) for the authoritative layout rules; the two that matter most for art safety:
 
 - The engine samples **row 0 from the bottom of the file** (a Unity V-flip specific to how
   this atlas is indexed into a grid — this is *not* a general property of ordinary sprites;

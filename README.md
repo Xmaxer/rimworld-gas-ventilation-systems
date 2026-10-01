@@ -37,6 +37,5 @@ way out.
 - Package: `tools/package.ps1`, which writes `dist/GasVentilationSystems`. Upload that folder, never the repo.
 - In-game tests: `tools/smoke-test.ps1 -Scenarios boot,grid,pipes,vents,effects,sensor,flee,breakout`. Needs Steam
   running and RimWorld closed. Add `perf` (per-tick budgets) and `balance` (balance metrics) for a full run.
-- Design: `docs/superpowers/specs/`. Research: `docs/research/`. Art: `docs/texture-spec.md`.
 
 Licence: MIT (see `LICENSE`).

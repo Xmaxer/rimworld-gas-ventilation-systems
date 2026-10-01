@@ -1,0 +1,99 @@
+[img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/About/Preview.png[/img]
+
+[h1]Gas Ventilation Systems[/h1]
+
+Pipe four weaponised gases around your base with Vanilla Expanded Framework pipes. Craft gas canisters, rack them in canister manifolds, and release the gas through wall, wall-mounted, ceiling or floor vents. Vents can be switched by hand or armed with an intruder sensor -- and that same sensor can lock a nearby powered door shut while it's tripped, sealing whoever (or whatever) set it off inside with the gas.
+
+[hr][/hr]
+
+[h2]The Four Gases[/h2]
+
+[list]
+[*][b]Toxin gas[/b] -- a caustic gas that burns the lungs of organic, breathing creatures.
+[*][b]Sedative gas[/b] -- a fast-acting anaesthetic that knocks organic, breathing creatures unconscious. Great for taking prisoners.
+[*][b]Haywire gas[/b] -- a cloud of conductive nanite particulate that shorts out and scrambles mechanoids, drones and androids.
+[*][b]Insecticide gas[/b] -- a persistent insecticide that slowly poisons insectoids.
+[/list]
+
+Gas spreads cell by cell like vanilla gas, is blocked by walls and closed doors, and creatures try to escape it.
+
+[hr][/hr]
+
+[h2]How It All Fits Together[/h2]
+
+[olist]
+[*]Craft an empty canister, then fill it at a [b]Gas Compounder[/b].
+[*]Load filled canisters into a [b]Canister Manifold[/b], configured for the gas you want it to supply.
+[*]Connect the manifold to a vent through pipes -- visible or hidden under walls and floors.
+[*]Switch the vent on by hand, or arm it with an [b]Intruder Sensor[/b] so it only opens when something walks in.
+[*]Optionally, link that same sensor to a nearby powered door. While it's tripped, the door locks -- even overriding Hold Open -- so whatever triggered it doesn't walk back out.
+[/olist]
+
+[hr][/hr]
+
+[h2]Buildings[/h2]
+
+[h3]Gas Compounder[/h3]
+[img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/Textures/Things/Building/GasVentilation/GV_GasCompounder_south.png[/img]
+A pressurised mixing station that synthesises gas agents and fills empty gas canisters with them. A 3x1 workbench, same footprint as the vanilla machining table.
+
+[h3]Canister Manifold[/h3]
+[img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/Textures/Things/Building/GasVentilation/GV_Manifold_south.png[/img]
+Racks up to four canisters and feeds their gas into whichever network it's configured for. A pawn reconfigures it with a short job (like flicking a switch) to change which gas it accepts -- any stored gas vents out and racked canisters eject when it does. Haulers keep it topped up automatically, and drained canisters come back out as empty shells, ready to refill.
+
+[h3]Gas Wall Vent[/h3]
+[img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/Textures/Things/Building/GasVentilation/VentWall/GV_VentWall_north.png[/img]
+Replaces a wall section and blows gas into the room it faces. Connects to pipes on any side, including hidden pipes under the neighbouring walls.
+
+[h3]Gas Wall-Mounted Vent[/h3]
+[img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/Textures/Things/Building/GasVentilation/VentMounted/GV_VentMounted_south.png[/img]
+Mounts on an existing wall, like the vanilla wall lamp, and releases gas into the room. Connect it with a hidden pipe under the wall it hangs on, or a pipe beside it.
+
+[h3]Gas Ceiling Vent[/h3]
+[img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/Textures/Things/Building/GasVentilation/VentCeiling/GV_VentCeiling.png[/img]
+Hangs from the ceiling and releases gas into the room below. Must be built under a roof, and falls if the roof is removed.
+
+[h3]Gas Floor Vent[/h3]
+[img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/Textures/Things/Building/GasVentilation/VentFloor/GV_VentFloor.png[/img]
+A walkable floor grate that releases gas. Connect it with hidden pipes under the floor next to it.
+
+[h3]Intruder Sensor[/h3]
+[img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/Textures/Things/Building/GasVentilation/GV_IntruderSensor_south.png[/img]
+A wall-mounted motion and thermal sensor. While armed and powered, it opens every sensor-controlled vent linked to it (or in its room, if nothing's explicitly linked) when a chosen target enters, and closes them again after they leave. It can also lock any powered door linked to it for as long as it stays triggered -- pick exactly who trips it (hostiles, specific creature types, even your own colonists if you're feeling dangerous) from its Sensor tab. Doesn't work in rooms open to the map edge.
+
+[img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/Textures/UI/Overlays/GV_DoorLocked.png[/img]
+A locked door shows this icon until the sensor clears.
+
+[hr][/hr]
+
+[h2]Items[/h2]
+
+[h3]Empty Gas Canister[/h3]
+[img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/Textures/Things/Item/GasVentilation/GV_CanisterEmpty.png[/img]
+A reinforced steel pressure canister. Fill it with a gas agent at a Gas Compounder.
+
+[h3]Filled Canisters[/h3]
+[img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/Textures/Things/Item/GasVentilation/GV_Canister_Toxin.png[/img] [img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/Textures/Things/Item/GasVentilation/GV_Canister_Sedative.png[/img] [img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/Textures/Things/Item/GasVentilation/GV_Canister_Haywire.png[/img] [img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/Textures/Things/Item/GasVentilation/GV_Canister_Insecticide.png[/img]
+One pressure canister per gas. Load it into a matching canister manifold. Releases its gas if destroyed, so handle (and store) with care.
+
+[hr][/hr]
+
+[h2]Pipes[/h2]
+
+[img]https://raw.githubusercontent.com/Xmaxer/rimworld-gas-ventilation-systems/main/Textures/Things/Building/Linked/GV_Pipe_Atlas.png[/img]
+One physical pipe carries all four gas networks at once, so you only ever need to run a single line. Hidden variants exist for burying pipe runs under walls and floors.
+
+[hr][/hr]
+
+[h2]Requirements[/h2]
+
+[list]
+[*][url=https://steamcommunity.com/workshop/filedetails/?id=2009463077]Harmony[/url]
+[*][url=https://steamcommunity.com/workshop/filedetails/?id=2023507013]Vanilla Expanded Framework[/url]
+[/list]
+
+No DLC required.
+
+[hr][/hr]
+
+Found a bug or have a suggestion? [url=https://github.com/Xmaxer/rimworld-gas-ventilation-systems/issues]Open an issue on GitHub[/url].

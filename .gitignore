@@ -2,6 +2,11 @@
 # Decompiled Ludeon code must never be committed or redistributed.
 refs/
 
+# Internal dev-process notes (research, brainstorming plans/specs, implementation
+# notes, manual test checklist, the texture spec): useful locally while building
+# the mod, not meant for the public repo. Kept on disk, never tracked.
+docs/
+
 # Build output
 bin/
 obj/

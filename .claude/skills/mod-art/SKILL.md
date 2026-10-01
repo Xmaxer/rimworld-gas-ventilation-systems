@@ -32,7 +32,9 @@ batch multiple assets/versions in one go, even if the spec lists many remaining 
 
 1. **Read `docs/texture-spec.md` first.** It has the exact path, size, and notes for every
    asset (e.g. "N/S 448x192, E 192x448", "keep alpha around 0.6-0.8", directional-file
-   conventions). Never guess a size or path.
+   conventions). Never guess a size or path. This file is gitignored (dev-process notes,
+   not shipped in the public repo) -- it only exists in this local checkout. If it's
+   missing (e.g. a fresh clone), ask the user for it before inventing sizes/paths.
 
 2. **Look for a real precedent before inventing a design.** `reference-mods/` holds a large
    scraped corpus of other RimWorld mods (Vanilla Expanded family and others). Before
