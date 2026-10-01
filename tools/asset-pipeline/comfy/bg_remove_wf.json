@@ -1,0 +1,263 @@
+{
+  "nodes": [
+    {
+      "id": 2088127606048045,
+      "type": "LoadImage",
+      "pos": [
+        40.0,
+        60.0
+      ],
+      "size": [
+        270.0,
+        328.0
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            4148977192937054,
+            1088361087314598
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "ui_modicon_v01.png"
+      ]
+    },
+    {
+      "id": 144964790459380,
+      "type": "LoadBackgroundRemovalModel",
+      "pos": [
+        40.0,
+        458.0
+      ],
+      "size": [
+        283.5,
+        94.0
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "bg_model",
+          "type": "BACKGROUND_REMOVAL",
+          "links": [
+            476776491861944
+          ]
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "birefnet.safetensors"
+      ]
+    },
+    {
+      "id": 2717135451542110,
+      "type": "RemoveBackground",
+      "pos": [
+        403.5,
+        323.5
+      ],
+      "size": [
+        213.0,
+        82.0
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "bg_removal_model",
+          "type": "BACKGROUND_REMOVAL",
+          "link": 476776491861944
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 4148977192937054
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": [
+            2589570329177323
+          ]
+        }
+      ],
+      "properties": {},
+      "widgets_values": []
+    },
+    {
+      "id": 555641985900457,
+      "type": "InvertMask",
+      "pos": [
+        696.5,
+        333.5
+      ],
+      "size": [
+        140.0,
+        62.0
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 2589570329177323
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            1987294581038922
+          ]
+        }
+      ],
+      "properties": {},
+      "widgets_values": []
+    },
+    {
+      "id": 3658439265676366,
+      "type": "JoinImageWithAlpha",
+      "pos": [
+        916.5,
+        253.25
+      ],
+      "size": [
+        216.3,
+        82.0
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1088361087314598
+        },
+        {
+          "name": "alpha",
+          "type": "MASK",
+          "link": 1987294581038922
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            915963757290230
+          ]
+        }
+      ],
+      "properties": {},
+      "widgets_values": []
+    },
+    {
+      "id": 1714394400810556,
+      "type": "SaveImage",
+      "pos": [
+        1212.8,
+        247.25
+      ],
+      "size": [
+        270.0,
+        94.0
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 915963757290230
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "ComfyUI"
+      ]
+    }
+  ],
+  "links": [
+    [
+      4148977192937054,
+      2088127606048045,
+      0,
+      2717135451542110,
+      1,
+      "IMAGE"
+    ],
+    [
+      476776491861944,
+      144964790459380,
+      0,
+      2717135451542110,
+      0,
+      "BACKGROUND_REMOVAL"
+    ],
+    [
+      2589570329177323,
+      2717135451542110,
+      0,
+      555641985900457,
+      0,
+      "MASK"
+    ],
+    [
+      1088361087314598,
+      2088127606048045,
+      0,
+      3658439265676366,
+      0,
+      "IMAGE"
+    ],
+    [
+      1987294581038922,
+      555641985900457,
+      0,
+      3658439265676366,
+      1,
+      "MASK"
+    ],
+    [
+      915963757290230,
+      3658439265676366,
+      0,
+      1714394400810556,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "last_node_id": 3658439265676366,
+  "last_link_id": 0,
+  "version": 0.4
+}

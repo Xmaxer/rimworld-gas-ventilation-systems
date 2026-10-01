@@ -100,10 +100,14 @@
     <graphicData>
       <texPath>Things/Building/GasVentilation/VentMounted/GV_VentMounted</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
-      <drawOffsetNorth>(0,0,0.9)</drawOffsetNorth>
-      <drawOffsetSouth>(0,0,-0.9)</drawOffsetSouth>
-      <drawOffsetWest>(-0.9,0,0)</drawOffsetWest>
-      <drawOffsetEast>(0.9,0,0)</drawOffsetEast>
+      <!-- Vanilla's wall-attachment offset of 0.9 cells is tuned for a thin object like a torch; our
+           chunkier vent fills most of its canvas, so 0.9 pushed it deep past the wall's near edge with a
+           visible gap instead of sitting flush against it. North/south sit flush at 0.5; east/west are
+           pulled back a bit further so the vent visibly protrudes into the room. -->
+      <drawOffsetNorth>(0,0,0.5)</drawOffsetNorth>
+      <drawOffsetSouth>(0,0,-0.5)</drawOffsetSouth>
+      <drawOffsetWest>(-0.2,0,0)</drawOffsetWest>
+      <drawOffsetEast>(0.2,0,0)</drawOffsetEast>
       <damageData>
         <enabled>false</enabled>
       </damageData>

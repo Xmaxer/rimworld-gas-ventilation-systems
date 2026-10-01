@@ -15,3 +15,13 @@ tools/DevHarness/1.6/Assemblies/
 dist/
 tools/.smoke-profile/
 tools/.dev-profile/
+
+# Art generation pipeline: API key, in-progress draft iterations, pre-replace
+# backups, and the local reference-mod corpus (a junction to a large external
+# folder, not real content) never belong in version control -- only the
+# finished PNGs placed under Textures/ do.
+tools/asset-pipeline/.env
+tools/asset-pipeline/drafts/
+tools/asset-pipeline/backups/
+tools/asset-pipeline/reference-mods/
+tools/asset-pipeline/__pycache__/

@@ -11,10 +11,16 @@
     <graphicData>
       <texPath>Things/Building/GasVentilation/GV_IntruderSensor</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
-      <drawOffsetNorth>(0,0,0.9)</drawOffsetNorth>
-      <drawOffsetSouth>(0,0,-0.9)</drawOffsetSouth>
-      <drawOffsetWest>(-0.9,0,0)</drawOffsetWest>
-      <drawOffsetEast>(0.9,0,0)</drawOffsetEast>
+      <!-- See GV_VentMounted in GasVents.xml: vanilla's 0.9-cell wall-attachment offset is tuned for a thin
+           object like a torch; our chunkier sensor box fills most of its canvas, so 0.9 pushed it deep past
+           the wall's near edge with a visible gap instead of sitting flush against it. -->
+      <drawOffsetNorth>(0,0,0.5)</drawOffsetNorth>
+      <drawOffsetSouth>(0,0,-0.5)</drawOffsetSouth>
+      <!-- East/west art is narrower and anchored further toward the canvas edge (~36% fill starting at 63%
+           across) than north/south (~80% fill starting at 0%). 0.4 sits flush at the wall's near edge; pulled
+           back further to 0.3 so the sensor visibly protrudes into the room. -->
+      <drawOffsetWest>(-0.1,0,0)</drawOffsetWest>
+      <drawOffsetEast>(0.1,0,0)</drawOffsetEast>
       <damageData>
         <enabled>false</enabled>
       </damageData>

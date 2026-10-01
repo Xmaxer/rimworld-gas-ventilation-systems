@@ -68,6 +68,12 @@
         <!-- Blocks hauler refill while unpowered (CompResourceStorage.AmountCanAccept) and rots stored gas
              away after an extended outage, the same way vanilla food storage requires power. -->
         <contentRequirePower>true</contentRequirePower>
+        <!-- VEF's default barSize (1.3 x 0.4, non-horizontal) is sized for tall standing containers like a
+             fermenting barrel; on our 1x1 rack it rendered as a bar taller than the building itself. Use a
+             slim horizontal gauge instead so it doesn't cover the canister art. -->
+        <barHorizontal>true</barHorizontal>
+        <barSize>(0.8, 0.12)</barSize>
+        <centerOffset>(0, 0, -0.38)</centerOffset>
       </li>
     </comps>
   </ThingDef>
