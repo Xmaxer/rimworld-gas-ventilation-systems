@@ -28,7 +28,7 @@ public sealed class HediffComp_SedationTrigger : HediffComp
             return;
         }
         Pawn pawn = Pawn;
-        if (pawn.Dead || pawn.RaceProps.alwaysAwake)
+        if (pawn.Dead || (pawn.RaceProps.alwaysAwake && !pawn.RaceProps.Humanlike))
         {
             return;
         }

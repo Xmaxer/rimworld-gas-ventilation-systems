@@ -82,7 +82,10 @@ public static class GasExposure
                 }
             }
         }
-        if (gas.protection == GasProtectionKind.Respiratory && ModsConfig.BiotechActive && pawn.genes != null)
+        // Humanlikes are protected by gear only. Xenotype genes (sanguophage tox immunity and the like) and other
+        // body sources of toxic resistance don't stop respiratory gas, so every humanlike race and xenotype is affected.
+        bool gearOnly = pawn.RaceProps.Humanlike;
+        if (gas.protection == GasProtectionKind.Respiratory && !gearOnly && ModsConfig.BiotechActive && pawn.genes != null)
         {
             List<Gene> genes = pawn.genes.GenesListForReading;
             for (int i = 0; i < genes.Count; i++)
@@ -96,7 +99,8 @@ public static class GasExposure
         switch (gas.protection)
         {
             case GasProtectionKind.Respiratory:
-                factor *= Mathf.Max(0f, 1f - pawn.GetStatValue(StatDefOf.ToxicEnvironmentResistance, true, 250));
+                float resistance = gearOnly ? GearToxicResistance(pawn) : pawn.GetStatValue(StatDefOf.ToxicEnvironmentResistance, true, 250);
+                factor *= Mathf.Max(0f, 1f - resistance);
                 break;
             case GasProtectionKind.Electromagnetic:
                 StatDef emp = EmpResistance;
@@ -111,6 +115,30 @@ public static class GasExposure
             factor /= Mathf.Clamp(pawn.BodySize, 0.5f, 3f);
         }
         return factor;
+    }
+
+    /// <summary>Toxic environment resistance from worn apparel and equipment only, clamped like the stat.</summary>
+    private static float GearToxicResistance(Pawn pawn)
+    {
+        StatDef stat = StatDefOf.ToxicEnvironmentResistance;
+        float total = 0f;
+        List<Apparel> worn = pawn.apparel?.WornApparel;
+        if (worn != null)
+        {
+            for (int i = 0; i < worn.Count; i++)
+            {
+                total += StatWorker.StatOffsetFromGear(worn[i], stat);
+            }
+        }
+        List<ThingWithComps> equipment = pawn.equipment?.AllEquipmentListForReading;
+        if (equipment != null)
+        {
+            for (int i = 0; i < equipment.Count; i++)
+            {
+                total += StatWorker.StatOffsetFromGear(equipment[i], stat);
+            }
+        }
+        return Mathf.Clamp(total, stat.minValue, stat.maxValue);
     }
 
     /// <summary>Applies the doses for one pawn standing in <paramref name="packed"/> gas for <paramref name="elapsedTicks"/>.</summary>

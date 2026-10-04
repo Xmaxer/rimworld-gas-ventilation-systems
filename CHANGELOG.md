@@ -7,4 +7,6 @@
 - Intruder sensor with target filters, linger time and stop-when-downed.
 - Vanilla-style spreading gas grid with tinted clouds and hover readout.
 - Classifier covering organics, mechanoids, drones, insects, VRE androids and robot races.
+- Toxin and sedative gas affect every humanlike race and xenotype. Only worn gear protects them; tox-immune genes
+  (sanguophages, ekkimians) do not.
 - AI path avoidance, fleeing, and trapped-hostile breakout.

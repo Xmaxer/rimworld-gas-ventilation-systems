@@ -204,8 +204,13 @@ public static class GasTargetClassifier
         }
     }
 
+    /// <summary>Humanlike races always count as breathing, even with a custom body that has no lung-tagged part.</summary>
     private static bool HasBreathingPart(ThingDef race)
     {
+        if (race.race.Humanlike)
+        {
+            return true;
+        }
         return race.race.body != null && race.race.body.HasPartWithTag(BodyPartTagDefOf.BreathingSource);
     }
 
