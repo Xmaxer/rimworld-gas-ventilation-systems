@@ -2,7 +2,8 @@
 # interactively, boots to the normal main menu (no -quicktest), with:
 #   - a separate, persistent save-data profile (tools/.dev-profile) so your real saves and your
 #     real ~100-mod list are never touched;
-#   - only Harmony, the DLCs, VEF and this mod active, so you're not debugging against your full
+#   - only Harmony, the DLCs, VEF, VRE Sanguophage (ekkimian and other humanlike xenotype testing)
+#     and this mod active, so you're not debugging against your full
 #     modlist;
 #   - dev mode already on, so the architect menu / debug tools are one click away.
 # The profile persists between runs (unlike the smoke-test profile, which is wiped every time),
@@ -54,6 +55,7 @@ if (-not (Test-Path $modsConfigPath)) {
     <li>ludeon.rimworld.biotech</li>
     <li>ludeon.rimworld.odyssey</li>
     <li>oskarpotocki.vanillafactionsexpanded.core</li>
+    <li>vanillaracesexpanded.sanguophage</li>
     <li>xmaxer.gasventilation</li>
     <li>xmaxer.gasventilation.devharness</li>
   </activeMods>
@@ -76,6 +78,13 @@ if (-not (Test-Path $modsConfigPath)) {
         $patched = $existing -replace '(?i)(\s*)(<li>xmaxer\.gasventilation</li>)', '$1$2$1<li>xmaxer.gasventilation.devharness</li>'
         Set-Content -Encoding UTF8 $modsConfigPath $patched.TrimEnd()
         Write-Output 'Added the dev harness mod (needed for the playground) to the dev profile mod list.'
+    }
+    # VRE Sanguophage adds xenotypes (ekkimian and others) used to test gas against humanlike xenotypes.
+    $existing = Get-Content $modsConfigPath -Raw
+    if ($existing -notmatch '(?i)<li>vanillaracesexpanded\.sanguophage</li>') {
+        $patched = $existing -replace '(?i)(\s*)(<li>xmaxer\.gasventilation</li>)', '$1<li>vanillaracesexpanded.sanguophage</li>$1$2'
+        Set-Content -Encoding UTF8 $modsConfigPath $patched.TrimEnd()
+        Write-Output 'Added VRE Sanguophage to the dev profile mod list.'
     }
 }
 
