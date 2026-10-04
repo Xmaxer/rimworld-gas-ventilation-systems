@@ -55,9 +55,11 @@ $prefs = @"
   <pauseOnError>False</pauseOnError>
   <pauseOnLoad>False</pauseOnLoad>
   <resetModsConfigOnCrash>False</resetModsConfigOnCrash>
+  <volumeMaster>0</volumeMaster>
   <volumeGame>0</volumeGame>
   <volumeMusic>0</volumeMusic>
   <volumeAmbient>0</volumeAmbient>
+  <volumeUI>0</volumeUI>
 </PlayerPrefs>
 "@
 Set-Content -Encoding UTF8 (Join-Path $configDir 'Prefs.xml') $prefs

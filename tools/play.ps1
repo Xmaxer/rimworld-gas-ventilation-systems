@@ -94,6 +94,15 @@ if (-not (Test-Path $prefsPath)) {
     Write-Output "Wrote a fresh dev Prefs.xml (dev mode on): $prefsPath"
 }
 
+# Mute every volume (master, game, music, ambient, UI) on each launch, keeping the profile's other prefs.
+[xml]$prefsDoc = Get-Content $prefsPath -Raw
+foreach ($name in 'volumeMaster', 'volumeGame', 'volumeMusic', 'volumeAmbient', 'volumeUI') {
+    $node = $prefsDoc.DocumentElement.SelectSingleNode($name)
+    if (-not $node) { $node = $prefsDoc.CreateElement($name); [void]$prefsDoc.DocumentElement.AppendChild($node) }
+    $node.InnerText = '0'
+}
+$prefsDoc.Save($prefsPath)
+
 $harnessDir = Join-Path $profileDir 'GasVentHarness'
 $requestPath = Join-Path $harnessDir 'request.txt'
 if ($NoPlayground) {
